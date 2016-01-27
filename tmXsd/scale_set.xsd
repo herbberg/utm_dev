@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tmxsd="http://www.cern.ch/tmxsd/1.0.0"
+            targetNamespace="http://www.cern.ch/tmxsd/1.0.0">
+
+  <xsd:include schemaLocation="xsd-type/simple-types.xsd"/>
+  <xsd:include schemaLocation="xsd-type/complex-bin.xsd"/>
+  <xsd:include schemaLocation="xsd-type/complex-scale.xsd"/>
+  <xsd:include schemaLocation="xsd-type/complex-scale_set.xsd"/>
+
+  <xsd:element name="scale_set" type="tmxsd:scale_set"/>
+
+</xsd:schema>

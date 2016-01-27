@@ -1,0 +1,39 @@
+namespace http://www.cern.ch/tmxsd/1.0.0
+{
+  id        "unsigned int" "unsigned int";
+  uuid      std::string;
+  datetime  std::string;
+  real      std::string;
+  char64    std::string;
+  char1k    std::string;
+  char4k    std::string;
+}
+
+namespace http://www.cern.ch/tmxsd/1.0.0 ::tmxsd
+{
+  include "complex-bin.hh";
+  include "complex-scale.hh";
+  include "complex-scale_set.hh";
+
+  include "complex-ext_signal.hh";
+  include "complex-ext_signal_set.hh";
+
+  include "complex-object_requirement.hh";
+  include "complex-external_requirement.hh";
+  include "complex-cut.hh";
+  include "complex-algorithm.hh";
+  include "complex-menu.hh";
+
+  bin                 bin;
+  scale               scale;
+  scale_set           scale_set;
+
+  ext_signal          ext_signal;
+  ext_signal_set      ext_signal_set;
+
+  external_requirement  external_requirement;
+  object_requirement    object_requirement;
+  cut                   cut;
+  algorithm             algorithm;
+  menu                  menu;
+}

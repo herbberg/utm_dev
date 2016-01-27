@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<tmxsd:ext_signal_set xmlns:tmxsd="http://www.cern.ch/tmxsd/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cern.ch/tmxsd/1.0.0 ext_signal_set.xsd">
+
+  <name>L1ExternalConditionsCabling_2012_Sep_17</name>
+
+  <ext_signal>
+    <name>CASTOR_HaloMuon.v0</name>
+    <system>CASTOR</system>
+    <cable>0</cable>
+    <channel>3</channel>
+    <description>At least 1 CASTOR phi-sector with low but constant energy deposit along z</description>
+    <label>CASTOR R GT4</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BPTX_plus_AND_minus.v0</name>
+    <system>BPTX</system>
+    <cable>2</cable>
+    <channel>8</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BPTX_plus.v0</name>
+    <system>BPTX</system>
+    <cable>2</cable>
+    <channel>9</channel>
+    <description>beam1</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BPTX_minus.v0</name>
+    <system>BPTX</system>
+    <cable>2</cable>
+    <channel>10</channel>
+    <description>beam2</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BPTX_plus_OR_minus.v0</name>
+    <system>BPTX</system>
+    <cable>2</cable>
+    <channel>11</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_minBias_inner_threshold1.v0</name>
+    <system>BSC</system>
+    <cable>3</cable>
+    <channel>12</channel>
+    <description>BSC minbias: hits +z side &gt;= 1 and hits -z side &gt;= 1 (inner segments only)</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_minBias_inner_threshold2.v0</name>
+    <system>BSC</system>
+    <cable>3</cable>
+    <channel>13</channel>
+    <description>BSC minbias: hits +z side &gt;= 2 and hits -z side &gt;= 2 (inner segments only)</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_minBias_OR.v0</name>
+    <system>BSC</system>
+    <cable>3</cable>
+    <channel>14</channel>
+    <description>BSC OR: there is at least one hit, anywhere in the BSC</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_HighMultiplicity.v0</name>
+    <system>BSC</system>
+    <cable>3</cable>
+    <channel>15</channel>
+    <description>BSC high multiplicity: all segments fire on both sides in coincidence (Before June 1, 2010, only inner segments were required)</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>ZDC_Scint_itght_vertex.v0</name>
+    <system>ZDC</system>
+    <cable>4</cable>
+    <channel>16</channel>
+    <description>ZDC tight vertex: TAN scintillators fire within 5 ns of each other</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>ZDC_Scint_loose_vertex.v0</name>
+    <system>ZDC</system>
+    <cable>4</cable>
+    <channel>17</channel>
+    <description>ZDC loose vertex: TAN scintillators fire within 15 ns of each other</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>ZDC_Scint_plus.v0</name>
+    <system>ZDC</system>
+    <cable>4</cable>
+    <channel>18</channel>
+    <description>ZDC+ TAN scintillator signal over threshold</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>ZDC_Scint_minus.v0</name>
+    <system>ZDC</system>
+    <cable>4</cable>
+    <channel>19</channel>
+    <description>ZDC- TAN scintillator signal over threshold</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_BSC2_plus.v0</name>
+    <system>BSC</system>
+    <cable>6</cable>
+    <channel>24</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_BSC2_minus.v0</name>
+    <system>BSC</system>
+    <cable>6</cable>
+    <channel>25</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_minBias_threshold1.v0</name>
+    <system>BSC</system>
+    <cable>7</cable>
+    <channel>28</channel>
+    <description>BSC minbias: hits +z side &gt;= 1 and hits -z side &gt;= 1 (all segments: inner rings, outer petals)</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_minBias_threshold2.v0</name>
+    <system>BSC</system>
+    <cable>7</cable>
+    <channel>29</channel>
+    <description>BSC minbias: hits +z side &gt;= 2 and hits -z side &gt;= 2 (all segments: inner rings, outer petals)</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_splash_beam1.v0</name>
+    <system>BSC</system>
+    <cable>7</cable>
+    <channel>30</channel>
+    <description>BSC splash trigger: beam 1, threshold = 2; inner ring hits on -z side &gt;= 2</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_splash_beam2.v0</name>
+    <system>BSC</system>
+    <cable>7</cable>
+    <channel>31</channel>
+    <description>BSC splash trigger: beam 2, threshold = 2; inner ring hits on +z side &gt;= 2</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_halo_beam2_inner.v0</name>
+    <system>BSC</system>
+    <cable>8</cable>
+    <channel>32</channel>
+    <label>BSC HALO</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_halo_beam2_outer.v0</name>
+    <system>BSC</system>
+    <cable>8</cable>
+    <channel>33</channel>
+    <label>BSC HALO</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_halo_beam1_inner.v0</name>
+    <system>BSC</system>
+    <cable>8</cable>
+    <channel>34</channel>
+    <label>BSC HALO</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BSC_halo_beam1_outer.v0</name>
+    <system>BSC</system>
+    <cable>8</cable>
+    <channel>35</channel>
+    <label>BSC HALO</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>ZDC_Calo_minus.v0</name>
+    <system>ZDC</system>
+    <cable>9</cable>
+    <channel>36</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>ZDC_Calo_plus.v0</name>
+    <system>ZDC</system>
+    <cable>9</cable>
+    <channel>37</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>HCAL_HF_single_channel.v0</name>
+    <system>HCAL</system>
+    <cable>10</cable>
+    <channel>40</channel>
+    <description>Checks for single channel energy above a threshold by using single time sample</description>
+    <label>HF/HO Tech.Trig</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>HCAL_HF_coincidence_PM.v2</name>
+    <system>HCAL</system>
+    <cable>10</cable>
+    <channel>41</channel>
+    <description>Coincidence between any wedge in HF- and any wedge in HF+</description>
+    <label>HF/HO Tech.Trig</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>HCAL_HF_MMP_or_MPP.v1</name>
+    <system>HCAL</system>
+    <cable>10</cable>
+    <channel>42</channel>
+    <description>Coincidence among any wedges with at least one in HF- and at least one in HF+</description>
+    <label>HF/HO Tech.Trig</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>HCAL_H0_totalOR.v0</name>
+    <system>HCAL</system>
+    <cable>10</cable>
+    <channel>43</channel>
+    <description>HCAL: HO total OR</description>
+    <label>HF/HO Tech.Trig</label>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BPTX_minus_postQuiet.v0</name>
+    <system>BPTX</system>
+    <cable>12</cable>
+    <channel>49</channel>
+    <description>beam2 unpaired post quiet</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>BPTX_plus_postQuiet.v0</name>
+    <system>BPTX</system>
+    <cable>12</cable>
+    <channel>50</channel>
+    <description>beam1 unpaired post quiet</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>TOTEM_RomanPotsOR</name>
+    <system>TOTEM</system>
+    <cable>13</cable>
+    <channel>52</channel>
+    <description>TOTEM_0: OR of the two Roman Pots</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>TOTEM_1</name>
+    <system>TOTEM</system>
+    <cable>13</cable>
+    <channel>53</channel>
+    <description>TOTEM_1</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>TOTEM_2</name>
+    <system>TOTEM</system>
+    <cable>13</cable>
+    <channel>54</channel>
+    <description>TOTEM_2</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>TOTEM_3</name>
+    <system>TOTEM</system>
+    <cable>13</cable>
+    <channel>55</channel>
+    <description>TOTEM_3</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St1Sect45_upp.v0</name>
+    <system>FSC</system>
+    <cable>14</cable>
+    <channel>56</channel>
+    <description>FSC station 1, sector 45, upper</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St1Sect45_down.v0</name>
+    <system>FSC</system>
+    <cable>14</cable>
+    <channel>57</channel>
+    <description>FSC station 1, sector 45, down</description>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St1Sect56_upp.v0</name>
+    <system>FSC</system>
+    <cable>14</cable>
+    <channel>58</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St1Sect56_down.v0</name>
+    <system>FSC</system>
+    <cable>14</cable>
+    <channel>59</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St2Sect45_upp.v0</name>
+    <system>FSC</system>
+    <cable>15</cable>
+    <channel>60</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St2Sect45_down.v0</name>
+    <system>FSC</system>
+    <cable>15</cable>
+    <channel>61</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St2Sect56_upp.v0</name>
+    <system>FSC</system>
+    <cable>15</cable>
+    <channel>62</channel>
+  </ext_signal>
+
+  <ext_signal>
+    <name>FSC_St2Sect56_down.v0</name>
+    <system>FSC</system>
+    <cable>15</cable>
+    <channel>63</channel>
+  </ext_signal>
+
+</tmxsd:ext_signal_set>
