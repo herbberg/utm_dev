@@ -80,6 +80,7 @@ install:
     $(MAKE) $@; if [ $$? != 0 ]; then exit; fi; cd ..; \
   done
 	cp -pr tmXsd/xsd-type xsd-type
+	cp -p tmXsd/menu.xsd .
 	echo '// '
 	echo '// done ('`date`')'
 	echo '// '
