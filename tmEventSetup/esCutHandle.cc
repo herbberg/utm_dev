@@ -79,8 +79,17 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       break;
   }
 
-  minimum_.value = tmutil::convert<double>(cut.find("minimum")->second);
+  std::string minimum = cut.find("minimum")->second;
+  if (cut_type_ == Threshold)
+  {
+    const std::string p = "p";
+    size_t idx = minimum.find(p);
+    if (idx != std::string::npos) minimum.replace(idx, p.length(), ".");
+  }
+
+  minimum_.value = tmutil::convert<double>(minimum);
   maximum_.value = tmutil::convert<double>(cut.find("maximum")->second);
+
   setData(cut.find("data")->second);
   setKey();
 }

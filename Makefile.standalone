@@ -79,6 +79,7 @@ install:
   	cd $$i; echo '//   in '`pwd`; \
     $(MAKE) $@; if [ $$? != 0 ]; then exit; fi; cd ..; \
   done
+	cp -pr tmXsd/xsd-type xsd-type
 	echo '// '
 	echo '// done ('`date`')'
 	echo '// '
