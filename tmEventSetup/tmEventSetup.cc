@@ -10,22 +10,9 @@ namespace tmeventsetup
 {
 
 const esTriggerMenu*
-getTriggerMenu(const std::string& path)
+_getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
 {
-  TM_LOG_DBG("tmeventsetup::getTriggerMenu: " << path);
-
-  // read menu
-  tmtable::Menu menu;
-  tmtable::Scale scale;
-  tmtable::ExtSignal extSignal;
-
-  std::string message;
-  message = tmtable::xml2menu(path.c_str(), menu, scale, extSignal);
-  if (message.size())
-  {
-    TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
-    TM_FATAL_ERROR("couldn't open an input file");
-  }
+  TM_LOG_DBG("tmeventsetup::_getTriggerMenu: " << path);
 
   esTriggerMenuHandle* estm = new esTriggerMenuHandle();
   const std::string text;
@@ -63,6 +50,50 @@ getTriggerMenu(const std::string& path)
 
   esTriggerMenu* p = estm;
   return p;
+}
+
+
+const esTriggerMenu*
+getTriggerMenu(const std::string& path)
+{
+  TM_LOG_DBG("tmeventsetup::getTriggerMenu: " << path);
+
+  // read menu
+  tmtable::Menu menu;
+  tmtable::Scale scale;
+  tmtable::ExtSignal extSignal;
+
+  std::string message;
+  message = tmtable::xml2menu(path.c_str(), menu, scale, extSignal);
+  if (message.size())
+  {
+    TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
+    TM_FATAL_ERROR("couldn't open an input file");
+  }
+
+  return _getTriggerMenu(menu, scale, extSignal);
+}
+
+
+const esTriggerMenu*
+getTriggerMenu(std::istringstream& iss)
+{
+  TM_LOG_DBG("tmeventsetup::getTriggerMenu: ");
+
+  // read menu
+  tmtable::Menu menu;
+  tmtable::Scale scale;
+  tmtable::ExtSignal extSignal;
+
+  std::string message;
+  message = tmtable::xml2menu(iss, menu, scale, extSignal);
+  if (message.size())
+  {
+    TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
+    TM_FATAL_ERROR("couldn't open an input file");
+  }
+
+  return _getTriggerMenu(menu, scale, extSignal);
 }
 
 

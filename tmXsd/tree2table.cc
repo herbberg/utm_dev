@@ -312,4 +312,18 @@ tmxsd::xml2menu(const char* fileName,
   return o;
 }
 
+
+tmxsd::menu
+tmxsd::xml2menu(std::istream& is,
+                std::string& message,
+                const bool debug)
+{
+  message = "";
+  tmxsd::Reader<tmxsd::menu> reader;
+  reader.debug(debug);
+  tmxsd::menu o = reader.read(is);
+  if (not reader.success()) message = reader.message();
+  return o;
+}
+
 /* eof */

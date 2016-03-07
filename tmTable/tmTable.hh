@@ -132,6 +132,21 @@ std::string xml2menu(const char* fileName,
                      const bool debug = false);
 
 
+/** read an xml file containing menu information
+ *
+ * @param fileName [in] istringstream for xml file
+ * @param menu [in/out] data structure to hold the content of the given file
+ * @param scale [in/out] data structure to hold the content of the given file
+ * @param extSignal [in/out] data structure to hold the content of the given file
+ * @param debug [in] debug flag
+ */
+std::string xml2menu(std::istream& is,
+                     tmtable::Menu& menu,
+                     tmtable::Scale& scale,
+                     tmtable::ExtSignal& extSignal,
+                     const bool debug = false);
+
+
 /** write an xml menu file from the internal data structure
  *
  * @param data [in] Menu internal data structure

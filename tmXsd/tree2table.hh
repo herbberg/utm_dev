@@ -100,6 +100,18 @@ tmxsd::menu xml2menu(const char* fileName,
                      std::string& message,
                      const bool debug = false);
 
+/**
+ *  read xml file and store contents to xml data class
+ *
+ *  @param fileName [in] ifstream for xml file
+ *  @param message [in/out] error message
+ *  @param debug [in] debug flag
+ *  @return menu class
+ */
+tmxsd::menu xml2menu(std::istream& is,
+                     std::string& message,
+                     const bool debug = false);
+
 }
 #endif
 /* eof */

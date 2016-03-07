@@ -16,6 +16,7 @@
  *-----------------------------------------------------------------*/
 #include <string>
 #include <map>
+#include <sstream>
 
 #include "tmEventSetup/esTriggerMenuHandle.hh"
 
@@ -35,6 +36,13 @@ namespace tmeventsetup
     * @return pointer to esTriggerMenu class
     */
   const esTriggerMenu* getTriggerMenu(const std::string& path);
+
+  /** retrieve trigger menu information from an xml file
+    *
+    * @param path [in] std::istringstream for the menu xml file
+    * @return pointer to esTriggerMenu class
+    */
+  const esTriggerMenu* getTriggerMenu(std::istringstream& iss);
 
   /** retrieve value from map with given key
     *

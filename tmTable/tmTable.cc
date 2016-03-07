@@ -141,6 +141,40 @@ tmtable::xml2menu(const char* fileName,
 }
 
 
+std::string
+tmtable::xml2menu(std::istream& is,
+                  tmtable::Menu& menu,
+                  tmtable::Scale& scale,
+                  tmtable::ExtSignal& extSignal,
+                  const bool debug)
+{
+  char* xsd = getenv("UTM_XSD_DIR");
+  if (not xsd)
+  {
+    TM_FATAL_ERROR("tmtable::xml2menu: please specify UTM_XSD_DIR environment variable ");
+  }
+
+  std::string cwd = tmutil::getcwd();
+  if (::chdir(xsd) == -1)
+  {
+    TM_FATAL_ERROR("tmtable::xml2menu: chdir: " << strerror(errno));
+  }
+  std::string message;
+  tmxsd::menu data = tmxsd::xml2menu(is, message, debug);
+  tmutil::chdir(cwd);
+
+
+  if (message.empty())
+  {
+    tmxsd::tree2menu(data, menu, scale, extSignal);
+    menu.isValid(true);
+    scale.isValid(true);
+    extSignal.isValid(true);
+  }
+  return message;
+}
+
+
 void
 tmtable::menu2xml(const tmtable::Menu& data,
                   const tmtable::Scale& scale,
