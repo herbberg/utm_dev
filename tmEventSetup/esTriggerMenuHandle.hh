@@ -59,6 +59,11 @@ class esTriggerMenuHandle : public esTriggerMenu
      */
     void setHwIndex(const tmtable::StringTableMap& bins);
 
+    /** set fixed-point cut values for delta-R/invariant-Mass cuts
+     *
+     */
+    void setFunctionCuts();
+
     /** set values in algorithm_map_
      *
      * @param algorithm [in] tmtable::Row instance of algorithm
@@ -146,6 +151,9 @@ class esTriggerMenuHandle : public esTriggerMenu
      * @return HW index of a bin
      */
     unsigned int getIndex(const esCutValue& cut, const std::string& range, const tmtable::Table& bins);
+
+    void setPrefix4Precision(const std::vector<esObject>& objects,
+                             std::string& prefix);
 };
 
 } // namespace tmeventsetup

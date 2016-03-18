@@ -8,6 +8,27 @@
 
 namespace tmeventsetup
 {
+  const long long pow10[] =
+  {
+                      1, 
+                     10,
+                    100,
+                   1000,
+                  10000,
+                 100000,
+                1000000,
+               10000000,
+              100000000,
+             1000000000,
+            10000000000,
+           100000000000,
+          1000000000000,
+         10000000000000,
+        100000000000000,
+       1000000000000000,
+      10000000000000000,
+     100000000000000000
+  };
 
 const esTriggerMenu*
 _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
@@ -47,6 +68,9 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
 
   // set HW index
   estm->setHwIndex(scale.bins);
+
+  // set Function cuts
+  estm->setFunctionCuts();
 
   esTriggerMenu* p = estm;
   return p;
@@ -127,6 +151,56 @@ unsigned long
 getHashUlong(const std::string& s)
 {
   return (unsigned long)getHash(s);
+}
+
+
+unsigned long
+getMmHashN(const std::string& s)
+{
+  const void* key = s.c_str();
+  int len = s.size();
+  unsigned int seed = 0xdeadbabe;
+
+	const unsigned int m = 0x5bd1e995;
+	const int r = 24;
+
+	unsigned int h = seed ^ len;
+
+	const unsigned char * data = (const unsigned char *)key;
+
+	while(len >= 4)
+	{
+		unsigned int k;
+
+		k  = data[0];
+		k |= data[1] << 8;
+		k |= data[2] << 16;
+		k |= data[3] << 24;
+
+		k *= m; 
+		k ^= k >> r; 
+		k *= m;
+
+		h *= m;
+		h ^= k;
+
+		data += 4;
+		len -= 4;
+	}
+	
+	switch(len)
+	{
+	case 3: h ^= data[2] << 16;
+	case 2: h ^= data[1] << 8;
+	case 1: h ^= data[0];
+	        h *= m;
+	};
+
+	h ^= h >> 13;
+	h *= m;
+	h ^= h >> 15;
+
+	return h;
 }
 
 
@@ -295,27 +369,6 @@ long long
 toFixedPoint(double real,
              const size_t precision)
 {
-  const long long pow10[] =
-  {
-                      1, 
-                     10,
-                    100,
-                   1000,
-                  10000,
-                 100000,
-                1000000,
-               10000000,
-              100000000,
-             1000000000,
-            10000000000,
-           100000000000,
-          1000000000000,
-         10000000000000,
-        100000000000000,
-       1000000000000000,
-      10000000000000000,
-     100000000000000000
-  };
 
   if (precision > (sizeof(pow10)/sizeof(pow10[0]) - 1))
     TM_FATAL_ERROR("tmeventsetup::toFixedPoint: unsupported precision '" << precision << "'");

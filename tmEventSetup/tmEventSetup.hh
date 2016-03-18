@@ -66,6 +66,15 @@ namespace tmeventsetup
     */
   unsigned long getHashUlong(const std::string& s);
 
+
+  /** endian- and alignment-neutral MurmurHash2 by Austin Appleby
+   *  https://sites.google.com/site/murmurhash/
+   *
+   *  @param s [in] text
+   */
+  unsigned long getMmHashN(const std::string& s);
+  
+
   /** get external signal name
     *
     * @param name [in] external condition name
@@ -97,6 +106,8 @@ namespace tmeventsetup
                        const std::map<std::string, tmeventsetup::esScale*>& scaleMap);
 #endif
 
+
+  extern const long long pow10[];
 
   /** get LUT from double vector
    *

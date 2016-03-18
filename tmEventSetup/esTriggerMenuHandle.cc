@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include <cstdio>
 #include <locale>
 #include <utility>
@@ -558,6 +560,214 @@ esTriggerMenuHandle::setHwIndex(const tmtable::StringTableMap& bins)
           cut.setMaximum(getIndex(maximum, "maximum", table));
         }
       }
+    }
+  }
+}
+
+
+void
+esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
+                                         std::string& prefix)
+{
+  if (objects.size() != 2) TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects != 2");
+  const esObject& o1 = objects.at(0);
+  const esObject& o2 = objects.at(1);
+
+  switch (o1.getType())
+  {
+    case Egamma:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-EG-";
+          break;
+        case Tau:
+          prefix = "PRECISION-EG-TAU-";
+          break;
+        case Jet:
+          prefix = "PRECISION-EG-JET-";
+          break;
+        case Muon:
+          prefix = "PRECISION-EG-MU-";
+          break;
+        case ETM:
+          prefix = "PRECISION-EG-ETM-";
+          break;
+        case HTM:
+          prefix = "PRECISION-EG-HTM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    case Tau:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-TAU-";
+          break;
+        case Tau:
+          prefix = "PRECISION-TAU-TAU-";
+          break;
+        case Jet:
+          prefix = "PRECISION-JET-TAU-";
+          break;
+        case Muon:
+          prefix = "PRECISION-TAU-MU-";
+          break;
+        case ETM:
+          prefix = "PRECISION-TAU-ETM-";
+          break;
+        case HTM:
+          prefix = "PRECISION-TAU-HTM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    case Jet:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-JET-";
+          break;
+        case Tau:
+          prefix = "PRECISION-JET-TAU-";
+          break;
+        case Jet:
+          prefix = "PRECISION-JET-JET-";
+          break;
+        case Muon:
+          prefix = "PRECISION-JET-MU-";
+          break;
+        case ETM:
+          prefix = "PRECISION-JET-ETM-";
+          break;
+        case HTM:
+          prefix = "PRECISION-JET-HTM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    case Muon:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-MU-";
+          break;
+        case Tau:
+          prefix = "PRECISION-TAU-MU-";
+          break;
+        case Jet:
+          prefix = "PRECISION-JET-MU-";
+          break;
+        case Muon:
+          prefix = "PRECISION-MU-MU-";
+          break;
+        case ETM:
+          prefix = "PRECISION-MU-ETM-";
+          break;
+        case HTM:
+          prefix = "PRECISION-MU-HTM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    default:
+      TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+  }
+}
+
+
+void
+esTriggerMenuHandle::setFunctionCuts()
+{
+  std::map<std::string, unsigned int> dictionary;
+
+  for (std::map<std::string, tmeventsetup::esScale>::const_iterator cit = scale_map_.begin();
+       cit != scale_map_.end(); cit++)
+  {
+    switch (cit->second.getScaleType())
+    {
+      case DeltaPrecision:
+      case MassPrecision:
+        break;
+
+      default:
+        continue;
+    }
+
+    std::pair<std::map<std::string, unsigned int>::iterator, bool> rc;
+    rc = dictionary.insert(std::make_pair(cit->first, cit->second.getNbits()));
+    if (not rc.second)
+    {
+      TM_FATAL_ERROR("esTriggerMenuHandle::setFixedPointCuts: insertion failure");
+    }
+  }
+
+  if (dictionary.empty()) return;
+
+
+  for (std::map<std::string, esCondition>::const_iterator cit = condition_map_.begin();
+       cit != condition_map_.end(); cit++)
+  {
+    const std::vector<tmeventsetup::esCut>& cuts = cit->second.getCuts();
+
+    for (size_t ii = 0; ii < cuts.size(); ii++)
+    {
+      tmeventsetup::esCut& cut = const_cast<tmeventsetup::esCut&>(cuts.at(ii));
+      const int type = cut.getCutType();
+      switch (type)
+      {
+        case DeltaEta:
+        case DeltaPhi:
+        case DeltaR:
+        case Mass:
+          break;
+        default:
+          continue;
+      }
+
+      const std::vector<esObject>& objects = cit->second.getObjects();
+      std::string key;
+      setPrefix4Precision(objects, key);
+
+      double minimum = cut.getMinimumValue();
+      double maximum = cut.getMaximumValue();
+
+      unsigned int precision = 0;
+      if (type == Mass)
+      {
+        key += "Mass";
+        precision = dictionary.find(key)->second;
+        minimum = floor(minimum*minimum*0.5*pow10[precision])/pow10[precision];
+        maximum = ceil(maximum*maximum*0.5*pow10[precision])/pow10[precision];
+      }
+      else if (type == DeltaR)
+      {
+        key += "Delta";
+        precision = dictionary.find(key)->second;
+        minimum = floor(minimum*minimum*pow10[precision])/pow10[precision];
+        maximum = ceil(maximum*maximum*pow10[precision])/pow10[precision];
+      }
+      else
+      {
+        key += "Delta";
+        precision = dictionary.find(key)->second;
+        minimum = floor(minimum*pow10[precision])/pow10[precision];
+        maximum = ceil(maximum*pow10[precision])/pow10[precision];
+      }
+
+      cut.setMinimum(minimum);
+      cut.setMinimum(precision);
+      cut.setMaximum(maximum);
+      cut.setMaximum(precision);
     }
   }
 }
