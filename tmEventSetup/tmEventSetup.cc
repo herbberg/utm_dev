@@ -33,7 +33,7 @@ namespace tmeventsetup
 const esTriggerMenu*
 _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
 {
-  TM_LOG_DBG("tmeventsetup::_getTriggerMenu: " << path);
+  TM_LOG_DBG("tmeventsetup::_getTriggerMenu: ");
 
   esTriggerMenuHandle* estm = new esTriggerMenuHandle();
   const std::string text;

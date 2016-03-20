@@ -280,6 +280,7 @@ esTriggerMenuHandle::getDistCondition(const Function::Item& item,
     tmtable::Row& cut = const_cast<tmtable::Row&>(cuts_in_algo.at(ii));
     for (size_t jj = 0; jj < item.cuts.size(); jj++)
     {
+      TM_LOG_DBG(item.cuts.at(jj));
       if (item.cuts.at(jj) != cut["name"]) continue;
       esCutHandle cutHandle(cut);
       esCut& ref = cutHandle;
@@ -672,6 +673,46 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-MU-ETM-";
           break;
         case HTM:
+          prefix = "PRECISION-MU-HTM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    case ETM:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-ETM-";
+          break;
+        case Tau:
+          prefix = "PRECISION-TAU-ETM-";
+          break;
+        case Jet:
+          prefix = "PRECISION-JET-ETM-";
+          break;
+        case Muon:
+          prefix = "PRECISION-MU-ETM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    case HTM:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-HTM-";
+          break;
+        case Tau:
+          prefix = "PRECISION-TAU-HTM-";
+          break;
+        case Jet:
+          prefix = "PRECISION-JET-HTM-";
+          break;
+        case Muon:
           prefix = "PRECISION-MU-HTM-";
           break;
         default:
