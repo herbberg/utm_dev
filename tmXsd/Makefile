@@ -127,7 +127,7 @@ dist-clean:
 		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
 	done
 	cd test; echo '//   in '`pwd`; \
-	$(MAKE) $@; if [ $$? != 0 ]; then exit; fi; cd ..;
+	$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..;
 	$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
 	$(RM) $(SRCS_TREE) $(SRCS_TREE:.cc=.hxx) gen-*.hxx complex-*.cc simple-types-*.cc
 	$(RM) -r html latex

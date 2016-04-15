@@ -85,7 +85,7 @@ clean:
 
 dist-clean:
 	cd test; echo '//   in '`pwd`; \
-	$(MAKE) $@; if [ $$? != 0 ]; then exit; fi; cd ..;
+	$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..;
 	$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
 	$(RM) _tmGrammar.so tmGrammar.py tmGrammar_wrap.cxx
 	$(RM) -r build html latex

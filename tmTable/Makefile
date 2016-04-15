@@ -89,7 +89,7 @@ dist-clean:
 	$(RM) _tmTable.so tmTable.py tmTable_wrap.cxx
 	$(RM) -r build html latex
 	cd test; echo '//   in '`pwd`; \
-	$(MAKE) $@; if [ $$? != 0 ]; then exit; fi; cd ..;
+	$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..;
 
 setting:
 	echo '// '
