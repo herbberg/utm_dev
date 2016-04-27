@@ -21,6 +21,10 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (obj == Object::ETT) object_ = ETT;
   else if (obj == Object::ETM) object_ = ETM;
   else if (obj == Object::HTM) object_ = HTM;
+  else if (obj == Object::MBT0HFP) object_ = MBT0HFP;
+  else if (obj == Object::MBT1HFP) object_ = MBT1HFP;
+  else if (obj == Object::MBT0HFM) object_ = MBT0HFM;
+  else if (obj == Object::MBT1HFM) object_ = MBT1HFM;
   else if (obj == PRECISION) object_ = Precision;
   else
   {
@@ -33,6 +37,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   if (type == ET_THR) type_ = EtScale;
   else if (type == Cut::ETA) type_ = EtaScale;
   else if (type == Cut::PHI) type_ = PhiScale;
+  else if (type == COUNT) type_ = Count;
   else if (type.find(PRECISION_DELTA) != std::string::npos) type_ = DeltaPrecision;
   else if (type.find(PRECISION_MASSPT) != std::string::npos) type_ = MassPtPrecision;
   else if (type.find(PRECISION_MASS) != std::string::npos) type_ = MassPrecision;

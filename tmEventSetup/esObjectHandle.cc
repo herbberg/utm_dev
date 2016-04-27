@@ -39,6 +39,8 @@ esObjectHandle::esObjectHandle(const Object::Item& item, const tmtable::Table& c
 void
 esObjectHandle::init(const Object::Item& item)
 {
+  bool isThreshold = true;
+
   name_ = item.getObjectName();
 
   type_ = static_cast<esObjectType>(Undef);
@@ -50,6 +52,26 @@ esObjectHandle::init(const Object::Item& item)
   else if (item.name == Object::HTT) type_ = HTT;
   else if (item.name == Object::ETM) type_ = ETM;
   else if (item.name == Object::HTM) type_ = HTM;
+  else if (item.name == Object::MBT0HFP)
+  {
+    type_ = MBT0HFP;
+    isThreshold = false;
+  }
+  else if (item.name == Object::MBT1HFP)
+  {
+    type_ = MBT1HFP;
+    isThreshold = false;
+  }
+  else if (item.name == Object::MBT0HFM)
+  {
+    type_ = MBT0HFM;
+    isThreshold = false;
+  }
+  else if (item.name == Object::MBT1HFM)
+  {
+    type_ = MBT1HFM;
+    isThreshold = false;
+  }
   else if (item.name.rfind(Object::EXT, 0) == 0) type_ = EXT;
   else
   {
@@ -77,10 +99,13 @@ esObjectHandle::init(const Object::Item& item)
   tmutil::replace(threshold, "p", ".");
   threshold_ = tmutil::convert<double>(threshold);
 
+  std::string cut_type = ET_THR;
+  if (not isThreshold) cut_type = COUNT;
+
   tmtable::Row cut;
-  cut["name"] = item.name + "-" + ET_THR + "_" + threshold;
+  cut["name"] = item.name + "-" + cut_type + "_" + threshold;
   cut["object"] = item.name;
-  cut["type"] = item.name + "-" + ET_THR;
+  cut["type"] = item.name + "-" + cut_type;
   cut["minimum"] = threshold;
   cut["maximum"] = "";
   cut["data"] = "";

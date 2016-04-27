@@ -8,6 +8,8 @@
 
 namespace tmeventsetup
 {
+  const std::string GRAMMAR_VERSION = "0.2";
+  
   const long long pow10[] =
   {
                       1, 
@@ -42,8 +44,16 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   estm->setExternalMap(extSignal);
   estm->setScaleMap(scale);
 
+  const std::string version = getValue(menu.menu, "grammar_version");
+  if (version > GRAMMAR_VERSION)
+  {
+    std::stringstream ss;
+    ss << "utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION;
+    throw std::runtime_error(ss.str());
+  }
+
   estm->setName(getValue(menu.menu, "name"));
-  estm->setVersion(getValue(menu.menu, "grammar_version"));
+  estm->setVersion(version);
   estm->setComment(getValue(menu.menu, "comment"));
   estm->setDatetime(getValue(menu.menu, "datetime"));
   estm->setFirmwareUuid(getValue(menu.menu, "uuid_firmware"));

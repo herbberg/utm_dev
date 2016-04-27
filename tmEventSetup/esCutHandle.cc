@@ -9,7 +9,11 @@ namespace tmeventsetup
 
 esCutHandle::esCutHandle(const tmtable::Row& cut)
 {
+  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey");
+
   name_ = cut.find("name")->second;
+  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: name_ = " << name_);
+  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: type = " << cut.find("type")->second);
 
   std::vector<std::string> tokens;
   tmutil::tokenise(cut.find("type")->second, tokens, "-");
@@ -29,6 +33,10 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       else if (text == Object::HTM) object_type_ = HTM;
       else if (text == Object::ETT) object_type_ = ETT;
       else if (text == Object::HTT) object_type_ = HTT;
+      else if (text == Object::MBT0HFP) object_type_ = MBT0HFP;
+      else if (text == Object::MBT1HFP) object_type_ = MBT1HFP;
+      else if (text == Object::MBT0HFM) object_type_ = MBT0HFM;
+      else if (text == Object::MBT1HFM) object_type_ = MBT1HFM;
       else
       {
         TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown object_type '" << text << "'");
@@ -43,6 +51,7 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       else if (text == Cut::QLTY) cut_type_ = Quality;
       else if (text == Cut::CHG) cut_type_ = Charge;
       else if (text == Cut::PHI) cut_type_ = Phi;
+      else if (text == COUNT) cut_type_ = Count;
       else if (text == Cut::DETA)
       {
         object_type_ = static_cast<esObjectType>(DistFunction);
@@ -130,7 +139,7 @@ esCutHandle::setData(const std::string& x)
 void
 esCutHandle::setKey()
 {
-  TM_LOG_DBG("tmeventsetup::esCutHandle::getKey");
+  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey");
   switch (object_type_)
   {
     case Muon: key_ = Object::MU; break;
@@ -141,11 +150,15 @@ esCutHandle::setKey()
     case HTM: key_ = Object::HTM; break;
     case ETT: key_ = Object::ETT; break;
     case HTT: key_ = Object::HTT; break;
+    case MBT0HFP: key_ = Object::MBT0HFP; break;
+    case MBT1HFP: key_ = Object::MBT1HFP; break;
+    case MBT0HFM: key_ = Object::MBT0HFM; break;
+    case MBT1HFM: key_ = Object::MBT1HFM; break;
     case CombFunction: break;
     case DistFunction: break;
     case MassFunction: break;
     default:
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::getKey: error '" << object_type_ << "'");
+      TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << object_type_ << "'");
       break;
   }
 
@@ -164,10 +177,12 @@ esCutHandle::setKey()
     case DeltaR: key_ += Cut::DR; break;
     case Mass: key_ += Cut::MASS; break;
     case ChargeCorrelation: key_ += Cut::CHGCOR; break;
+    case Count: key_ += COUNT; break;
     default:
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::getKey: error '" << cut_type_ << "'");
+      TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << cut_type_ << "'");
       break;
   }
+  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: " << key_);
 }
 
 

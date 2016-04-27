@@ -59,6 +59,10 @@ esTriggerMenuHandle::getObjectName(const int type)
     case ETM: return Object::ETM;
     case HTM: return Object::HTM;
     case EXT: return Object::EXT;
+    case MBT0HFP: return Object::MBT0HFP;
+    case MBT1HFP: return Object::MBT1HFP;
+    case MBT0HFM: return Object::MBT0HFM;
+    case MBT1HFM: return Object::MBT1HFM;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectName: unknown object type '" << type << "'");
       break;
@@ -112,6 +116,10 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
     case ETM: conditionHandle.setType(MissingEt); break;
     case HTM: conditionHandle.setType(MissingHt); break;
     case EXT: conditionHandle.setType(Externals); break;
+    case MBT0HFP: conditionHandle.setType(MinBiasHFP0); break;
+    case MBT1HFP: conditionHandle.setType(MinBiasHFP1); break;
+    case MBT0HFM: conditionHandle.setType(MinBiasHFM0); break;
+    case MBT1HFM: conditionHandle.setType(MinBiasHFM1); break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectCondition: not implemented '" << object.getType() << "'");
       break;
@@ -512,6 +520,7 @@ esTriggerMenuHandle::getIndex(const esCutValue& cut, const std::string& range, c
   }
   std::string real(buf);
   TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getIndex: value = " << real);
+  TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getIndex: range = " << range);
 
   unsigned int index = std::numeric_limits<unsigned int>::max();
   for (size_t ii = 0; ii < bins.size(); ii++)
@@ -545,10 +554,11 @@ esTriggerMenuHandle::setHwIndex(const tmtable::StringTableMap& bins)
         esCut& cut = const_cast<esCut&>(cuts.at(jj));
         if (cut.getObjectType() == static_cast<esObjectType>(Undef)) continue;
         const std::string key = cut.getKey();
+        TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::setHwIndex: key = " << key);
         const tmtable::Table& table = bins.find(key)->second;
 
         const esCutType type = static_cast<esCutType>(cut.getCutType());
-        if (type == Threshold)
+        if ((type == Threshold) or (type == Count))
         {
           const esCutValue& cutValue = cut.getMinimum();
           cut.setMinimum(getIndex(cutValue, "minimum", table));

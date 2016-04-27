@@ -37,6 +37,10 @@ const char HTT[] = "HTT"; /**< total HT */
 const char ETM[] = "ETM"; /**< missing ET */
 const char HTM[] = "HTM"; /**< missing HT */
 const char EXT[] = "EXT"; /**< external signal */
+const char MBT0HFP[] = "MBT0HFP"; /**< Minimum Bias Threshold 0 HF+ */
+const char MBT1HFP[] = "MBT1HFP"; /**< Minimum Bias Threshold 1 HF+ */
+const char MBT0HFM[] = "MBT0HFM"; /**< Minimum Bias Threshold 0 HF- */
+const char MBT1HFM[] = "MBT1HFM"; /**< Minimum Bias Threshold 1 HF- */
 
 // comparisons
 const char EQ[] = ".eq."; /**< equal */
@@ -60,6 +64,7 @@ enum {
   Scaler,
   Vector,
   External,
+  Count,
   Unknown
 };
 

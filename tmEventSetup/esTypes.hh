@@ -27,6 +27,8 @@ const int Undef = -9999; /**< undefined value for enums */
 
 const char ET_THR[] = "ET"; /**< text for Et threshold */
 
+const char COUNT[] = "COUNT";     /**< text for Minimum Bias HF type  */
+
 const char PRECISION[] = "PRECISION";     /**< text for precision type */
 const char PRECISION_DELTA[] = "Delta";   /**< text for delta precision type */
 const char PRECISION_MASS[] = "Mass";     /**< text for mass precision type */
@@ -48,31 +50,36 @@ enum esCutType
   DeltaR,           /**< delta R cut for correlation function */
   Mass,             /**< invariant mass cut for mass function */
   ChargeCorrelation,/**< charge correlation cut for comb function */
+  Count,            /**< number of counts */
   nCutType
 };
 
 /** type of objects */
 enum esObjectType
 {
-  Muon,   /**< muon */
-  Egamma, /**< electron/gamma */
-  Tau,    /**< tau */
-  Jet,    /**< jet */
-  ETT,    /**< total Et */
-  HTT,    /**< total hadronic Et */
-  ETM,    /**< missing Et */
-  HTM,    /**< missing hadronic Et */
-  EXT,    /**< extrnals */
-  Precision,  /**< precision type */
-  nObjectType
+  Muon      = 0,  /**< muon */
+  Egamma    = 1,  /**< electron/gamma */
+  Tau       = 2,  /**< tau */
+  Jet       = 3,  /**< jet */
+  ETT       = 4,  /**< total Et */
+  HTT       = 5,  /**< total hadronic Et */
+  ETM       = 6,  /**< missing Et */
+  HTM       = 7,  /**< missing hadronic Et */
+  EXT       = 8,  /**< extrnals */
+  Precision = 9,  /**< precision type */
+  MBT0HFP   = 13, /**< Minimum Bias HF+ threshold 0 */
+  MBT1HFP   = 14, /**< Minimum Bias HF+ threshold 1 */
+  MBT0HFM   = 15, /**< Minimum Bias HF- threshold 0 */
+  MBT1HFM   = 16, /**< Minimum Bias HF- threshold 1 */
+  nObjectType = 14
 };
 
 /** type of Function */
 enum esFunctionType
 {
-  CombFunction = nObjectType, /**< combination */
-  DistFunction,               /**< distance */
-  MassFunction                /**< invariant mass */
+  CombFunction = 10, /**< combination */
+  DistFunction = 11, /**< distance */
+  MassFunction = 12  /**< invariant mass */
 };
 
 /** list of comparison operator */
@@ -124,6 +131,10 @@ enum esConditionType
   CaloCaloCorrelation,    /**< Calo-Calo correlation condition */
   CaloEsumCorrelation,    /**< Calo-Esum correlation condition */
   InvariantMass,          /**< Invariant mass condition */
+  MinBiasHFP0,  /**< Minimum Bias HF+ threshold 0 */
+  MinBiasHFP1,  /**< Minimum Bias HF+ threshold 1 */
+  MinBiasHFM0,  /**< Minimum Bias HF+ threshold 0 */
+  MinBiasHFM1,  /**< Minimum Bias HF+ threshold 1 */
   nConditionType
 };
 

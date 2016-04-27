@@ -105,6 +105,10 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(HTT)
       | string(ETM)
       | string(HTM)
+      | string(MBT0HFP)
+      | string(MBT1HFP)
+      | string(MBT0HFM)
+      | string(MBT1HFM)
     ;
 
     comparison
