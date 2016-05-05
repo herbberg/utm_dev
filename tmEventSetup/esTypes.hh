@@ -148,6 +148,7 @@ enum esScaleType
   MassPrecision,    /**< precision for mass */
   MassPtPrecision,  /**< precision for mass pt */
   MathPrecision,    /**< precision for math */
+  CountScale        /**< Count scale */
 };
 
 } // namespace tmeventsetup

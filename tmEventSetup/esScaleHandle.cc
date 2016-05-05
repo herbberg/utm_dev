@@ -37,7 +37,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   if (type == ET_THR) type_ = EtScale;
   else if (type == Cut::ETA) type_ = EtaScale;
   else if (type == Cut::PHI) type_ = PhiScale;
-  else if (type == COUNT) type_ = Count;
+  else if (type == COUNT) type_ = CountScale;
   else if (type.find(PRECISION_DELTA) != std::string::npos) type_ = DeltaPrecision;
   else if (type.find(PRECISION_MASSPT) != std::string::npos) type_ = MassPtPrecision;
   else if (type.find(PRECISION_MASS) != std::string::npos) type_ = MassPrecision;
