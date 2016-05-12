@@ -11,7 +11,7 @@ cd CMSSW_8_0_1
 cmsenv
 git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
 cd utm
-#git checkout refs/tags/r41757-xsd310-patch
+git checkout refs/tags/r45210-xsd310-patch
 scram tool info xerces-c
 export XERCES_C_BASE=<XERCES_C_BASE directory printed by the above command>
 scram tool info boost
