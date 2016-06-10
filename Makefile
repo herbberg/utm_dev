@@ -1,9 +1,16 @@
-BUILD_HOME:=$(shell pwd)/../../../../
+BUILD_HOME:=$(shell pwd)/../../
 
 -include $(BUILD_HOME)/config/Makefile.macros
 
 include $(XDAQ_ROOT)/config/mfAutoconf.rules
 include $(XDAQ_ROOT)/config/mfDefs.$(XDAQ_OS)
+
+export PACKAGE_VER_MAJOR=0
+export PACKAGE_VER_MINOR=1
+export PACKAGE_VER_PATCH=0
+
+export PACKAGE_RELEASE=1
+
 
 Project = cactusprojects/utm
 Packages =

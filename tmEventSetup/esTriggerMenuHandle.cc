@@ -63,6 +63,8 @@ esTriggerMenuHandle::getObjectName(const int type)
     case MBT1HFP: return Object::MBT1HFP;
     case MBT0HFM: return Object::MBT0HFM;
     case MBT1HFM: return Object::MBT1HFM;
+    case ETTEM: return Object::ETTEM;
+    case ETMHF: return Object::ETMHF;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectName: unknown object type '" << type << "'");
       break;
@@ -120,6 +122,8 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
     case MBT1HFP: conditionHandle.setType(MinBiasHFP1); break;
     case MBT0HFM: conditionHandle.setType(MinBiasHFM0); break;
     case MBT1HFM: conditionHandle.setType(MinBiasHFM1); break;
+    case ETTEM: conditionHandle.setType(TotalEtEM); break;
+    case ETMHF: conditionHandle.setType(MissingEtHF); break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectCondition: not implemented '" << object.getType() << "'");
       break;
@@ -208,7 +212,7 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
         case Egamma: conditionHandle.setType(DoubleEgamma); break;
         case Tau: conditionHandle.setType(DoubleTau); break;
         case Jet: conditionHandle.setType(DoubleJet); break;
-        case ETT: case HTT: case ETM: case HTM: case EXT:
+        case ETT: case HTT: case ETM: case HTM: case ETTEM: case ETMHF: case EXT:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: not implemented '" << type << "'");
           break;
       }
@@ -222,7 +226,7 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
         case Egamma: conditionHandle.setType(TripleEgamma); break;
         case Tau: conditionHandle.setType(TripleTau); break;
         case Jet: conditionHandle.setType(TripleJet); break;
-        case ETT: case HTT: case ETM: case HTM: case EXT:
+        case ETT: case HTT: case ETM: case HTM: case ETTEM: case ETMHF: case EXT:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: not implemented '" << type << "'");
           break;
       }
@@ -236,7 +240,7 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
         case Egamma: conditionHandle.setType(QuadEgamma); break;
         case Tau: conditionHandle.setType(QuadTau); break;
         case Jet: conditionHandle.setType(QuadJet); break;
-        case ETT: case HTT: case ETM: case HTM: case EXT:
+        case ETT: case HTT: case ETM: case HTM: case ETTEM: case ETMHF: case EXT:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: not implemented '" << type << "'");
           break;
       }
@@ -607,6 +611,9 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
         case HTM:
           prefix = "PRECISION-EG-HTM-";
           break;
+        case ETMHF:
+          prefix = "PRECISION-EG-ETMHF-";
+          break;
         default:
           TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
       }
@@ -632,6 +639,9 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           break;
         case HTM:
           prefix = "PRECISION-TAU-HTM-";
+          break;
+        case ETMHF:
+          prefix = "PRECISION-TAU-ETMHF-";
           break;
         default:
           TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
@@ -659,6 +669,9 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
         case HTM:
           prefix = "PRECISION-JET-HTM-";
           break;
+        case ETMHF:
+          prefix = "PRECISION-JET-ETMHF-";
+          break;
         default:
           TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
       }
@@ -684,6 +697,9 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           break;
         case HTM:
           prefix = "PRECISION-MU-HTM-";
+          break;
+        case ETMHF:
+          prefix = "PRECISION-MU-ETMHF-";
           break;
         default:
           TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
@@ -724,6 +740,26 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           break;
         case Muon:
           prefix = "PRECISION-MU-HTM-";
+          break;
+        default:
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+      }
+      break;
+
+    case ETMHF:
+      switch (o2.getType())
+      {
+        case Egamma:
+          prefix = "PRECISION-EG-ETMHF-";
+          break;
+        case Tau:
+          prefix = "PRECISION-TAU-ETMHF-";
+          break;
+        case Jet:
+          prefix = "PRECISION-JET-ETMHF-";
+          break;
+        case Muon:
+          prefix = "PRECISION-MU-ETMHF-";
           break;
         default:
           TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());

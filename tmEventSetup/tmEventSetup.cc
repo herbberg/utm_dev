@@ -8,7 +8,7 @@
 
 namespace tmeventsetup
 {
-  const std::string GRAMMAR_VERSION = "0.2";
+  const std::string GRAMMAR_VERSION = "0.3";
   
   const long long pow10[] =
   {
@@ -262,6 +262,7 @@ getObjectCombination(esObjectType type1,
           break;
         case ETM:
         case HTM:
+        case ETMHF:
           combination = MuonEsumCombination;
           break;
         default:
@@ -284,6 +285,7 @@ getObjectCombination(esObjectType type1,
           break;
         case ETM:
         case HTM:
+        case ETMHF:
           combination = CaloEsumCombination;
           break;
         default:
@@ -293,6 +295,7 @@ getObjectCombination(esObjectType type1,
 
     case ETM:
     case HTM:
+    case ETMHF:
       switch (type2)
       {
         case Muon:

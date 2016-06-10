@@ -37,6 +37,7 @@ const reserved::value_type cut_names[] = {
 
   reserved::value_type(ETM_PHI, 1),
   reserved::value_type(HTM_PHI, 1),
+  reserved::value_type(ETMHF_PHI, 1),
 
   reserved::value_type(DETA, 1),
   reserved::value_type(DPHI, 1),

@@ -88,6 +88,7 @@ struct cut_grammar : qi::grammar<Iterator, Item(), ascii::space_type>
       // for missing energy
       | raw[string(ETM_PHI) >> '_' >> +char_(charset)]
       | raw[string(HTM_PHI) >> '_' >> +char_(charset)]
+      | raw[string(ETMHF_PHI) >> '_' >> +char_(charset)]
 
       // for functions
       | raw[string(DETA) >> '_' >> +char_(charset)]

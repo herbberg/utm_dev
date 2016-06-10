@@ -25,6 +25,8 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (obj == Object::MBT1HFP) object_ = MBT1HFP;
   else if (obj == Object::MBT0HFM) object_ = MBT0HFM;
   else if (obj == Object::MBT1HFM) object_ = MBT1HFM;
+  else if (obj == Object::ETTEM) object_ = ETTEM;
+  else if (obj == Object::ETMHF) object_ = ETMHF;
   else if (obj == PRECISION) object_ = Precision;
   else
   {

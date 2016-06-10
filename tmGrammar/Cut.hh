@@ -56,6 +56,7 @@ const char JET_QLTY[] = "JET-QLTY"; /**< jet quality */
 
 const char ETM_PHI[] = "ETM-PHI"; /**< ETM phi */
 const char HTM_PHI[] = "HTM-PHI"; /**< HTM phi */
+const char ETMHF_PHI[] = "ETMHF-PHI"; /**< ETM phi */
 
 
 // cuts for functions

@@ -71,7 +71,9 @@ enum esObjectType
   MBT1HFP   = 14, /**< Minimum Bias HF+ threshold 1 */
   MBT0HFM   = 15, /**< Minimum Bias HF- threshold 0 */
   MBT1HFM   = 16, /**< Minimum Bias HF- threshold 1 */
-  nObjectType = 14
+  ETTEM     = 17, /**< total Et with ECAL only */
+  ETMHF     = 18, /**< missing Et with HF */
+  nObjectType = 16
 };
 
 /** type of Function */
@@ -135,6 +137,8 @@ enum esConditionType
   MinBiasHFP1,  /**< Minimum Bias HF+ threshold 1 */
   MinBiasHFM0,  /**< Minimum Bias HF+ threshold 0 */
   MinBiasHFM1,  /**< Minimum Bias HF+ threshold 1 */
+  TotalEtEM,    /**< total Et with ECAL only condition */
+  MissingEtHF,  /**< missing Et with HF condition */
   nConditionType
 };
 

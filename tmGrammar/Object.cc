@@ -33,6 +33,8 @@ const reserved::value_type object_names[] = {
   reserved::value_type(MBT1HFP, 1),
   reserved::value_type(MBT0HFM, 1),
   reserved::value_type(MBT1HFM, 1),
+  reserved::value_type(ETTEM, 1),
+  reserved::value_type(ETMHF, 1),
 };
 const int n_object_names = sizeof(object_names) / sizeof(object_names[0]);
 const reserved objectName(object_names, object_names + n_object_names);
@@ -60,6 +62,7 @@ const reserved::value_type scalers[] = {
   reserved::value_type(MBT1HFP, 1),
   reserved::value_type(MBT0HFM, 1),
   reserved::value_type(MBT1HFM, 1),
+  reserved::value_type(ETTEM, 1),
 };
 const int n_scalers = sizeof(scalers) / sizeof(scalers[0]);
 const reserved scalerName(scalers, scalers + n_scalers);
@@ -69,11 +72,12 @@ const reserved scalerName(scalers, scalers + n_scalers);
 const reserved::value_type vectors[] = {
   reserved::value_type(ETM, 1),
   reserved::value_type(HTM, 1),
+  reserved::value_type(ETMHF, 1),
 };
 const int n_vectors = sizeof(vectors) / sizeof(vectors[0]);
 const reserved vectorName(vectors, vectors + n_vectors);
 
-const char* cutsVector_[] = {Cut::ETM_PHI, Cut::HTM_PHI};
+const char* cutsVector_[] = {Cut::ETM_PHI, Cut::HTM_PHI, Cut::ETMHF_PHI};
 const std::vector<std::string> cutsVector(cutsVector_, cutsVector_ + sizeof(cutsVector_)/sizeof(cutsVector_[0]));
 
 

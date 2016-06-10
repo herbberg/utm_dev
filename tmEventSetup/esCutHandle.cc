@@ -37,6 +37,8 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       else if (text == Object::MBT1HFP) object_type_ = MBT1HFP;
       else if (text == Object::MBT0HFM) object_type_ = MBT0HFM;
       else if (text == Object::MBT1HFM) object_type_ = MBT1HFM;
+      else if (text == Object::ETTEM) object_type_ = ETTEM;
+      else if (text == Object::ETMHF) object_type_ = ETMHF;
       else
       {
         TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown object_type '" << text << "'");
@@ -154,6 +156,8 @@ esCutHandle::setKey()
     case MBT1HFP: key_ = Object::MBT1HFP; break;
     case MBT0HFM: key_ = Object::MBT0HFM; break;
     case MBT1HFM: key_ = Object::MBT1HFM; break;
+    case ETTEM: key_ = Object::ETTEM; break;
+    case ETMHF: key_ = Object::ETMHF; break;
     case CombFunction: break;
     case DistFunction: break;
     case MassFunction: break;
