@@ -207,12 +207,11 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
     case 2:
       switch (type)
       {
-        case nObjectType: break;
         case Muon: conditionHandle.setType(DoubleMuon); break;
         case Egamma: conditionHandle.setType(DoubleEgamma); break;
         case Tau: conditionHandle.setType(DoubleTau); break;
         case Jet: conditionHandle.setType(DoubleJet); break;
-        case ETT: case HTT: case ETM: case HTM: case ETTEM: case ETMHF: case EXT:
+        default:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: not implemented '" << type << "'");
           break;
       }
@@ -221,12 +220,11 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
     case 3:
       switch (type)
       {
-        case nObjectType: break;
         case Muon: conditionHandle.setType(TripleMuon); break;
         case Egamma: conditionHandle.setType(TripleEgamma); break;
         case Tau: conditionHandle.setType(TripleTau); break;
         case Jet: conditionHandle.setType(TripleJet); break;
-        case ETT: case HTT: case ETM: case HTM: case ETTEM: case ETMHF: case EXT:
+        default:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: not implemented '" << type << "'");
           break;
       }
@@ -235,12 +233,11 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
     case 4:
       switch (type)
       {
-        case nObjectType: break;
         case Muon: conditionHandle.setType(QuadMuon); break;
         case Egamma: conditionHandle.setType(QuadEgamma); break;
         case Tau: conditionHandle.setType(QuadTau); break;
         case Jet: conditionHandle.setType(QuadJet); break;
-        case ETT: case HTT: case ETM: case HTM: case ETTEM: case ETMHF: case EXT:
+        default:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: not implemented '" << type << "'");
           break;
       }
