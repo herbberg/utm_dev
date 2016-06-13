@@ -442,6 +442,7 @@ isCaloMuonScale(const esScale* scale1,
     case Jet:
     case ETM:
     case HTM:
+    case ETMHF:
       break;
 
     default:
