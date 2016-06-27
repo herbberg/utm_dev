@@ -53,7 +53,8 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   }
 
   estm->setName(getValue(menu.menu, "name"));
-  estm->setVersion(version);
+  const std::string version_with_utm = version + " : processed with UTM r46131";
+  estm->setVersion(version_with_utm);
   estm->setComment(getValue(menu.menu, "comment"));
   estm->setDatetime(getValue(menu.menu, "datetime"));
   estm->setFirmwareUuid(getValue(menu.menu, "uuid_firmware"));
