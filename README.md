@@ -6,12 +6,12 @@
 
 # example of a manual installation as an external library of CMSSW and test of the installation
 ```{r, engine='bash', count_lines}
-cmsrel CMSSW_8_0_1
-cd CMSSW_8_0_1
+cmsrel CMSSW_8_0_13_patch1
+cd CMSSW_8_0_13_patch1
 cmsenv
 git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
 cd utm
-git checkout refs/tags/r45210-xsd310-patch
+git checkout r46131-xsd310-patch
 scram tool info xerces-c
 export XERCES_C_BASE=<XERCES_C_BASE directory printed by the above command>
 scram tool info boost
