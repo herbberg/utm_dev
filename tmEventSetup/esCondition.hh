@@ -41,7 +41,7 @@ class esCondition
     // ctor
     esCondition()
       : name_(), type_(Undef),
-        objects_(), cuts_() { };
+        objects_(), cuts_(), version(0) { };
 
     // dtor
     virtual ~esCondition() { };

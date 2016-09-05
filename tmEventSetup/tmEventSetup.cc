@@ -54,7 +54,7 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
 
   estm->setName(getValue(menu.menu, "name"));
   estm->setVersion(version);
-  estm->setComment(getValue(menu.menu, "comment") + " : processed with UTM r46131");
+  estm->setComment(getValue(menu.menu, "comment") + " : processed with UTM r46920");
   estm->setDatetime(getValue(menu.menu, "datetime"));
   estm->setFirmwareUuid(getValue(menu.menu, "uuid_firmware"));
   estm->setScaleSetName(getValue(scale.scaleSet, "name"));
@@ -418,8 +418,23 @@ getLut(std::vector<long long>& lut,
     double centre = (bins.at(ii).minimum + bins.at(ii).maximum)*0.5;
     lut.at(ii) = toFixedPoint(centre, precision);
   }
+  size_t rc = bins.size();
 
-  return bins.size();
+  const std::string et(ET_THR);
+  const bool setOverFlowBins = std::equal(et.rbegin(), et.rend(), scale->getName().rbegin());
+  if (setOverFlowBins)
+  {
+    const double maximum = scale->getMaximum();
+    const double step = fabs(maximum - scale->getMinimum())/(double)bins.size();
+    const double overflow = maximum + step;
+    for (size_t ii = bins.size(); ii < lut.size(); ii++)
+    {
+      lut.at(ii) = toFixedPoint(overflow, precision);
+    }
+    rc = lut.size();
+  }
+
+  return rc;
 }
 
 

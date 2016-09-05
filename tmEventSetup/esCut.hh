@@ -37,7 +37,7 @@ class esCut
     // ctor
     esCut()
       : name_(), object_type_(), cut_type_(),
-        minimum_(), maximum_(), data_() { };
+        minimum_(), maximum_(), data_(), version(0) { };
 
     // dtor
     virtual ~esCut() { };

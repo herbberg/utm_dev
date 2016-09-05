@@ -38,7 +38,7 @@ class esTriggerMenuHandle : public esTriggerMenu
     static const std::string TupleName[]; /**< list of tuple name to be used for condition name */
 
     // ctor
-    esTriggerMenuHandle() { };
+    esTriggerMenuHandle():esTriggerMenu() { };
 
     // dtor
     virtual ~esTriggerMenuHandle() { };

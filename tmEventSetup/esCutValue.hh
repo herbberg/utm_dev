@@ -34,7 +34,8 @@ struct esCutValue
   // ctor
   esCutValue()
     : value(std::numeric_limits<double>::max()),
-      index(std::numeric_limits<unsigned int>::max()) { };
+      index(std::numeric_limits<unsigned int>::max()),
+      version(0) { };
 
   double value;               /**< cut value */
   unsigned int index;         /**< HW index for the cut value */

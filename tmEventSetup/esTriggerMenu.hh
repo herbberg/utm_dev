@@ -44,7 +44,7 @@ class esTriggerMenu
         algorithm_map_p_(), condition_map_p_(), scale_map_p_(),
 #endif
         external_map_(), token_to_condition_(), name_(), version_(), comment_(),
-        datetime_(), uuid_firmware_(), scale_set_name_(), n_modules_() { };
+        datetime_(), uuid_firmware_(), scale_set_name_(), n_modules_(), version(0) { };
 
     // dtor
     virtual ~esTriggerMenu() { };

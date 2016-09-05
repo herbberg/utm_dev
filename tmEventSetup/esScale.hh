@@ -40,7 +40,7 @@ class esScale
     // ctor
     esScale()
       : name_(), object_(), type_(), minimum_(), maximum_(),
-        step_(), n_bits_(), bins_() { };
+        step_(), n_bits_(), bins_(), version(0) { };
 
     // dtor
     virtual ~esScale() { };

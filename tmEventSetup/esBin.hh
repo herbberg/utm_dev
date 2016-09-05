@@ -36,12 +36,13 @@ class esBin
     esBin()
       : hw_index(std::numeric_limits<unsigned int>::max()),
         minimum(std::numeric_limits<double>::min()),
-        maximum(std::numeric_limits<double>::max()) { };
+        maximum(std::numeric_limits<double>::max()),
+        version(0) { };
 
     esBin(const unsigned int id, 
           const double min,
           const double max)
-      : hw_index(id), minimum(min), maximum(max) { };
+      : hw_index(id), minimum(min), maximum(max), version(0) { };
 
     // dtor
     virtual ~esBin() { };

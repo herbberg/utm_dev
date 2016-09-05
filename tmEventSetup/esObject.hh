@@ -38,7 +38,7 @@ class esObject
     esObject()
       : name_(), type_(), comparison_operator_(), bx_offset_(), threshold_(),
         ext_signal_name_(), ext_channel_id_(std::numeric_limits<unsigned int>::max()),
-        cuts_() { };
+        cuts_(), version(0) { };
 
     // dtor
     virtual ~esObject() { };
