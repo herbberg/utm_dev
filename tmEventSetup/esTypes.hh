@@ -73,7 +73,8 @@ enum esObjectType
   MBT1HFM   = 16, /**< Minimum Bias HF- threshold 1 */
   ETTEM     = 17, /**< total Et with ECAL only */
   ETMHF     = 18, /**< missing Et with HF */
-  nObjectType = 16
+  TOWERCOUNT = 19, /**< missing Et with HF */
+  nObjectType = 17
 };
 
 /** type of Function */
@@ -139,6 +140,7 @@ enum esConditionType
   MinBiasHFM1,  /**< Minimum Bias HF+ threshold 1 */
   TotalEtEM,    /**< total Et with ECAL only condition */
   MissingEtHF,  /**< missing Et with HF condition */
+  TowerCount,   /**< Calo tower count */
   nConditionType
 };
 

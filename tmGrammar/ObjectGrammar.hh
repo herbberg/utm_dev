@@ -111,6 +111,7 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(MBT1HFP)
       | string(MBT0HFM)
       | string(MBT1HFM)
+      | string(TOWERCOUNT)
     ;
 
     comparison

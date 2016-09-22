@@ -8,7 +8,7 @@
 
 namespace tmeventsetup
 {
-  const std::string GRAMMAR_VERSION = "0.3";
+  const std::string GRAMMAR_VERSION = "0.4";
   
   const long long pow10[] =
   {
@@ -54,7 +54,7 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
 
   estm->setName(getValue(menu.menu, "name"));
   estm->setVersion(version);
-  estm->setComment(getValue(menu.menu, "comment") + " : processed with UTM r46920");
+  estm->setComment(getValue(menu.menu, "comment") + " : processed with UTM r47119");
   estm->setDatetime(getValue(menu.menu, "datetime"));
   estm->setFirmwareUuid(getValue(menu.menu, "uuid_firmware"));
   estm->setScaleSetName(getValue(scale.scaleSet, "name"));

@@ -65,6 +65,7 @@ esTriggerMenuHandle::getObjectName(const int type)
     case MBT1HFM: return Object::MBT1HFM;
     case ETTEM: return Object::ETTEM;
     case ETMHF: return Object::ETMHF;
+    case TOWERCOUNT: return Object::TOWERCOUNT;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectName: unknown object type '" << type << "'");
       break;
@@ -124,6 +125,7 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
     case MBT1HFM: conditionHandle.setType(MinBiasHFM1); break;
     case ETTEM: conditionHandle.setType(TotalEtEM); break;
     case ETMHF: conditionHandle.setType(MissingEtHF); break;
+    case TOWERCOUNT: conditionHandle.setType(TowerCount); break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectCondition: not implemented '" << object.getType() << "'");
       break;

@@ -43,6 +43,7 @@ const char MBT0HFM[] = "MBT0HFM"; /**< Minimum Bias Threshold 0 HF- */
 const char MBT1HFM[] = "MBT1HFM"; /**< Minimum Bias Threshold 1 HF- */
 const char ETTEM[] = "ETTEM"; /**< ECAL only total ET */
 const char ETMHF[] = "ETMHF"; /**< missing ET with HF */
+const char TOWERCOUNT[] = "TOWERCOUNT"; /**< calo tower count */
 
 // comparisons
 const char EQ[] = ".eq."; /**< equal */

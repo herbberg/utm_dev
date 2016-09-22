@@ -72,6 +72,11 @@ esObjectHandle::init(const Object::Item& item)
     type_ = MBT1HFM;
     isThreshold = false;
   }
+  else if (item.name == Object::TOWERCOUNT)
+  {
+    type_ = TOWERCOUNT;
+    isThreshold = false;
+  }
   else if (item.name == Object::ETTEM) type_ = ETTEM;
   else if (item.name == Object::ETMHF) type_ = ETMHF;
   else if (item.name.rfind(Object::EXT, 0) == 0) type_ = EXT;
