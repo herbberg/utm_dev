@@ -29,4 +29,6 @@ scram b -j4
 ../test/${SCRAM_ARCH}/test -f /afs/cern.ch/user/t/tmatsush/public/tmGui/test-menu.xml
 ```
 
-[API document](http://cern.ch/takashi/utm-api-doc/namespacetmeventsetup.html)
+* [API document](http://cern.ch/takashi/utm-api-doc/namespacetmeventsetup.html)
+* [XSD document](http://cern.ch/takashi/utm-xsd-doc/index.html)
+* [Available algorithms](https://twiki.cern.ch/twiki/bin/view/CMS/GlobalTriggerUTM)
