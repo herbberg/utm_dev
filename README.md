@@ -24,8 +24,9 @@ edit Demo/tmEventSetup/test/utm.xml
 # change UTM_BASE according to your setup
 cp Demo/tmEventSetup/test/utm.xml ../config/toolbox/${SCRAM_ARCH}/tools/selected/
 scram setup utm
+# compile and run the sample code for using utm: Demo/tmEventSetup/test/test.cc
 scram b -j4
 ../test/${SCRAM_ARCH}/test -f /afs/cern.ch/user/t/tmatsush/public/tmGui/test-menu.xml
 ```
 
-[API document](http://www.hephy.at/user/tmatsushita/utm/tmEventSetup/namespacetmeventsetup.html)
+[API document](http://cern.ch/takashi/utm-api-doc/namespacetmeventsetup.html)
