@@ -8,7 +8,7 @@
 # XDAQ stuff
 
 
-VERSION = 0.1
+VERSION = 0.5.0
 LIBRARY = libtmeventsetup.so
 PROGRAMS =
 

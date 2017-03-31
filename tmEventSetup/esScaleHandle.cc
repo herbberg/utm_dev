@@ -1,9 +1,13 @@
-#include <algorithm> 
-
 #include "tmUtil/tmUtil.hh"
 #include "tmGrammar/Object.hh"
 #include "tmGrammar/Cut.hh"
 #include "tmEventSetup/esScaleHandle.hh"
+
+// boost
+#include <boost/lexical_cast.hpp>
+
+// stl
+#include <algorithm>
 
 
 namespace tmeventsetup
@@ -45,16 +49,18 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (type.find(PRECISION_MASSPT) != std::string::npos) type_ = MassPtPrecision;
   else if (type.find(PRECISION_MASS) != std::string::npos) type_ = MassPrecision;
   else if (type.find(PRECISION_MATH) != std::string::npos) type_ = MathPrecision;
+  else if (type.find(PRECISION_TBPT) != std::string::npos) type_ = TwoBodyPtPrecision;
+  else if (type.find(PRECISION_TBPT_MATH) != std::string::npos) type_ = TwoBodyPtMathPrecision;
   else
   {
     TM_FATAL_ERROR("tmeventsetup::esScaleHandle::ctor: unknown type '" << type << "'");
   }
 
   name_ =  obj + "-" + type;
-  minimum_ = tmutil::convert<double>(scale.find("minimum")->second);
-  maximum_ = tmutil::convert<double>(scale.find("maximum")->second);
-  step_ = tmutil::convert<double>(scale.find("step")->second);
-  n_bits_ = tmutil::convert<unsigned int>(scale.find("n_bits")->second);
+  minimum_ = boost::lexical_cast<double>(scale.find("minimum")->second);
+  maximum_ = boost::lexical_cast<double>(scale.find("maximum")->second);
+  step_ = boost::lexical_cast<double>(scale.find("step")->second);
+  n_bits_ = boost::lexical_cast<unsigned int>(scale.find("n_bits")->second);
 }
 
 

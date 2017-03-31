@@ -1,36 +1,20 @@
-#include <cmath>
-
+// utm
 #include "tmUtil/tmUtil.hh"
 #include "tmTable/tmTable.hh"
 #include "tmEventSetup/esTriggerMenuHandle.hh"
 #include "tmEventSetup/tmEventSetup.hh"
 
+// boost
+#include <boost/lexical_cast.hpp>
+
+// stl
+#include <algorithm>
+#include <cmath>
 
 namespace tmeventsetup
 {
-  const std::string GRAMMAR_VERSION = "0.4";
-  
-  const long long pow10[] =
-  {
-                      1, 
-                     10,
-                    100,
-                   1000,
-                  10000,
-                 100000,
-                1000000,
-               10000000,
-              100000000,
-             1000000000,
-            10000000000,
-           100000000000,
-          1000000000000,
-         10000000000000,
-        100000000000000,
-       1000000000000000,
-      10000000000000000,
-     100000000000000000
-  };
+  // TODO: better to define with tmGrammar?
+  const std::string GRAMMAR_VERSION = "0.5";
 
 const esTriggerMenu*
 _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
@@ -38,28 +22,30 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   TM_LOG_DBG("tmeventsetup::_getTriggerMenu: ");
 
   esTriggerMenuHandle* estm = new esTriggerMenuHandle();
-  const std::string text;
-  std::map<std::string, std::string>::const_iterator cit;
 
   estm->setExternalMap(extSignal);
   estm->setScaleMap(scale);
 
+  // verify grammar version
   const std::string version = getValue(menu.menu, "grammar_version");
   if (version > GRAMMAR_VERSION)
   {
-    std::stringstream ss;
-    ss << "utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION;
-    throw std::runtime_error(ss.str());
+    std::stringstream message;
+    message << "utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION;
+    throw std::runtime_error(message.str());
   }
 
+  // set menu information
   estm->setName(getValue(menu.menu, "name"));
   estm->setVersion(version);
-  estm->setComment(getValue(menu.menu, "comment") + " : processed with UTM r47119");
+  estm->setComment(getValue(menu.menu, "comment"));
   estm->setDatetime(getValue(menu.menu, "datetime"));
+  estm->setMenuUuid(getValue(menu.menu, "uuid_menu"));
   estm->setFirmwareUuid(getValue(menu.menu, "uuid_firmware"));
+  estm->setNmodules(boost::lexical_cast<unsigned int>(getValue(menu.menu, "n_modules")));
   estm->setScaleSetName(getValue(scale.scaleSet, "name"));
-  estm->setNmodules(tmutil::convert<unsigned int>(getValue(scale.scaleSet, "n_modules")));
 
+  // set condition and algorithm maps
   for (size_t ii = 0; ii < menu.algorithms.size(); ii++)
   {
     const tmtable::Row& algorithm = menu.algorithms.at(ii);
@@ -171,46 +157,7 @@ getMmHashN(const std::string& s)
   int len = s.size();
   unsigned int seed = 0xdeadbabe;
 
-	const unsigned int m = 0x5bd1e995;
-	const int r = 24;
-
-	unsigned int h = seed ^ len;
-
-	const unsigned char * data = (const unsigned char *)key;
-
-	while(len >= 4)
-	{
-		unsigned int k;
-
-		k  = data[0];
-		k |= data[1] << 8;
-		k |= data[2] << 16;
-		k |= data[3] << 24;
-
-		k *= m; 
-		k ^= k >> r; 
-		k *= m;
-
-		h *= m;
-		h ^= k;
-
-		data += 4;
-		len -= 4;
-	}
-	
-	switch(len)
-	{
-	case 3: h ^= data[2] << 16;
-	case 2: h ^= data[1] << 8;
-	case 1: h ^= data[0];
-	        h *= m;
-	};
-
-	h ^= h >> 13;
-	h *= m;
-	h ^= h >> 15;
-
-	return h;
+  return tmutil::MurmurHashNeutral2(key, len, seed);
 }
 
 
@@ -235,7 +182,7 @@ getExternalName(const std::string& name)
 esCombinationType
 getObjectCombination(int type1,
                      int type2)
-{ 
+{
   return getObjectCombination(static_cast<esObjectType>(type1),
                               static_cast<esObjectType>(type2));
 }
@@ -323,8 +270,8 @@ void
 getPrecisions(std::map<std::string, unsigned int>& precision,
               const std::map<std::string, tmeventsetup::esScale>& scaleMap)
 {
-  for (std::map<std::string, tmeventsetup::esScale>::const_iterator cit = scaleMap.begin();
-       cit != scaleMap.end(); cit++)
+  std::map<std::string, tmeventsetup::esScale>::const_iterator cit;
+  for (cit = scaleMap.begin(); cit != scaleMap.end(); ++cit)
   {
     switch (cit->second.getScaleType())
     {
@@ -332,6 +279,8 @@ getPrecisions(std::map<std::string, unsigned int>& precision,
       case MassPrecision:
       case MassPtPrecision:
       case MathPrecision:
+      case TwoBodyPtPrecision:
+      case TwoBodyPtMathPrecision:
         break;
 
       default:
@@ -339,6 +288,7 @@ getPrecisions(std::map<std::string, unsigned int>& precision,
     }
 
     std::pair<std::map<std::string, unsigned int>::iterator, bool> rc;
+    // Note: precision value is stored in nbits entry of esScale
     rc = precision.insert(std::make_pair(cit->first, cit->second.getNbits()));
     if (not rc.second)
     {
@@ -353,8 +303,8 @@ void
 getPrecisionsPy(std::map<std::string, unsigned int>& precision,
                 const std::map<std::string, tmeventsetup::esScale*>& scaleMap)
 {
-  for (std::map<std::string, tmeventsetup::esScale*>::const_iterator cit = scaleMap.begin();
-       cit != scaleMap.end(); cit++)
+  std::map<std::string, tmeventsetup::esScale*>::const_iterator cit;
+  for (cit = scaleMap.begin(); cit != scaleMap.end(); ++cit)
   {
     switch (cit->second->getScaleType())
     {
@@ -362,12 +312,15 @@ getPrecisionsPy(std::map<std::string, unsigned int>& precision,
       case MassPrecision:
       case MassPtPrecision:
       case MathPrecision:
+      case TwoBodyPtPrecision:
+      case TwoBodyPtMathPrecision:
         break;
       default:
         continue;
     }
 
     std::pair<std::map<std::string, unsigned int>::iterator, bool> rc;
+    // Note: precision value is stored in nbits entry of esScale
     rc = precision.insert(std::make_pair(cit->first, cit->second->getNbits()));
     if (not rc.second)
     {
@@ -379,16 +332,10 @@ getPrecisionsPy(std::map<std::string, unsigned int>& precision,
 
 
 long long
-toFixedPoint(double real,
-             const size_t precision)
+toFixedPoint(double real, const size_t precision)
 {
-
-  if (precision > (sizeof(pow10)/sizeof(pow10[0]) - 1))
-    TM_FATAL_ERROR("tmeventsetup::toFixedPoint: unsupported precision '" << precision << "'");
-
-  real *= pow10[precision];
-  const long long integer = real >= 0.0 ? (real + 0.5) : (real - 0.5);
-  return integer;
+  // Note: round to nearest integer
+  return static_cast<long long>(std::floor(real * tmutil::pow10(precision) + 0.5));
 }
 
 
@@ -398,9 +345,10 @@ setLut(std::vector<long long>& lut,
        const unsigned int precision)
 {
   lut.clear();
-  for (size_t ii = 0; ii < array.size(); ii++)
+  std::vector<double>::const_iterator cit;
+  for (cit = array.begin(); cit != array.end(); ++cit)
   {
-    lut.push_back(toFixedPoint(array.at(ii), precision));
+    lut.push_back(toFixedPoint(*cit, precision));
   }
 }
 
@@ -410,8 +358,10 @@ getLut(std::vector<long long>& lut,
        const esScale* scale,
        const unsigned int precision)
 {
-  lut.resize(pow(2, scale->getNbits()));
+  // Resize and clear
+  lut.resize(std::pow(2, scale->getNbits()));
   std::fill(lut.begin(), lut.end(), 0);
+
   const std::vector<tmeventsetup::esBin> bins = scale->getBins();
   for (size_t ii = 0; ii < bins.size(); ii++)
   {
@@ -492,7 +442,7 @@ getCaloMuonEtaConversionLut(std::vector<long long>& lut,
 
   const int ratio = step1 / step2;
   const int offset = ratio / 2;
-  const size_t n = pow(2, scale1->getNbits());
+  const size_t n = std::pow(2, scale1->getNbits());
 
   for (size_t ii = 0; ii < n/2; ii++)
   {
@@ -523,8 +473,8 @@ getCaloMuonPhiConversionLut(std::vector<long long>& lut,
 
   if (step1 <= step2) TM_FATAL_ERROR("tmeventsetup::getCaloMuonPhiConversionLut: step size of scale2 should be smaller");
 
-
-  lut.resize(pow(2, scale1->getNbits()));
+  // Resize and clear
+  lut.resize(std::pow(2, scale1->getNbits()));
   std::fill(lut.begin(), lut.end(), 0);
 
   const int ratio = step1 / step2;
@@ -548,10 +498,13 @@ getDeltaVector(std::vector<double>& array,
   const double range1 = scale1->getMaximum() - scale1->getMinimum();
   const double range2 = scale2->getMaximum() - scale2->getMinimum();
   const double range = std::max(range1, range2);
-  const size_t n = ceil(range / step);
-  const size_t bitwidth = ceil(log10(n) / log10(2));
-  array.resize(pow(2, bitwidth));
+  const size_t n = std::ceil(range / step);
+  const size_t bitwidth = std::ceil(std::log10(n) / std::log10(2));
+
+  // Resize and clear
+  array.resize(std::pow(2, bitwidth));
   std::fill(array.begin(), array.end(), 0);
+
   for (size_t ii = 0; ii < n; ii++)
   {
     array.at(ii) = step * ii;
@@ -562,28 +515,26 @@ getDeltaVector(std::vector<double>& array,
 
 
 void
-applyCos(std::vector<double>& array,
-         const size_t n)
+applySin(std::vector<double>& array, const size_t n)
 {
-  if (n > array.size()) TM_FATAL_ERROR("tmeventsetup::applyCos:");
-
-  for (size_t ii = 0; ii < n; ii++)
-  {
-    array.at(ii) = cos(array.at(ii));
-  }
+  const size_t offset = std::min(n, array.size());
+  std::transform(array.begin(), array.begin() + offset, array.begin(), ::sin);
 }
 
 
 void
-applyCosh(std::vector<double>& array,
-          const size_t n)
+applyCos(std::vector<double>& array, const size_t n)
 {
-  if (n > array.size()) TM_FATAL_ERROR("tmeventsetup::applyCosh:");
+  const size_t offset = std::min(n, array.size());
+  std::transform(array.begin(), array.begin() + offset, array.begin(), ::cos);
+}
 
-  for (size_t ii = 0; ii < n; ii++)
-  {
-    array.at(ii) = cosh(array.at(ii));
-  }
+
+void
+applyCosh(std::vector<double>& array, const size_t n)
+{
+  const size_t offset = std::min(n, array.size());
+  std::transform(array.begin(), array.begin() + offset, array.begin(), ::cosh);
 }
 
 } // namespace tmeventsetup

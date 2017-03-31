@@ -1,13 +1,20 @@
 /*====================================================================*
- * declarations  
+ * declarations
  *====================================================================*/
 /*--------------------------------------------------------------------*
  * headers
  *--------------------------------------------------------------------*/
-#include <stdexcept>
 
 #include "tmUtil/tmUtil.hh"
 #include "tmXsd/keywords.hh"
+
+// boost
+#include <boost/lexical_cast.hpp>
+
+// stl
+#include <sstream>
+#include <stdexcept>
+
 
 /*====================================================================*
  * implementation
@@ -235,9 +242,9 @@ const T tmxsd::getValue(const std::map<std::string, T>&map,
   typename std::map<std::string, T>::const_iterator cit = map.find(key);
   if (cit == map.end())
   {
-    std::string error("err> tmxsd::getValue() key '");
-    error += key + "' not found";
-    throw std::runtime_error(error);
+    std::ostringstream message;
+    message << "err> tmxsd::getValue() key '" << key << "' not found";
+    throw std::runtime_error(message.str());
   }
 
   return cit->second;
@@ -251,12 +258,12 @@ const To tmxsd::getValue(const std::map<std::string, From>&map,
   typename std::map<std::string, From>::const_iterator cit = map.find(key);
   if (cit == map.end())
   {
-    std::string error("err> tmxsd::getValue() key '");
-    error += key + "' not found";
-    throw std::runtime_error(error);
+    std::ostringstream message;
+    message << "err> tmxsd::getValue() key '" << key << "' not found";
+    throw std::runtime_error(message.str());
   }
 
-  return tmutil::convert<To>(cit->second);
+  return boost::lexical_cast<To>(cit->second);
 }
 
 

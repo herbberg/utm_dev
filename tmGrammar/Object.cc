@@ -18,6 +18,7 @@ namespace Object
 // ---------------------------------------------------------------------
 // static variables
 // ---------------------------------------------------------------------
+
 // all the objects
 const reserved::value_type object_names[] = {
   reserved::value_type(MU, 1),
@@ -42,16 +43,16 @@ const reserved objectName(object_names, object_names + n_object_names);
 
 
 // particles
-const char* cutsMU_[] = {Cut::MU_ETA, Cut::MU_PHI, Cut::MU_CHG, Cut::MU_QLTY, Cut::MU_ISO};
+const char* cutsMU_[] = {Cut::MU_ETA, Cut::MU_PHI, Cut::MU_CHG, Cut::MU_QLTY, Cut::MU_ISO, Cut::MU_SLICE};
 const std::vector<std::string> cutsMU(cutsMU_, cutsMU_ + sizeof(cutsMU_)/sizeof(cutsMU_[0]));
 
-const char* cutsEG_[] = {Cut::EG_ETA, Cut::EG_PHI, Cut::EG_QLTY, Cut::EG_ISO};
+const char* cutsEG_[] = {Cut::EG_ETA, Cut::EG_PHI, Cut::EG_QLTY, Cut::EG_ISO, Cut::EG_SLICE};
 const std::vector<std::string> cutsEG(cutsEG_, cutsEG_ + sizeof(cutsEG_)/sizeof(cutsEG_[0]));
 
-const char* cutsTAU_[] = {Cut::TAU_ETA, Cut::TAU_PHI, Cut::TAU_QLTY, Cut::TAU_ISO};
+const char* cutsTAU_[] = {Cut::TAU_ETA, Cut::TAU_PHI, Cut::TAU_QLTY, Cut::TAU_ISO, Cut::TAU_SLICE};
 const std::vector<std::string> cutsTAU(cutsTAU_, cutsTAU_ + sizeof(cutsTAU_)/sizeof(cutsTAU_[0]));
 
-const char* cutsJET_[] = {Cut::JET_ETA, Cut::JET_PHI, Cut::JET_QLTY};
+const char* cutsJET_[] = {Cut::JET_ETA, Cut::JET_PHI, Cut::JET_QLTY, Cut::JET_SLICE};
 const std::vector<std::string> cutsJET(cutsJET_, cutsJET_ + sizeof(cutsJET_)/sizeof(cutsJET_[0]));
 
 

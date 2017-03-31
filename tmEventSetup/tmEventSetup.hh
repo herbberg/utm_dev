@@ -68,12 +68,12 @@ namespace tmeventsetup
 
 
   /** endian- and alignment-neutral MurmurHash2 by Austin Appleby
-   *  https://sites.google.com/site/murmurhash/
+   *  https://github.com/aappleby/smhasher/
    *
    *  @param s [in] text
    */
   unsigned long getMmHashN(const std::string& s);
-  
+
 
   /** get external signal name
     *
@@ -106,8 +106,6 @@ namespace tmeventsetup
                        const std::map<std::string, tmeventsetup::esScale*>& scaleMap);
 #endif
 
-
-  extern const long long pow10[];
 
   /** get LUT from double vector
    *
@@ -163,6 +161,12 @@ namespace tmeventsetup
                         const tmeventsetup::esScale* scale1,
                         const tmeventsetup::esScale* scale2);
 
+  /** apply sin() to each element of array
+   *
+   * @param array [in/out] differences
+   * @param n [in] number of valid items in array
+   */
+  void applySin(std::vector<double>& array, const size_t n);
 
   /** apply cos() to each element of array
    *
@@ -170,7 +174,6 @@ namespace tmeventsetup
    * @param n [in] number of valid items in array
    */
   void applyCos(std::vector<double>& array, const size_t n);
-
 
   /** apply cosh() to each element of array
    *

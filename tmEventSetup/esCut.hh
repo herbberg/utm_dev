@@ -37,38 +37,41 @@ class esCut
     // ctor
     esCut()
       : name_(), object_type_(), cut_type_(),
-        minimum_(), maximum_(), data_(), version(0) { };
+        minimum_(), maximum_(), data_(), key_(), precision_(0), version(0) { };
 
     // dtor
     virtual ~esCut() { };
 
 
     /** set cut name */
-    void setName(const std::string& x) { name_ = x; };
+    void setName(const std::string& name) { name_ = name; };
 
     /** set object type */
-    void setObjectType(const int x) { object_type_ = x; };
+    void setObjectType(const int type) { object_type_ = type; };
 
     /** set cut type */
-    void setCutType(const int x) { cut_type_ = x; };
+    void setCutType(const int type) { cut_type_ = type; };
 
     /** set minimum value of cut range (double) */
-    void setMinimum(const double x) { minimum_.value = x; };
+    void setMinimumValue(const double value) { minimum_.value = value; };
 
     /** set minimum value of cut range (HW index) */
-    void setMinimum(const unsigned int x) { minimum_.index = x; };
+    void setMinimumIndex(const unsigned int index) { minimum_.index = index; };
 
     /** set minimum value of cut range (esCutValue struct) */
-    void setMinimum(const esCutValue& x) { minimum_ = x; };
+    void setMinimum(const esCutValue& minimum) { minimum_ = minimum; };
 
     /** set maximum value of cut range (double) */
-    void setMaximum(const double x) { maximum_.value = x; };
+    void setMaximumValue(const double value) { maximum_.value = value; };
 
     /** set maximum value of cut range (HW index) */
-    void setMaximum(const unsigned int x) { maximum_.index = x; };
+    void setMaximumIndex(const unsigned int index) { maximum_.index = index; };
 
     /** set maximum value of cut range (esCutValue struct) */
-    void setMaximum(const esCutValue& x) { maximum_ = x; };
+    void setMaximum(const esCutValue& maximum) { maximum_ = maximum; };
+
+    /** set precision for cut value calculations */
+    void setPrecision(const unsigned int precision) { precision_ = precision; };
 
     /** get cut name */
     const std::string& getName() const { return name_; };
@@ -103,6 +106,9 @@ class esCut
     /** get key */
     const std::string& getKey() const { return key_; };
 
+    /** get precision */
+    const unsigned int getPrecision() const { return precision_; };
+
 
   protected:
     std::string name_;          /**< name of cut */
@@ -112,6 +118,7 @@ class esCut
     esCutValue maximum_;        /**< maximum value of cut range */
     std::string data_;          /**< data for charge/quality/isolation/charge correlation */
     std::string key_;           /**< key for accessing a scale */
+    unsigned int precision_;    /**< optional precision for cut values */
     unsigned int version;
 };
 

@@ -14,6 +14,8 @@
 #include "tmGrammar/Object.hh"
 #include "tmGrammar/Function.hh"
 
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 /*====================================================================*
  * implementation
@@ -55,6 +57,8 @@ const reserved::value_type function_names[] = {
   reserved::value_type(comb, 1),
   reserved::value_type(mass, 1),
   reserved::value_type(dist, 1),
+  reserved::value_type(mass_inv, 1),
+  reserved::value_type(mass_trv, 1)
 };
 const int n_function_names = sizeof(function_names) / sizeof(function_names[0]);
 const reserved functionName(function_names, function_names + n_function_names);
@@ -68,11 +72,16 @@ const char* cutComb_[] = {Cut::CHGCOR};
 const std::vector<std::string> cutComb(cutComb_, cutComb_ + sizeof(cutComb_)/sizeof(cutComb_[0]));
 
 
-// mass
-const char* objMass_[] = {Object::MU, Object::EG, Object::TAU, Object::JET};
-const std::vector<std::string> objMass(objMass_, objMass_ + sizeof(objMass_)/sizeof(objMass_[0]));
+// invariant mass
+const char* objInvariantMass_[] = {Object::MU, Object::EG, Object::TAU, Object::JET};
+const std::vector<std::string> objInvariantMass(objInvariantMass_, objInvariantMass_ + sizeof(objInvariantMass_)/sizeof(objInvariantMass_[0]));
 
-const char* cutMass_[] = {Cut::MASS, Cut::CHGCOR};
+// transverse mass
+const char* objTransverseMass_[] = {Object::MU, Object::EG, Object::TAU, Object::JET, Object::ETM, Object::HTM, Object::ETMHF};
+const std::vector<std::string> objTransverseMass(objTransverseMass_, objTransverseMass_ + sizeof(objTransverseMass_)/sizeof(objTransverseMass_[0]));
+
+// mass (invariant and transverse)
+const char* cutMass_[] = {Cut::MASS, Cut::DETA, Cut::DPHI, Cut::DR, Cut::CHGCOR, Cut::TBPT};
 const std::vector<std::string> cutMass(cutMass_, cutMass_ + sizeof(cutMass_)/sizeof(cutMass_[0]));
 
 
@@ -134,9 +143,13 @@ Item::isValidObject(const std::string& object,
   {
     v = &objComb;
   }
-  else if (type == InvariantMass)
+  else if (type == InvariantMass or type == TransverseMass)
   {
-    v = &objMass;
+    v = &objInvariantMass;
+  }
+  else if (type == TransverseMass)
+  {
+    v = &objTransverseMass;
   }
 
 
@@ -168,20 +181,25 @@ Item::isValidCut(const std::string& cut,
       break;
 
     case InvariantMass:
+    case TransverseMass:
       v = &cutMass;
       break;
   }
 
   if (not v)
   {
-    message += " Function::Item::isValidCut: unkown cut type";
+    std::stringstream ss;
+    ss << " Function::Item::isValidCut: unkown cut type: " << type;
+    message += ss.str();
     return false;
   }
 
   for (size_t ii = 0; ii < v->size(); ii++)
   {
     if (cut.compare(0, v->at(ii).length(), v->at(ii)) == 0) {
-      if (type == Distance) {
+      if (type == Distance or
+          type == InvariantMass or
+          type == TransverseMass) {
         if (v->at(ii) == Cut::DETA)
         {
           metric |= DeltaEta;
@@ -208,20 +226,27 @@ Item::isValidCut(const std::string& cut,
 int
 Item::getType()
 {
-  int rc = Unknown;
   if (name.compare(dist) == 0)
   {
-    rc = Distance;
+    return Distance;
   }
   else if (name.compare(comb) == 0)
   {
-    rc = Combination;
+    return Combination;
   }
-  else if (name.compare(mass) == 0)
+  else if (name.compare(mass) == 0) // for backward compatibility
   {
-    rc = InvariantMass;
+    return InvariantMass;
   }
-  return rc;
+  else if (name.compare(mass_inv) == 0)
+  {
+    return InvariantMass;
+  }
+  else if (name.compare(mass_trv) == 0)
+  {
+    return TransverseMass;
+  }
+  return Unknown;
 }
 
 
@@ -275,8 +300,8 @@ bool
 parser(const std::string& function,
        Function::Item& item)
 {
-  const std::string trimmed = tmutil::trim(function);
-  const std::string name = std::string("(") + comb + "|" + mass + "|" + dist + ")";
+  const std::string trimmed = boost::trim_copy(function);
+  const std::string name = std::string("(") + comb + "|" + mass + "|" + mass_inv + "|" + mass_trv + "|" + dist + ")";
   const std::string objects = "\\{(.+)\\}";
   const std::string cuts = "\\[(.+)\\]";
   regex_t regex;
@@ -327,7 +352,7 @@ parser(const std::string& function,
   item.type = item.getType();
 
   // cut is mandatory except for Combination
-  if ((item.type != Combination) and item_.cuts.empty()) 
+  if ((item.type != Combination) and item_.cuts.empty())
   {
     TM_LOG_ERR("Function::parser: no cut specified");
     item.message += " Function::parser: no cut specified";
@@ -383,7 +408,7 @@ parser(const std::string& function,
     }
 
     if (item.type == Combination)
-    { 
+    {
       if (objectType == Object::Unknown) objectType = object.getType();
       if (objectType != object.getType())
       {
@@ -432,8 +457,7 @@ getObjectCuts(const Item& item)
   std::vector<std::string> cuts;
   for (size_t ii = 0; ii < item.objects.size(); ii++)
   {
-    std::string cut;
-    tmutil::join(item.objects.at(ii).cuts, cut, ",");
+    std::string cut = boost::algorithm::join(item.objects.at(ii).cuts, ",");
     cuts.push_back(cut);
   }
   return cuts;

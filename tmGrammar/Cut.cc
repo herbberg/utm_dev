@@ -14,26 +14,31 @@
  *====================================================================*/
 namespace Cut
 {
+
 const reserved::value_type cut_names[] = {
   reserved::value_type(MU_ETA, 1),
   reserved::value_type(MU_PHI, 1),
   reserved::value_type(MU_CHG, 1),
   reserved::value_type(MU_QLTY, 1),
   reserved::value_type(MU_ISO, 1),
+  reserved::value_type(MU_SLICE, 1),
 
   reserved::value_type(EG_ETA, 1),
   reserved::value_type(EG_PHI, 1),
   reserved::value_type(EG_QLTY, 1),
   reserved::value_type(EG_ISO, 1),
+  reserved::value_type(EG_SLICE, 1),
 
   reserved::value_type(TAU_ETA, 1),
   reserved::value_type(TAU_PHI, 1),
   reserved::value_type(TAU_QLTY, 1),
   reserved::value_type(TAU_ISO, 1),
+  reserved::value_type(TAU_SLICE, 1),
 
   reserved::value_type(JET_ETA, 1),
   reserved::value_type(JET_PHI, 1),
   reserved::value_type(JET_QLTY, 1),
+  reserved::value_type(JET_SLICE, 1),
 
   reserved::value_type(ETM_PHI, 1),
   reserved::value_type(HTM_PHI, 1),
@@ -44,6 +49,7 @@ const reserved::value_type cut_names[] = {
   reserved::value_type(DR, 1),
   reserved::value_type(MASS, 1),
   reserved::value_type(CHGCOR, 1),
+  reserved::value_type(TBPT, 1),
 };
 const int n_cut_names = sizeof(cut_names) / sizeof(cut_names[0]);
 const reserved cutName(cut_names, cut_names + n_cut_names);

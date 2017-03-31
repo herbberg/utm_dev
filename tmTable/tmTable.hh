@@ -1,6 +1,7 @@
 /**
- * @author      Takashi Matsushita
- * Created:     13 Aug 2014
+ * @author Bernhard Arnold
+ * @author Takashi Matsushita
+ * @date: 13 Aug 2014
  */
 
 /** @todo nope */
@@ -96,6 +97,7 @@ class Menu
 };
 
 
+// TODO: better to throw an exception on errors
 /** read an xml file containing scale information
  *
  * @param fileName [in] path of xmf file
@@ -106,7 +108,7 @@ std::string xml2scale(const char* fileName,
                       tmtable::Scale& scale,
                       const bool debug = false);
 
-
+// TODO: better to throw an exception on errors
 /** read an xml file containing external signal information
  *
  * @param fileName [in] path of xmf file
@@ -117,6 +119,7 @@ std::string xml2extSignal(const char* fileName,
                           tmtable::ExtSignal& extSignal,
                           const bool debug = false);
 
+// TODO: better to throw an exception on errors
 /** read an xml file containing menu information
  *
  * @param fileName [in] path of xmf file
@@ -131,7 +134,7 @@ std::string xml2menu(const char* fileName,
                      tmtable::ExtSignal& extSignal,
                      const bool debug = false);
 
-
+// TODO: better to throw an exception on errors
 /** read an xml file containing menu information
  *
  * @param fileName [in] istringstream for xml file

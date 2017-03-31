@@ -2,6 +2,9 @@
 #include "tmTable/tmTable.hh"
 #include "tmEventSetup/esAlgorithmHandle.hh"
 
+// boost
+#include <boost/algorithm/string/join.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace tmeventsetup
 {
@@ -35,8 +38,7 @@ void
 esAlgorithmHandle::print() const
 {
   TM_LOG_INF("tmeventsetup::esAlgorithmHandle::print");
-  std::string rpn;
-  tmutil::join(rpn_vector_, rpn, ":");
+  std::string rpn = boost::algorithm::join(rpn_vector_, ":");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  expression = " << expression_ << "\n";
   std::cout << "  expression in condition = " << expression_in_condition_ << "\n";
@@ -51,9 +53,8 @@ void
 esAlgorithmHandle::print(const esAlgorithm& algo)
 {
   TM_LOG_INF("tmeventsetup::esAlgorithmHandle::print");
-  std::string rpn;
   const std::vector<std::string>& rpn_vector = algo.getRpnVector();
-  tmutil::join(rpn_vector, rpn, ":");
+  std::string rpn = boost::algorithm::join(rpn_vector, ":");
   std::cout << "  name = " << algo.getName() << "\n";
   std::cout << "  expression = " << algo.getExpression() << "\n";
   std::cout << "  expression in condition = " << algo.getExpressionInCondition() << "\n";
@@ -72,9 +73,9 @@ esAlgorithmHandle::init(const tmtable::Row& algorithm)
   name_ = algorithm.find("name")->second;
   expression_ = algorithm.find("expression")->second;
 
-  index_ = tmutil::convert<unsigned int>(algorithm.find("index")->second);
-  module_id_ = tmutil::convert<unsigned int>(algorithm.find("module_id")->second);
-  module_index_ = tmutil::convert<unsigned int>(algorithm.find("module_index")->second);
+  index_ = boost::lexical_cast<unsigned int>(algorithm.find("index")->second);
+  module_id_ = boost::lexical_cast<unsigned int>(algorithm.find("module_id")->second);
+  module_index_ = boost::lexical_cast<unsigned int>(algorithm.find("module_index")->second);
 }
 
 

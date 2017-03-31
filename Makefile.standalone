@@ -2,7 +2,6 @@
 # Author: Takashi Matsushita
 #
 
-LIBRARY = libutm.so
 SUBDIRS = tmUtil tmXsd tmTable tmGrammar tmEventSetup
 
 AR = c++ -shared -fPIC
@@ -15,8 +14,8 @@ export BOOST_ROOT=${BOOST_BASE}
 #
 # files
 #
-CSRCS = 
-CHDRS = 
+CSRCS =
+CHDRS =
 COBJS = $(CSRCS:.c=.o)
 GARBAGE = core* *.o *.ln *.bak *~ $(DEPFILE)
 
@@ -32,11 +31,6 @@ default: all
 #
 # local target
 #
-$(LIBRARY):
-	echo '//     creating $(LIBRARY)'
-	$(AR) -o $(LIBRARY)  tmUtil/*.o tmXsd/*.o tmXsd/gen-xsd-type/*.o tmGrammar/*.o
-
-lib: $(LIBRARY)
 doxygen:
 	doxygen doxygen.config
 
@@ -48,22 +42,35 @@ all:
 	echo '// '
 	echo '// $(MAKE) $@'
 	echo '// '
-	for i in $(SUBDIRS); do \
-  	cd $$i; echo '//   in '`pwd`; \
-    $(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
-  done
+	for project in $(SUBDIRS); do \
+		cd $$project; echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+	done
 	echo '// '
 	echo '// done ('`date`')'
 	echo '// '
+
+test:
+	echo '// '
+	echo '// $(MAKE) $@'
+	echo '// '
+	for project in $(SUBDIRS); do \
+		cd $$project/test; echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ../..; \
+	done
+	echo '// '
+	echo '// done ('`date`')'
+	echo '// '
+
 
 clean:
 	echo '// '
 	echo '// $(MAKE) $@'
 	echo '// '
-	for i in $(SUBDIRS); do \
-  	cd $$i;  echo '//   in '`pwd`; \
-    $(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
-  done
+	for project in $(SUBDIRS); do \
+		cd $$project;  echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+	done
 	$(RM) $(GARBAGE)
 	echo '// '
 	echo '// done ('`date`')'
@@ -74,11 +81,11 @@ install:
 	echo '// '
 	echo '// $(MAKE) $@'
 	echo '// '
-	for i in $(SUBDIRS); do \
-	  mkdir -p include/$$i; \
-  	cd $$i; echo '//   in '`pwd`; \
-    $(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
-  done
+	for project in $(SUBDIRS); do \
+		mkdir -p include/$$project; \
+		cd $$project; echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+	done
 	cp -pr tmXsd/xsd-type xsd-type
 	cp -p tmXsd/menu.xsd .
 	echo '// '
@@ -89,10 +96,10 @@ python:
 	echo '// '
 	echo '// $(MAKE) $@'
 	echo '// '
-	for i in $(SUBDIRS); do \
-  	cd $$i; echo '//   in '`pwd`; \
-    $(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
-  done
+	for project in $(SUBDIRS); do \
+		cd $$project; echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+	done
 	echo '// '
 	echo '// done ('`date`')'
 	echo '// '
@@ -101,10 +108,10 @@ dist-clean:
 	echo '// '
 	echo '// $(MAKE) $@'
 	echo '// '
-	for i in $(SUBDIRS); do \
-  	cd $$i;  echo '//   in '`pwd`; \
-    $(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
-  done
+	for project in $(SUBDIRS); do \
+		cd $$project;  echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+	done
 	$(RM) $(GARBAGE) $(LIBRARY)
 	$(RM) -r latex html
 	echo '// '

@@ -1,12 +1,12 @@
 #
-# Author: Takashi Matsushita
+# Authors: Bernhard Arnold
+#          Takashi Matsushita
 #
 
 # XDAQ stuff
 -include $(XDAQ_ROOT)/config/mfAutoconf.rules
 -include $(XDAQ_ROOT)/config/mfDefs.$(XDAQ_OS)
 # XDAQ stuff
-
 
 VERSION = 0.1
 LIBRARY = libtmutil.so
@@ -56,7 +56,6 @@ LIBS =
 %.o : %.cc
 	echo '//     compile $< ...'
 	$(CXX) -c $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) -MMD -MP $<
-
 
 #
 # local target

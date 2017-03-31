@@ -48,7 +48,7 @@ bool parser(const std::string& algorithm);
  * @param element [in] an element of an algorithm expression
  * @return true if the given element is a gate
  */
-bool isGate(const std::string& element);
+bool isGate(const std::string& element); // TODO: nomenclature, isOperator
 
 
 /**
@@ -83,7 +83,7 @@ struct Logic
 
 /** list of names */
 typedef std::map<std::string, int> reserved;
-extern const reserved gateName; /**< list of allowed gate name */
+extern const reserved gateName; /**< list of allowed operator names */
 
 } // namespace Algorithm
 

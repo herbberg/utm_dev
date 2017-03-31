@@ -3,6 +3,10 @@
 #include "tmEventSetup/esCutHandle.hh"
 #include "tmEventSetup/esObjectHandle.hh"
 
+// boost
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 namespace tmeventsetup
 {
@@ -87,7 +91,7 @@ esObjectHandle::init(const Object::Item& item)
 
   if (type_ == EXT)
   {
-    bx_offset_ = tmutil::convert<int>(item.bx_offset);
+    bx_offset_ = boost::lexical_cast<int>(item.bx_offset);
     ext_signal_name_ = getExternalName(name_);
     return;
   }
@@ -100,22 +104,27 @@ esObjectHandle::init(const Object::Item& item)
   {
     TM_FATAL_ERROR("tmeventsetup::esObjectHandle::init: unknown comparison operator '" << item.comparison << "'");
   }
-  
-  bx_offset_ = tmutil::convert<int>(item.bx_offset);
-  std::string threshold = item.threshold;
-  tmutil::replace(threshold, "p", ".");
-  threshold_ = tmutil::convert<double>(threshold);
 
+  bx_offset_ = boost::lexical_cast<int>(item.bx_offset);
+  std::string threshold = item.threshold;
+  // TODO: implement common threshold conversion...
+  boost::algorithm::replace_all(threshold, "p", ".");
+  threshold_ = boost::lexical_cast<double>(threshold);
+
+  // Set proper cut type for object.
   std::string cut_type = ET_THR;
   if (not isThreshold) cut_type = COUNT;
 
+  // Create table for threshold cut.
   tmtable::Row cut;
-  cut["name"] = item.name + "-" + cut_type + "_" + threshold;
+  cut["name"] = item.name + "-" + cut_type + "_" + item.threshold; // MU-ET_1p2
   cut["object"] = item.name;
   cut["type"] = item.name + "-" + cut_type;
-  cut["minimum"] = threshold;
+  cut["minimum"] = boost::str(boost::format("%+23.16E") % threshold_);
   cut["maximum"] = "";
   cut["data"] = "";
+
+  // Create threshold cut from table.
   esCutHandle handle = esCutHandle(cut);
   esCut& ref = handle;
   cuts_.push_back(ref);

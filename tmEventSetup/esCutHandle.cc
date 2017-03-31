@@ -3,6 +3,9 @@
 #include "tmGrammar/Object.hh"
 #include "tmEventSetup/esCutHandle.hh"
 
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace tmeventsetup
 {
@@ -12,126 +15,168 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
   TM_LOG_DBG("tmeventsetup::esCutHandle::setKey");
 
   name_ = cut.find("name")->second;
+  std::string type = cut.find("type")->second;
   TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: name_ = " << name_);
-  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: type = " << cut.find("type")->second);
+  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: type = " << type);
 
-  std::vector<std::string> tokens;
-  tmutil::tokenise(cut.find("type")->second, tokens, "-");
+  // Split cut type into tokens, eg. "MU-ISO" -> ["MU", "ISO"].
+  boost::char_separator<char> sep("-");
+  boost::tokenizer<boost::char_separator<char> > tok(type, sep);
+  std::vector<std::string> tokens(tok.begin(), tok.end());
 
   object_type_ = static_cast<esObjectType>(Undef);
   cut_type_ = static_cast<esCutType>(Undef);
-  std::string text;
+  std::string token;
   switch (tokens.size())
   {
     case 2:
-      text = tokens.front();
-      if (text == Object::MU) object_type_ = Muon;
-      else if (text == Object::EG) object_type_ = Egamma;
-      else if (text == Object::TAU) object_type_ = Tau;
-      else if (text == Object::JET) object_type_ = Jet;
-      else if (text == Object::ETM) object_type_ = ETM;
-      else if (text == Object::HTM) object_type_ = HTM;
-      else if (text == Object::ETT) object_type_ = ETT;
-      else if (text == Object::HTT) object_type_ = HTT;
-      else if (text == Object::MBT0HFP) object_type_ = MBT0HFP;
-      else if (text == Object::MBT1HFP) object_type_ = MBT1HFP;
-      else if (text == Object::MBT0HFM) object_type_ = MBT0HFM;
-      else if (text == Object::MBT1HFM) object_type_ = MBT1HFM;
-      else if (text == Object::ETTEM) object_type_ = ETTEM;
-      else if (text == Object::ETMHF) object_type_ = ETMHF;
-      else if (text == Object::TOWERCOUNT) object_type_ = TOWERCOUNT;
+      token = tokens.front();
+      if (token == Object::MU) object_type_ = Muon;
+      else if (token == Object::EG) object_type_ = Egamma;
+      else if (token == Object::TAU) object_type_ = Tau;
+      else if (token == Object::JET) object_type_ = Jet;
+      else if (token == Object::ETM) object_type_ = ETM;
+      else if (token == Object::HTM) object_type_ = HTM;
+      else if (token == Object::ETT) object_type_ = ETT;
+      else if (token == Object::HTT) object_type_ = HTT;
+      else if (token == Object::MBT0HFP) object_type_ = MBT0HFP;
+      else if (token == Object::MBT1HFP) object_type_ = MBT1HFP;
+      else if (token == Object::MBT0HFM) object_type_ = MBT0HFM;
+      else if (token == Object::MBT1HFM) object_type_ = MBT1HFM;
+      else if (token == Object::ETTEM) object_type_ = ETTEM;
+      else if (token == Object::ETMHF) object_type_ = ETMHF;
+      else if (token == Object::TOWERCOUNT) object_type_ = TOWERCOUNT;
       else
       {
-        TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown object_type '" << text << "'");
+        TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown object_type '" << token << "'");
       }
       // fall through
 
     case 1:
-      text = tokens.back();
-      if (text == ET_THR) cut_type_ = Threshold;
-      else if (text == Cut::ISO) cut_type_ = Isolation;
-      else if (text == Cut::ETA) cut_type_ = Eta;
-      else if (text == Cut::QLTY) cut_type_ = Quality;
-      else if (text == Cut::CHG) cut_type_ = Charge;
-      else if (text == Cut::PHI) cut_type_ = Phi;
-      else if (text == COUNT) cut_type_ = Count;
-      else if (text == Cut::DETA)
+      token = tokens.back();
+      if (token == ET_THR) cut_type_ = Threshold;
+      else if (token == Cut::ISO) cut_type_ = Isolation;
+      else if (token == Cut::ETA) cut_type_ = Eta;
+      else if (token == Cut::QLTY) cut_type_ = Quality;
+      else if (token == Cut::CHG) cut_type_ = Charge;
+      else if (token == Cut::PHI) cut_type_ = Phi;
+      else if (token == Cut::SLICE) cut_type_ = Slice;
+      else if (token == COUNT) cut_type_ = Count;
+      else if (token == Cut::DETA)
       {
         object_type_ = static_cast<esObjectType>(DistFunction);
         cut_type_ = DeltaEta;
       }
-      else if (text == Cut::DPHI)
+      else if (token == Cut::DPHI)
       {
         object_type_ = static_cast<esObjectType>(DistFunction);
         cut_type_ = DeltaPhi;
       }
-      else if (text == Cut::DR)
+      else if (token == Cut::DR)
       {
         object_type_ = static_cast<esObjectType>(DistFunction);
         cut_type_ = DeltaR;
       }
-      else if (text == Cut::MASS)
+      else if (token == Cut::MASS)
       {
         object_type_ = static_cast<esObjectType>(MassFunction);
         cut_type_ = Mass;
       }
-      else if (text == Cut::CHGCOR)
+      else if (token == Cut::CHGCOR)
       {
         object_type_ = static_cast<esObjectType>(CombFunction);
         cut_type_ = ChargeCorrelation;
       }
+      else if (token == Cut::TBPT)
+      {
+        object_type_ = static_cast<esObjectType>(MassFunction);
+        cut_type_ = TwoBodyPt;
+      }
       else
       {
-        TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown cut_type '" << text << "'");
+        TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown cut_type '" << token << "'");
       }
       break;
 
     default:
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown case '" << cut.find("type")->second << "'");
+      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown case '" << type << "'");
       break;
   }
 
   std::string minimum = cut.find("minimum")->second;
+  std::string maximum = cut.find("maximum")->second;
+
   if (cut_type_ == Threshold)
   {
-    const std::string p = "p";
-    size_t idx = minimum.find(p);
-    if (idx != std::string::npos) minimum.replace(idx, p.length(), ".");
+    // Convert threshold to floating point representation.
+    // TODO: implement common threshold conversion...
+    boost::algorithm::replace_all(minimum, "p", ".");
   }
 
-  minimum_.value = tmutil::convert<double>(minimum);
-  maximum_.value = tmutil::convert<double>(cut.find("maximum")->second);
+  // Set minimum value if available.
+  if (not minimum.empty())
+  {
+    try
+    {
+      setMinimumValue(boost::lexical_cast<double>(minimum));
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: invalid minimum value '" << minimum << "' for cut '" << name_ << "'");
+    }
+  }
 
+  // Set maximum value if available.
+  if (not maximum.empty())
+  {
+    try
+    {
+      setMaximumValue(boost::lexical_cast<double>(maximum));
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: invalid maximum value '" << maximum << "' for cut '" << name_ << "'");
+    }
+  }
+
+  // Set data.
   setData(cut.find("data")->second);
   setKey();
 }
 
 
 void
-esCutHandle::setData(const std::string& x)
+esCutHandle::setData(const std::string& data)
 {
-  data_ = x;
+  data_ = data;
   switch (cut_type_)
   {
     case Quality:
     case Isolation:
-      if (data_.find(',') == std::string::npos)
+    {
+      // LUT data stored as comma separated values, take or of all the bit patterns
+      // TODO: common function for LUT validation and conversion.
+
+      // Split comma separated LUT data, eg. "1,2,3" -> ["1", "2", "3"].
+      boost::char_separator<char> sep(",");
+      boost::tokenizer<boost::char_separator<char> > tok(data, sep);
+      std::vector<std::string> tokens(tok.begin(), tok.end());
+
+      // Logical OR for LUT values, eg. 1,2,3 -> 0xe
+      unsigned int value = 0;
+      for (size_t ii = 0; ii < tokens.size(); ++ii)
       {
-        unsigned int data = (1 << tmutil::convert<unsigned int>(x));
-        data_ = tmutil::toString(data);
-      }
-      else
-      {
-        // LUT data stored as comma separated values, take or of all the bit patterns
-        std::vector<std::string> tokens;
-        tmutil::tokenise(x, tokens, ",");
-        unsigned int data = 0;
-        for (size_t ii = 0; ii < tokens.size(); ii++)
+        try
         {
-          data |= (1 << tmutil::convert<unsigned int>(tokens.at(ii)));
+          value |= (1 << boost::lexical_cast<unsigned int>(tokens.at(ii)));
         }
-        data_ = tmutil::toString(data);
+        catch(boost::bad_lexical_cast& e)
+        {
+          TM_FATAL_ERROR("tmeventsetup::esCutHandle::setData: invalid LUT data for quality/isolation: '" << data << "'");
+        }
       }
+      data_ = boost::lexical_cast<std::string>(value);
+    } break;
 
     default:
       break;
@@ -162,7 +207,9 @@ esCutHandle::setKey()
     case TOWERCOUNT: key_ = Object::TOWERCOUNT; break;
     case CombFunction: break;
     case DistFunction: break;
-    case MassFunction: break;
+    case MassFunction: break; // alias for invariant mass
+    case InvariantMassFunction: break;
+    case TransverseMassFunction: break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << object_type_ << "'");
       break;
@@ -183,7 +230,9 @@ esCutHandle::setKey()
     case DeltaR: key_ += Cut::DR; break;
     case Mass: key_ += Cut::MASS; break;
     case ChargeCorrelation: key_ += Cut::CHGCOR; break;
+    case Slice: key_ += Cut::SLICE; break;
     case Count: key_ += COUNT; break;
+    case TwoBodyPt: key_ += Cut::TBPT; break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << cut_type_ << "'");
       break;
@@ -205,6 +254,7 @@ esCutHandle::print() const
   std::cout << "  maximum.index = " << maximum_.index << "\n";
   std::cout << "  data = " << data_ << "\n";
   std::cout << "  key = " << key_ << "\n";
+  std::cout << "  precision = " << precision_ << "\n";
 }
 
 void
@@ -220,6 +270,7 @@ esCutHandle::print(const esCut& cut)
   std::cout << "  maximum.index = " << cut.getMaximum().index << "\n";
   std::cout << "  data = " << cut.getData() << "\n";
   std::cout << "  key = " << cut.getKey() << "\n";
+  std::cout << "  precision = " << cut.getPrecision() << "\n";
 }
 
 } // namespace tmeventsetup
