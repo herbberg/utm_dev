@@ -879,9 +879,9 @@ esTriggerMenuHandle::setFunctionCuts()
         key += "TwoBodyPt";
         precision = dictionary.find(key)->second;
         const double scale = tmutil::pow10(precision);
-        minimum = std::floor(minimum * scale) / scale;
+        minimum = std::floor(minimum * minimum * scale) / scale;
         // TODO: actually this is not used for two body pt threshold
-        maximum = std::ceil(maximum * scale) / scale;
+        maximum = std::ceil(maximum * maximum * scale) / scale;
       }
       else
       {
