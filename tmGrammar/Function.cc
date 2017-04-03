@@ -143,7 +143,7 @@ Item::isValidObject(const std::string& object,
   {
     v = &objComb;
   }
-  else if (type == InvariantMass or type == TransverseMass)
+  else if (type == InvariantMass)
   {
     v = &objInvariantMass;
   }
