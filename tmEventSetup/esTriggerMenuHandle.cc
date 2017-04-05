@@ -1,14 +1,12 @@
-#include <math.h>
-
-#include <cstdio>
-#include <locale>
-#include <utility>
-#include <sstream>
-
+// utm
 #include "tmUtil/tmUtil.hh"
+
+// utm Grammar
 #include "tmGrammar/Cut.hh"
 #include "tmGrammar/Function.hh"
 #include "tmGrammar/Algorithm.hh"
+
+// utm EventSetup
 #include "tmEventSetup/tmEventSetup.hh"
 #include "tmEventSetup/esBin.hh"
 #include "tmEventSetup/esScaleHandle.hh"
@@ -18,17 +16,35 @@
 #include "tmEventSetup/esAlgorithmHandle.hh"
 #include "tmEventSetup/esTriggerMenuHandle.hh"
 
+// boost
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+
+// stl
+#include <cmath>
+#include <cstdio>
+#include <locale>
+#include <utility>
+#include <sstream>
 
 namespace tmeventsetup
 {
 
+// Strings
+static const std::string kUnit("Unit");
+static const std::string kSingle("Single");
+static const std::string kDouble("Double");
+static const std::string kTriple("Triple");
+static const std::string kQuad("Quad");
+
+// Tuple names
 const std::string esTriggerMenuHandle::TupleName[] =
 {
-  "Unit",
-  "Single",
-  "Double",
-  "Triple",
-  "Quad",
+  kUnit,
+  kSingle,
+  kDouble,
+  kTriple,
+  kQuad,
 };
 
 
@@ -86,6 +102,7 @@ esTriggerMenuHandle::getConditionName(const int type)
     case CaloCaloCorrelation: return "CaloCaloCorrelation";
     case CaloEsumCorrelation: return "CaloEsumCorrelation";
     case InvariantMass:       return "InvariantMass";
+    case TransverseMass:       return "TransverseMass";
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getConditionName: unknown condition type '" << type << "'");
       break;
@@ -131,9 +148,10 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
       break;
   }
 
-  std::string name = TupleName[1] + getObjectName(object.getType());
-  name += "_" + tmutil::toString(getHashUlong(token));
-  conditionHandle.setName(name);
+  // Set unique condition name
+  std::ostringstream name;
+  name << TupleName[1] << getObjectName(object.getType()) << "_" << getHashUlong(token);
+  conditionHandle.setName(name.str());
 
   esCondition& condition = conditionHandle;
   return condition;
@@ -162,14 +180,19 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
   {
     condition = getMassCondition(item, cuts_in_algo);
   }
+  else if (item.type == Function::TransverseMass)
+  {
+    condition = getMassCondition(item, cuts_in_algo);
+  }
   else
   {
     TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getFunctionCondition: unknown token: '" << token << "'");
   }
 
-  std::string condition_name = condition.getName();
-  condition_name += "_" + tmutil::toString(getHashUlong(token));
-  condition.setName(condition_name);
+  // Set condition name
+  std::ostringstream name;
+  name << condition.getName() << "_" << getHashUlong(token);
+  condition.setName(name.str());
 
   return condition;
 }
@@ -250,13 +273,14 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
       break;
   }
 
-  std::string condition_name = TupleName[size] + getObjectName(type);
-  conditionHandle.setName(condition_name);
+  // Set condition name
+  std::ostringstream name;
+  name << TupleName[size] << getObjectName(type);
+  conditionHandle.setName(name.str());
 
   esCondition& condition = conditionHandle;
   return condition;
 }
-
 
 
 esCondition
@@ -347,8 +371,9 @@ esTriggerMenuHandle::getDistCondition(const Function::Item& item,
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistCondition: unknown combination type = '" << combination << "'");
   }
 
-  std::string condition_name = getConditionName(conditionHandle.getType());
-  conditionHandle.setName(condition_name);
+  // Set condition name
+  std::string name = getConditionName(conditionHandle.getType());
+  conditionHandle.setName(name);
 
   esCondition& condition = conditionHandle;
   return condition;
@@ -376,9 +401,9 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
   }
 
   size_t nCut = item.cuts.size();
-  if (nCut == 0 or nCut > 2)  // mass/chgcor
+  if (nCut == 0 or nCut > 5)  // mass/chgcor/dR|(dEta/dPhi)/tbpt
   {
-    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassCondition: # of cuts not in [1,2] '" << nCut << "'");
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassCondition: # of cuts not in [1,5] '" << nCut << "'");
   }
 
   bool hasMassCut = false;
@@ -400,9 +425,14 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
     TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassCondition: no mass cut specified");
   }
 
-  conditionHandle.setType(InvariantMass);
-  std::string condition_name = getConditionName(conditionHandle.getType());
-  conditionHandle.setName(condition_name);
+  if (item.type == Function::InvariantMass)
+    conditionHandle.setType(InvariantMass);
+  else if (item.type == Function::TransverseMass)
+    conditionHandle.setType(TransverseMass);
+
+  // Set condition name
+  std::string name = getConditionName(conditionHandle.getType());
+  conditionHandle.setName(name);
 
   esCondition& condition = conditionHandle;
 
@@ -481,11 +511,11 @@ esTriggerMenuHandle::setScaleMap(const tmtable::Scale& scale)
       for (size_t jj = 0; jj < bins.size(); jj++)
       {
         const int id =
-          tmutil::convert<unsigned int>(bins.at(jj).find("number")->second);
+          boost::lexical_cast<unsigned int>(bins.at(jj).find("number")->second);
         const double min =
-          tmutil::convert<double>(bins.at(jj).find("minimum")->second);
+          boost::lexical_cast<double>(bins.at(jj).find("minimum")->second);
         const double max =
-          tmutil::convert<double>(bins.at(jj).find("maximum")->second);
+          boost::lexical_cast<double>(bins.at(jj).find("maximum")->second);
         scaleHandle.addBin(esBin(id, min, max));
       }
       scaleHandle.sortBins();
@@ -507,7 +537,7 @@ esTriggerMenuHandle::setExternalMap(const tmtable::ExtSignal& map)
   {
     std::string name = externals.at(ii).find("name")->second;
     std::string value = externals.at(ii).find("channel")->second;
-    external_map_[name] = tmutil::convert<unsigned int>(value);
+    external_map_[name] = boost::lexical_cast<unsigned int>(value);
     TM_LOG_DBG("esTriggerMenuHandle::setExternalMap: " << name << " " << value);
   }
 }
@@ -516,12 +546,8 @@ esTriggerMenuHandle::setExternalMap(const tmtable::ExtSignal& map)
 unsigned int
 esTriggerMenuHandle::getIndex(const esCutValue& cut, const std::string& range, const tmtable::Table& bins)
 {
-  char buf[BUFSIZ];
-  if (snprintf(buf, sizeof(buf), "%+23.16E", cut.value) < 0)
-  {
-    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getIndex: '" << cut.value << "'");
-  }
-  std::string real(buf);
+  // Convert double to string representation.
+  std::string real = boost::str(boost::format("%+23.16E") % cut.value);
   TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getIndex: value = " << real);
   TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getIndex: range = " << range);
 
@@ -564,14 +590,14 @@ esTriggerMenuHandle::setHwIndex(const tmtable::StringTableMap& bins)
         if ((type == Threshold) or (type == Count))
         {
           const esCutValue& cutValue = cut.getMinimum();
-          cut.setMinimum(getIndex(cutValue, "minimum", table));
+          cut.setMinimumIndex(getIndex(cutValue, "minimum", table));
         }
         else if ((type == Eta) or (type == Phi))
         {
           const esCutValue& minimum = cut.getMinimum();
-          cut.setMinimum(getIndex(minimum, "minimum", table));
+          cut.setMinimumIndex(getIndex(minimum, "minimum", table));
           const esCutValue& maximum = cut.getMaximum();
-          cut.setMaximum(getIndex(maximum, "maximum", table));
+          cut.setMaximumIndex(getIndex(maximum, "maximum", table));
         }
       }
     }
@@ -783,6 +809,7 @@ esTriggerMenuHandle::setFunctionCuts()
     {
       case DeltaPrecision:
       case MassPrecision:
+      case TwoBodyPtPrecision:
         break;
 
       default:
@@ -797,7 +824,7 @@ esTriggerMenuHandle::setFunctionCuts()
     }
   }
 
-  if (dictionary.empty()) return;
+  if (dictionary.empty()) return; // hm, why bail out?
 
 
   for (std::map<std::string, esCondition>::const_iterator cit = condition_map_.begin();
@@ -815,6 +842,7 @@ esTriggerMenuHandle::setFunctionCuts()
         case DeltaPhi:
         case DeltaR:
         case Mass:
+        case TwoBodyPt:
           break;
         default:
           continue;
@@ -832,30 +860,45 @@ esTriggerMenuHandle::setFunctionCuts()
       {
         key += "Mass";
         precision = dictionary.find(key)->second;
-        minimum = floor(minimum*minimum*0.5*pow10[precision])/pow10[precision];
-        maximum = ceil(maximum*maximum*0.5*pow10[precision])/pow10[precision];
+        // Note: calculate M^2/2 for mass
+        const double scale = tmutil::pow10(precision);
+        minimum = std::floor(minimum * minimum * 0.5 * scale) / scale;
+        maximum = std::ceil(maximum * maximum *0.5 * scale) / scale;
       }
       else if (type == DeltaR)
       {
         key += "Delta";
         precision = dictionary.find(key)->second;
-        minimum = floor(minimum*minimum*pow10[precision])/pow10[precision];
-        maximum = ceil(maximum*maximum*pow10[precision])/pow10[precision];
+        // Note: calculate dR^2 for dR
+        const double scale = tmutil::pow10(precision);
+        minimum = std::floor(minimum * minimum * scale) / scale;
+        maximum = std::ceil(maximum * maximum * scale) / scale;
+      }
+      else if (type == TwoBodyPt)
+      {
+        key += "TwoBodyPt";
+        precision = dictionary.find(key)->second;
+        const double scale = tmutil::pow10(precision);
+        minimum = std::floor(minimum * minimum * scale) / scale;
+        // TODO: actually this is not used for two body pt threshold
+        maximum = std::ceil(maximum * maximum * scale) / scale;
       }
       else
       {
         key += "Delta";
         precision = dictionary.find(key)->second;
-        minimum = floor(minimum*pow10[precision])/pow10[precision];
-        maximum = ceil(maximum*pow10[precision])/pow10[precision];
+        const double scale = tmutil::pow10(precision);
+        minimum = std::floor(minimum * scale) / scale;
+        maximum = std::ceil(maximum * scale) / scale;
       }
 
-      cut.setMinimum(minimum);
-      cut.setMinimum(precision);
-      cut.setMaximum(maximum);
-      cut.setMaximum(precision);
-    }
-  }
+      cut.setMinimumValue(minimum);
+      cut.setMinimumIndex(precision); // TODO: depricated
+      cut.setMaximumValue(maximum);
+      cut.setMaximumIndex(precision); // TODO: depricated
+      cut.setPrecision(precision);
+    } // for cut
+  } // for condition
 }
 
 

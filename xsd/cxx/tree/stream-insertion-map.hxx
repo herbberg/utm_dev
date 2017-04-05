@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/stream-insertion-map.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_STREAM_INSERTION_MAP_HXX
@@ -8,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <cstddef>  // std::size_t
 #include <typeinfo>
 
 #include <xsd/cxx/tree/elements.hxx>
@@ -33,7 +33,10 @@ namespace xsd
         register_type (const type_id&,
                        const qualified_name& name,
                        inserter,
-                       bool override = true);
+                       bool replace = true);
+
+        void
+        unregister_type (const type_id&);
 
         void
         insert (ostream<S>&, const type&);
@@ -82,7 +85,15 @@ namespace xsd
           bool
           operator() (const type_id* x, const type_id* y) const
           {
+            // XL C++ on AIX has buggy type_info::before() in that
+            // it returns true for two different type_info objects
+            // that happened to be for the same type.
+            //
+#if defined(__xlC__) && defined(_AIX)
+            return *x != *y && x->before (*y);
+#else
             return x->before (*y);
+#endif
           }
         };
 
@@ -99,7 +110,7 @@ namespace xsd
       struct stream_insertion_plate
       {
         static stream_insertion_map<S, C>* map;
-        static unsigned long count;
+        static std::size_t count;
 
         stream_insertion_plate ();
         ~stream_insertion_plate ();
@@ -109,7 +120,7 @@ namespace xsd
       stream_insertion_map<S, C>* stream_insertion_plate<id, S, C>::map = 0;
 
       template<unsigned long id, typename S, typename C>
-      unsigned long stream_insertion_plate<id, S, C>::count = 0;
+      std::size_t stream_insertion_plate<id, S, C>::count = 0;
 
 
       //
@@ -123,14 +134,15 @@ namespace xsd
 
       //
       //
-      template<typename S, typename X>
+      template<typename S, typename T>
       void
       inserter_impl (ostream<S>&, const type&);
 
-      template<unsigned long id, typename S, typename C, typename X>
+      template<unsigned long id, typename S, typename C, typename T>
       struct stream_insertion_initializer
       {
         stream_insertion_initializer (const C* name, const C* ns);
+        ~stream_insertion_initializer ();
       };
     }
   }

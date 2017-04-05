@@ -1,12 +1,13 @@
 // file      : xsd/cxx/parser/non-validating/xml-schema-pimpl.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_PARSER_NON_VALIDATING_XML_SCHEMA_PIMPL_HXX
 #define XSD_CXX_PARSER_NON_VALIDATING_XML_SCHEMA_PIMPL_HXX
 
 #include <string>
+
+#include <xsd/cxx/config.hxx> // XSD_AUTO_PTR
 
 #include <xsd/cxx/parser/non-validating/xml-schema-pskel.hxx>
 
@@ -451,17 +452,35 @@ namespace xsd
         };
 
         template <typename C>
-        struct id_pimpl: virtual id_pskel<C>, ncname_pimpl<C>
+        struct id_pimpl: virtual id_pskel<C>
         {
+          virtual void
+          _pre ();
+
+          virtual void
+          _characters (const ro_string<C>&);
+
           virtual std::basic_string<C>
           post_id ();
+
+        protected:
+          std::basic_string<C> str_;
         };
 
         template <typename C>
-        struct idref_pimpl: virtual idref_pskel<C>, ncname_pimpl<C>
+        struct idref_pimpl: virtual idref_pskel<C>
         {
+          virtual void
+          _pre ();
+
+          virtual void
+          _characters (const ro_string<C>&);
+
           virtual std::basic_string<C>
           post_idref ();
+
+        protected:
+          std::basic_string<C> str_;
         };
 
         template <typename C>
@@ -546,7 +565,7 @@ namespace xsd
           virtual void
           _characters (const ro_string<C>&);
 
-          virtual std::auto_ptr<buffer>
+          virtual XSD_AUTO_PTR<buffer>
           post_base64_binary ();
 
         protected:
@@ -564,7 +583,7 @@ namespace xsd
           virtual void
           _characters (const ro_string<C>&);
 
-          virtual std::auto_ptr<buffer>
+          virtual XSD_AUTO_PTR<buffer>
           post_hex_binary ();
 
         protected:

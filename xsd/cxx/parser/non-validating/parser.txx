@@ -1,6 +1,5 @@
 // file      : xsd/cxx/parser/non-validating/parser.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cassert>
@@ -114,7 +113,7 @@ namespace xsd
           //
           if (ns == xml::bits::xsi_namespace<C> () &&
               (name == xml::bits::type<C> () ||
-               name == xml::bits::nil<C> () ||
+               name == xml::bits::nil_lit<C> () ||
                name == xml::bits::schema_location<C> () ||
                name == xml::bits::no_namespace_schema_location<C> ()))
             return;
@@ -153,7 +152,7 @@ namespace xsd
           //
           if (ns == xml::bits::xsi_namespace<C> () &&
               (name == xml::bits::type<C> () ||
-               name == xml::bits::nil<C> () ||
+               name == xml::bits::nil_lit<C> () ||
                name == xml::bits::schema_location<C> () ||
                name == xml::bits::no_namespace_schema_location<C> ()))
             return;
@@ -276,7 +275,7 @@ namespace xsd
           //
           if (ns == xml::bits::xsi_namespace<C> () &&
               (name == xml::bits::type<C> () ||
-               name == xml::bits::nil<C> () ||
+               name == xml::bits::nil_lit<C> () ||
                name == xml::bits::schema_location<C> () ||
                name == xml::bits::no_namespace_schema_location<C> ()))
             return;
@@ -381,8 +380,9 @@ namespace xsd
 
         template <typename C>
         void list_base<C>::
-        _pre ()
+        _pre_impl ()
         {
+          simple_content<C>::_pre_impl ();
           buf_.clear ();
         }
 
@@ -445,7 +445,7 @@ namespace xsd
 
         template <typename C>
         void list_base<C>::
-        _post ()
+        _post_impl ()
         {
           // Handle the last item.
           //
@@ -454,6 +454,8 @@ namespace xsd
             ro_string<C> tmp (buf_); // Private copy ctor.
             _xsd_parse_item (tmp);
           }
+
+          simple_content<C>::_post_impl ();
         }
       }
     }

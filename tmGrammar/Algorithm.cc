@@ -73,7 +73,7 @@ struct grammar : qi::grammar<Iterator, Logic(), ascii::space_type>
     ;
 
     name
-      = lexeme[+char_("a-zA-Z0-9{}[],_.+-")]
+      = lexeme[+char_("a-zA-Z0-9{}[],_.+-")] - op - neg // TODO: possible weak precept
     ;
 
     op

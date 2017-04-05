@@ -1,6 +1,5 @@
 // file      : xsd/cxx/xml/dom/bits/error-handler-proxy.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsd/cxx/xml/string.hxx>
@@ -51,13 +50,12 @@ namespace xsd
                 }
               }
 
-              XMLSSize_t l (e.getLocation ()->getLineNumber ());
-              XMLSSize_t c (e.getLocation ()->getColumnNumber ());
+              xercesc::DOMLocator* loc (e.getLocation ());
 
               return eh_->handle (
-                transcode<C> (e.getLocation()->getURI ()),
-                (l == -1 ? 0 : static_cast<unsigned long> (l)),
-                (c == -1 ? 0 : static_cast<unsigned long> (c)),
+                transcode<C> (loc->getURI ()),
+                static_cast<unsigned long> (loc->getLineNumber ()),
+                static_cast<unsigned long> (loc->getColumnNumber ()),
                 s,
                 transcode<C> (e.getMessage ()));
             }

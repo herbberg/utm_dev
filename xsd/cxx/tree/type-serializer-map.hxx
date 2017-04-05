@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/type-serializer-map.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_TYPE_SERIALIZER_MAP_HXX
@@ -8,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <cstddef>  // std::size_t
 #include <typeinfo>
 
 #include <xercesc/dom/DOMElement.hpp>
@@ -15,6 +15,7 @@
 #include <xsd/cxx/tree/elements.hxx>
 
 #include <xsd/cxx/xml/qualified-name.hxx>
+#include <xsd/cxx/xml/dom/auto-ptr.hxx>
 #include <xsd/cxx/xml/dom/serialization-header.hxx> // namespace_infomap
 
 namespace xsd
@@ -34,13 +35,19 @@ namespace xsd
         register_type (const type_id&,
                        const qualified_name& name,
                        serializer,
-                       bool override = true);
+                       bool replace = true);
+
+        void
+        unregister_type (const type_id&);
 
         void
         register_element (const qualified_name& root,
                           const qualified_name& subst,
                           const type_id&,
                           serializer);
+
+        void
+        unregister_element (const qualified_name& root, const type_id&);
 
       public:
         void
@@ -61,13 +68,13 @@ namespace xsd
                    const type&) const;
 
         // Create DOMDocument with root element suitable for serializing
-        // X into it.
+        // x into it.
         //
-        xml::dom::auto_ptr<xercesc::DOMDocument>
+        XSD_DOM_AUTO_PTR<xercesc::DOMDocument>
         serialize (const C* name, // element name
                    const C* ns,   // element namespace
                    const xml::dom::namespace_infomap<C>&,
-                   const type&,
+                   const type& x,
                    unsigned long flags) const;
 
       public:
@@ -117,7 +124,15 @@ namespace xsd
           bool
           operator() (const type_id* x, const type_id* y) const
           {
+            // XL C++ on AIX has buggy type_info::before() in that
+            // it returns true for two different type_info objects
+            // that happened to be for the same type.
+            //
+#if defined(__xlC__) && defined(_AIX)
+            return *x != *y && x->before (*y);
+#else
             return x->before (*y);
+#endif
           }
         };
 
@@ -146,7 +161,9 @@ namespace xsd
         // Sets an xsi:type attribute corresponding to the type_info.
         //
         void
-        set_xsi_type (xercesc::DOMElement&, const type_info&) const;
+        set_xsi_type (xercesc::DOMElement& parent,
+                      xercesc::DOMElement&,
+                      const type_info&) const;
       };
 
 
@@ -156,7 +173,7 @@ namespace xsd
       struct type_serializer_plate
       {
         static type_serializer_map<C>* map;
-        static unsigned long count;
+        static std::size_t count;
 
         type_serializer_plate ();
         ~type_serializer_plate ();
@@ -166,7 +183,7 @@ namespace xsd
       type_serializer_map<C>* type_serializer_plate<id, C>::map = 0;
 
       template<unsigned long id, typename C>
-      unsigned long type_serializer_plate<id, C>::count = 0;
+      std::size_t type_serializer_plate<id, C>::count = 0;
 
 
       //
@@ -180,22 +197,34 @@ namespace xsd
 
       //
       //
-      template<typename X>
+      template<typename T>
       void
       serializer_impl (xercesc::DOMElement&, const type&);
 
 
-      template<unsigned long id, typename C, typename X>
+      //
+      //
+      template<unsigned long id, typename C, typename T>
       struct type_serializer_initializer
       {
-        // Register type.
-        //
         type_serializer_initializer (const C* name, const C* ns);
+        ~type_serializer_initializer ();
+      };
 
-        // Register element.
-        //
-        type_serializer_initializer (const C* root_name, const C* root_ns,
-                                     const C* subst_name, const C* subst_ns);
+
+      //
+      //
+      template<unsigned long id, typename C, typename T>
+      struct element_serializer_initializer
+      {
+        element_serializer_initializer (const C* root_name, const C* root_ns,
+                                        const C* subst_name, const C* subst_ns);
+
+        ~element_serializer_initializer ();
+
+      private:
+        const C* root_name_;
+        const C* root_ns_;
       };
     }
   }
@@ -204,4 +233,3 @@ namespace xsd
 #include <xsd/cxx/tree/type-serializer-map.txx>
 
 #endif // XSD_CXX_TREE_TYPE_SERIALIZER_MAP_HXX
-

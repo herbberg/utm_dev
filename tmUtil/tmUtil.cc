@@ -3,15 +3,6 @@
  * Created:     14 Feb 2005
  */
 
-/** @todo */
-/** @warnings */
-
-/*====================================================================*
- * declarations
- *====================================================================*/
-/*--------------------------------------------------------------------*
- * headers
- *--------------------------------------------------------------------*/
 #include "tmUtil/tmUtil.hh"
 
 #include <algorithm>
@@ -25,55 +16,109 @@
 #include <sys/stat.h>
 
 
-/*====================================================================*
- * implementation
- *====================================================================*/
-// ---------------------------------------------------------------------
-// functions
-// ---------------------------------------------------------------------
 namespace tmutil
 {
 
-// removes extra whites
-std::string
-trim(std::string const& source,
-     char const* whites)
+double
+pow10(unsigned int exponent)
 {
-  std::string result(source);
-  std::string::size_type index = result.find_last_not_of(whites);
-  if (index != std::string::npos) result.erase(++index);
+  static double const base10[] =
+  {
+    1e0,   1e1,   1e2,   1e3,   1e4,   1e5,   1e6,   1e7,   1e8,   1e9,
+    1e10,  1e11,  1e12,  1e13,  1e14,  1e15,  1e16,  1e17,  1e18,  1e19,
+    1e20,  1e21,  1e22,  1e23,  1e24,  1e25,  1e26,  1e27,  1e28,  1e29,
+    1e30,  1e31,  1e32,  1e33,  1e34,  1e35,  1e36,  1e37,  1e38,  1e39,
+    1e40,  1e41,  1e42,  1e43,  1e44,  1e45,  1e46,  1e47,  1e48,  1e49,
+    1e50,  1e51,  1e52,  1e53,  1e54,  1e55,  1e56,  1e57,  1e58,  1e59,
+    1e60,  1e61,  1e62,  1e63,  1e64,  1e65,  1e66,  1e67,  1e68,  1e69,
+    1e70,  1e71,  1e72,  1e73,  1e74,  1e75,  1e76,  1e77,  1e78,  1e79,
+    1e80,  1e81,  1e82,  1e83,  1e84,  1e85,  1e86,  1e87,  1e88,  1e89,
+    1e90,  1e91,  1e92,  1e93,  1e94,  1e95,  1e96,  1e97,  1e98,  1e99,
+    1e100, 1e101, 1e102, 1e103, 1e104, 1e105, 1e106, 1e107, 1e108, 1e109,
+    1e110, 1e111, 1e112, 1e113, 1e114, 1e115, 1e116, 1e117, 1e118, 1e119,
+    1e120, 1e121, 1e122, 1e123, 1e124, 1e125, 1e126, 1e127, 1e128, 1e129,
+    1e130, 1e131, 1e132, 1e133, 1e134, 1e135, 1e136, 1e137, 1e138, 1e139,
+    1e140, 1e141, 1e142, 1e143, 1e144, 1e145, 1e146, 1e147, 1e148, 1e149,
+    1e150, 1e151, 1e152, 1e153, 1e154, 1e155, 1e156, 1e157, 1e158, 1e159,
+    1e160, 1e161, 1e162, 1e163, 1e164, 1e165, 1e166, 1e167, 1e168, 1e169,
+    1e170, 1e171, 1e172, 1e173, 1e174, 1e175, 1e176, 1e177, 1e178, 1e179,
+    1e180, 1e181, 1e182, 1e183, 1e184, 1e185, 1e186, 1e187, 1e188, 1e189,
+    1e190, 1e191, 1e192, 1e193, 1e194, 1e195, 1e196, 1e197, 1e198, 1e199,
+    1e200, 1e201, 1e202, 1e203, 1e204, 1e205, 1e206, 1e207, 1e208, 1e209,
+    1e210, 1e211, 1e212, 1e213, 1e214, 1e215, 1e216, 1e217, 1e218, 1e219,
+    1e220, 1e221, 1e222, 1e223, 1e224, 1e225, 1e226, 1e227, 1e228, 1e229,
+    1e230, 1e231, 1e232, 1e233, 1e234, 1e235, 1e236, 1e237, 1e238, 1e239,
+    1e240, 1e241, 1e242, 1e243, 1e244, 1e245, 1e246, 1e247, 1e248, 1e249,
+    1e250, 1e251, 1e252, 1e253, 1e254, 1e255, 1e256, 1e257, 1e258, 1e259,
+    1e260, 1e261, 1e262, 1e263, 1e264, 1e265, 1e266, 1e267, 1e268, 1e269,
+    1e270, 1e271, 1e272, 1e273, 1e274, 1e275, 1e276, 1e277, 1e278, 1e279,
+    1e280, 1e281, 1e282, 1e283, 1e284, 1e285, 1e286, 1e287, 1e288, 1e289,
+    1e290, 1e291, 1e292, 1e293, 1e294, 1e295, 1e296, 1e297, 1e298, 1e299,
+    1e300, 1e301, 1e302, 1e303, 1e304, 1e305, 1e306, 1e307, 1e308,
+  };
 
-  index = result.find_first_not_of(whites);
-  if (index != std::string::npos)
-  {
-    result.erase(0, index);
-  }
-  else
-  {
-    result.erase();
-  } 
- 
-  return result;
+  if (exponent >= sizeof(base10)/sizeof(double))
+    TM_FATAL_ERROR("tmutil::pow10(unsigned int): exponent of " << exponent << " exceeded range");
+
+  return base10[exponent];
 }
 
-
-
-void
-tokenise(const std::string& str,
-         std::vector<std::string>& tokens,
-         const std::string& delimiters)
+unsigned long
+MurmurHashNeutral2(const void* key, int len, unsigned int seed)
 {
-  std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-  std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+  // 'm' and 'r' are mixing constants generated offline.
+  // They're not really 'magic', they just happen to work well.
 
-  while (std::string::npos != pos || std::string::npos != lastPos)
+  const unsigned int m = 0x5bd1e995;
+  const int r = 24;
+
+  // Initialize the hash to a 'random' value
+
+  unsigned int h = seed ^ len;
+
+  // Mix 4 bytes at a time into the hash
+
+  const unsigned char * data = (const unsigned char *)key;
+
+  while(len >= 4)
   {
-    tokens.push_back(str.substr(lastPos, pos - lastPos));
-    lastPos = str.find_first_not_of(delimiters, pos);
-    pos = str.find_first_of(delimiters, lastPos);
-  }
-}
+    unsigned int k;
 
+    k  = data[0];
+    k |= data[1] << 8;
+    k |= data[2] << 16;
+    k |= data[3] << 24;
+
+    k *= m;
+    k ^= k >> r;
+    k *= m;
+
+    h *= m;
+    h ^= k;
+
+    data += 4;
+    len -= 4;
+  }
+
+  // Handle the last few bytes of the input array
+
+  switch(len)
+  {
+  case 3: h ^= data[2] << 16;
+  case 2: h ^= data[1] << 8;
+  case 1: h ^= data[0];
+          h *= m;
+  };
+
+  // Do a few final mixes of the hash to ensure the last few
+  // bytes are well-incorporated.
+
+  h ^= h >> 13;
+  h *= m;
+  h ^= h >> 15;
+
+  return h;
+}
 
 int
 regex_compile(regex_t* regex,
@@ -125,182 +170,6 @@ regex_match(regex_t* regex,
 
   return EXIT_SUCCESS;
 }
-
-
-template<typename T> T
-convert(const std::string& ss)
-{
-  T data;
-  std::istringstream(ss) >> data;
-  return data;
-}
-
-
-template<typename T> std::string toString(const T d)
-{
-  return static_cast<std::ostringstream*>(&(std::ostringstream() << d))->str();
-}
-
-
-template<typename T> std::string toString(const std::vector<T>& d)
-{
-  std::string rc;
-  for (size_t ii = 0; ii < d.size(); ii++)
-  {
-    std::ostringstream oss;
-    oss << d.at(ii);
-    rc += oss.str() + " ";
-  }
-  return rc;
-}
-
-
-void
-toLower(std::string& str)
-{
-  std::transform(str.begin(), str.end(), str.begin(), tolower);
-}
-
-
-void
-unquote(std::string& str)
-{
-  str.erase(std::remove(str.begin(), str.end(), '\"'), str.end());
-}
-
-
-void
-join(const std::vector<std::string>& array,
-     std::string& result,
-     const std::string& delimiter)
-{
-  for (size_t ii = 0; ii < array.size(); ii++)
-  {
-    if (not result.empty())
-    {
-      result += delimiter + array.at(ii);
-    }
-    else
-    {
-      result += array.at(ii);
-    }
-  }
-}
-
-
-bool
-replace(std::string& text,
-        const std::string& from,
-        const std::string& to,
-        const bool exactMatch)
-{
-  size_t p = 0;
-  while ((p = text.find(from, p)) != std::string::npos)
-  {
-    bool replace = true;
-    const size_t index = p + from.length();
-    if (exactMatch)
-    {
-      if (index < text.size())
-      {
-        if (text.at(index) != ' ') replace = false;
-      }
-    }
-    if (replace) text.replace(p, from.length(), to);
-    p += to.length();
-    if (p >= text.size()) break;
-  }
-  return true;
-}
-
-
-std::string
-getHash(const std::string& text)
-{
-  std::locale loc;
-  const std::collate<char>& coll = std::use_facet<std::collate<char> >(loc);
-  size_t hash = coll.hash(text.data(), text.data() + text.length());
-  std::ostringstream oss;
-  oss << hash;
-  return oss.str();
-}
-
-
-std::string
-getcwd()
-{
-  std::string cwd;
-
-  char buf[FILENAME_MAX];
-  if (::getcwd(buf, sizeof(buf)) != NULL)
-  {
-    cwd = buf;
-  }
-  else
-  {
-    ::perror("tmutil::getcwd: ");
-  }
-
-  return cwd;
-}
-
-
-std::pair<std::string, std::string>
-splitpath(const std::string& path)
-{
-  char buf[FILENAME_MAX];
-
-  strncpy(buf, path.c_str(), sizeof(buf));
-  const char* p = ::dirname(buf);
-  std::string before(p);
-
-  strncpy(buf, path.c_str(), sizeof(buf));
-  p = ::basename(buf);
-  std::string after(p);
-
-  return std::make_pair(before, after);
-}
-
-
-void
-chdir(const std::string& path)
-{
-  std::string dir(path);
-  struct stat st;
-  lstat(path.c_str(), &st);
-  if(not S_ISDIR(st.st_mode))
-  {
-    size_t found = path.find_last_of("/\\");
-    dir = path.substr(0, found);
-  }
-
-  TM_LOG_DBG("dir = " << dir);
-
-  if (::chdir(dir.c_str()))
-  {
-    ::perror("tmutil::chdir: ");
-    TM_LOG_ERR(getcwd() << " -> " << dir);
-  }
-}
-
-
-/*--------------------------------------------------------------------*
- * template instantiations
- *--------------------------------------------------------------------*/
-template int convert<int>(const std::string& s);
-template unsigned int convert<unsigned int>(const std::string& s);
-template bool convert<bool>(const std::string& s);
-template double convert<double>(const std::string& s);
-
-template std::string toString<int>(const int d);
-template std::string toString<bool>(const bool d);
-template std::string toString<long>(const long d);
-template std::string toString<size_t>(const size_t d);
-template std::string toString<unsigned int>(const unsigned int d);
-template std::string toString<double>(const double d);
-template std::string toString(const std::vector<int>& d);
-template std::string toString(const std::vector<bool>& d);
-template std::string toString(const std::vector<std::string>& d);
 
 } // namespace tmutil
 

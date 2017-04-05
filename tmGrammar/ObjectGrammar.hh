@@ -38,7 +38,7 @@ struct Item_
               << "' comp = '" << comparison
               << "' thre = '" << threshold
               << "' bx_o = '" << bx_offset
-              << "' cuts = '" << cuts 
+              << "' cuts = '" << cuts
               << "'"
               << std::endl;
   }

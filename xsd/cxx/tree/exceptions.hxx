@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/exceptions.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 /**
@@ -190,6 +189,16 @@ namespace xsd
         {
           return message_;
         }
+
+        //@cond
+
+        // Default c-tor that shouldn't be. Needed when we completely
+        // instantiate std::vector in diagnostics below.
+        //
+        error ();
+
+        //@endcond
+
 
       private:
         tree::severity severity_;
@@ -652,6 +661,72 @@ namespace xsd
       };
 
       /**
+       * @brief Exception indicating that %parsing or %serialization
+       * information is not available for an element.
+       *
+       * @nosubgrouping
+       */
+      template <typename C>
+      class no_element_info: public exception<C>
+      {
+      public:
+        virtual
+        ~no_element_info () throw ();
+
+        /**
+         * @brief Initialize an instance with the element description.
+         *
+         * @param element_name An element name.
+         * @param element_ns An element namespace.
+         */
+        no_element_info (const std::basic_string<C>& element_name,
+                         const std::basic_string<C>& element_ns);
+
+      public:
+        /**
+         * @brief Get the element name.
+         *
+         * @return The element name.
+         */
+        const std::basic_string<C>&
+        element_name () const
+        {
+          return element_name_;
+        }
+
+        /**
+         * @brief Get the element namespace.
+         *
+         * @return The element namespace.
+         */
+        const std::basic_string<C>&
+        element_namespace () const
+        {
+          return element_namespace_;
+        }
+
+        /**
+         * @brief Get %exception description.
+         *
+         * @return A C %string describing the %exception.
+         */
+        virtual const char*
+        what () const throw ();
+
+      protected:
+        //@cond
+
+        virtual void
+        print (std::basic_ostream<C>&) const;
+
+        //@endcond
+
+      private:
+        std::basic_string<C> element_name_;
+        std::basic_string<C> element_namespace_;
+      };
+
+      /**
        * @brief Exception indicating that the types are not related by
        * inheritance.
        *
@@ -867,61 +942,6 @@ namespace xsd
 
 
       /**
-       * @brief Exception indicating that a namespace-prefix mapping was
-       * not provided.
-       *
-       * @nosubgrouping
-       */
-      template <typename C>
-      class no_namespace_mapping: public exception<C>
-      {
-      public:
-        virtual
-        ~no_namespace_mapping () throw ();
-
-        /**
-         * @brief Initialize an instance with the namespace for which
-         * the namespace-prefix mapping was not provided.
-         *
-         * @param ns A namespace.
-         */
-        no_namespace_mapping (const std::basic_string<C>& ns);
-
-      public:
-        /**
-         * @brief Get the namespace for which the namespace-prefix
-         * mapping was not provided.
-         *
-         * @return The namespace.
-         */
-        const std::basic_string<C>&
-        namespace_ () const
-        {
-          return namespace__;
-        }
-
-        /**
-         * @brief Get %exception description.
-         *
-         * @return A C %string describing the %exception.
-         */
-        virtual const char*
-        what () const throw ();
-
-      protected:
-        //@cond
-
-        virtual void
-        print (std::basic_ostream<C>&) const;
-
-        //@endcond
-
-      private:
-        std::basic_string<C> namespace__;
-      };
-
-
-      /**
        * @brief Exception indicating that a prefix-namespace mapping was
        * not provided.
        *
@@ -977,34 +997,6 @@ namespace xsd
 
 
       /**
-       * @brief Exception indicating that the xsi prefix is used for
-       * another namespace.
-       *
-       * @nosubgrouping
-       */
-      template <typename C>
-      class xsi_already_in_use: public exception<C>
-      {
-      public:
-        /**
-         * @brief Get %exception description.
-         *
-         * @return A C %string describing the %exception.
-         */
-        virtual const char*
-        what () const throw ();
-
-      protected:
-        //@cond
-
-        virtual void
-        print (std::basic_ostream<C>&) const;
-
-        //@endcond
-      };
-
-
-      /**
        * @brief Exception indicating that the size argument exceeds
        * the capacity argument.
        *
@@ -1039,5 +1031,3 @@ namespace xsd
 #include <xsd/cxx/tree/exceptions.txx>
 
 #endif  // XSD_CXX_TREE_EXCEPTIONS_HXX
-
-#include <xsd/cxx/tree/exceptions.ixx>

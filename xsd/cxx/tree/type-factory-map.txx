@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/type-factory-map.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xercesc/validators/schema/SchemaSymbols.hpp>
@@ -38,7 +37,7 @@ namespace xsd
           &factory_impl<type>,
           false);
 
-        typedef simple_type<type> simple_type;
+        typedef simple_type<C, type> simple_type;
         register_type (
           qualified_name (bits::any_simple_type<C> (), xsd),
           &factory_impl<simple_type>,
@@ -104,7 +103,7 @@ namespace xsd
           &factory_impl<id>,
           false);
 
-        typedef idref<type, C, ncname> idref;
+        typedef idref<C, ncname, type> idref;
         register_type (
           qualified_name (bits::idref<C> (), xsd),
           &factory_impl<idref>,
@@ -226,10 +225,17 @@ namespace xsd
       void type_factory_map<C>::
       register_type (const qualified_name& name,
                      factory f,
-                     bool override)
+                     bool replace)
       {
-        if (override || type_map_.find (name) == type_map_.end ())
+        if (replace || type_map_.find (name) == type_map_.end ())
           type_map_[name] = f;
+      }
+
+      template <typename C>
+      void type_factory_map<C>::
+      unregister_type (const qualified_name& name)
+      {
+        type_map_.erase (name);
       }
 
       template <typename C>
@@ -242,6 +248,22 @@ namespace xsd
       }
 
       template <typename C>
+      void type_factory_map<C>::
+      unregister_element (const qualified_name& root,
+                          const qualified_name& subst)
+      {
+        typename element_map::iterator i (element_map_.find (root));
+
+        if (i != element_map_.end ())
+        {
+          i->second.erase (subst);
+
+          if (i->second.empty ())
+            element_map_.erase (i);
+        }
+      }
+
+      template <typename C>
       typename type_factory_map<C>::factory type_factory_map<C>::
       find (const qualified_name& name) const
       {
@@ -250,7 +272,7 @@ namespace xsd
       }
 
       template <typename C>
-      std::auto_ptr<type> type_factory_map<C>::
+      XSD_AUTO_PTR<type> type_factory_map<C>::
       create (const C* name,
               const C* ns,
               factory static_type,
@@ -284,7 +306,7 @@ namespace xsd
         }
 
         if (f == 0)
-          return std::auto_ptr<type> (0); // No match.
+          return XSD_AUTO_PTR<type> (); // No match.
 
         // Check for xsi:type
         //
@@ -302,12 +324,11 @@ namespace xsd
       }
 
       template <typename C>
-      template <typename X>
-      std::auto_ptr<type> type_factory_map<C>::
+      template <typename T>
+      XSD_AUTO_PTR<type> type_factory_map<C>::
       traits_adapter (const xercesc::DOMElement& e, flags f, container* c)
       {
-        std::auto_ptr<X> r (traits<X, C>::create (e, f, c));
-        return std::auto_ptr<type> (r.release ());
+        return XSD_AUTO_PTR<type> (traits<T, C>::create (e, f, c));
       }
 
       template <typename C>
@@ -404,32 +425,54 @@ namespace xsd
 
       //
       //
-      template<typename X>
-      std::auto_ptr<type>
+      template<typename T>
+      XSD_AUTO_PTR<type>
       factory_impl (const xercesc::DOMElement& e, flags f, container* c)
       {
-        return std::auto_ptr<type> (new X (e, f, c));
+        return XSD_AUTO_PTR<type> (new T (e, f, c));
       }
 
       //
       //
-      template<unsigned long id, typename C, typename X>
-      type_factory_initializer<id, C, X>::
+      template<unsigned long id, typename C, typename T>
+      type_factory_initializer<id, C, T>::
       type_factory_initializer (const C* name, const C* ns)
+          : name_ (name), ns_ (ns)
       {
         type_factory_map_instance<id, C> ().register_type (
-          xml::qualified_name<C> (name, ns), &factory_impl<X>);
+          xml::qualified_name<C> (name, ns), &factory_impl<T>);
       }
 
-      template<unsigned long id, typename C, typename X>
-      type_factory_initializer<id, C, X>::
-      type_factory_initializer (const C* root_name, const C* root_ns,
+      template<unsigned long id, typename C, typename T>
+      type_factory_initializer<id, C, T>::
+      ~type_factory_initializer ()
+      {
+        type_factory_map_instance<id, C> ().unregister_type (
+          xml::qualified_name<C> (name_, ns_));
+      }
+
+      //
+      //
+      template<unsigned long id, typename C, typename T>
+      element_factory_initializer<id, C, T>::
+      element_factory_initializer (const C* root_name, const C* root_ns,
                                 const C* subst_name, const C* subst_ns)
+          : root_name_ (root_name), root_ns_ (root_ns),
+            subst_name_ (subst_name), subst_ns_ (subst_ns)
       {
         type_factory_map_instance<id, C> ().register_element (
           xml::qualified_name<C> (root_name, root_ns),
           xml::qualified_name<C> (subst_name, subst_ns),
-          &factory_impl<X>);
+          &factory_impl<T>);
+      }
+
+      template<unsigned long id, typename C, typename T>
+      element_factory_initializer<id, C, T>::
+      ~element_factory_initializer ()
+      {
+        type_factory_map_instance<id, C> ().unregister_element (
+          xml::qualified_name<C> (root_name_, root_ns_),
+          xml::qualified_name<C> (subst_name_, subst_ns_));
       }
     }
   }

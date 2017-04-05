@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/type-factory-map.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_TYPE_FACTORY_MAP_HXX
@@ -8,9 +7,12 @@
 
 #include <map>
 #include <string>
-#include <memory> // std::auto_ptr
+#include <memory>  // std::auto_ptr/unique_ptr
+#include <cstddef> // std::size_t
 
 #include <xercesc/dom/DOMElement.hpp>
+
+#include <xsd/cxx/config.hxx> // XSD_AUTO_PTR
 
 #include <xsd/cxx/tree/elements.hxx>
 #include <xsd/cxx/xml/qualified-name.hxx>
@@ -25,23 +27,30 @@ namespace xsd
       struct type_factory_map
       {
         typedef xml::qualified_name<C> qualified_name;
-        typedef std::auto_ptr<type> (*factory) (const xercesc::DOMElement&,
-                                                flags,
-                                                container*);
+        typedef XSD_AUTO_PTR<type> (*factory) (const xercesc::DOMElement&,
+                                               flags,
+                                               container*);
       public:
         type_factory_map ();
 
         void
         register_type (const qualified_name& name,
                        factory,
-                       bool override = true);
+                       bool replace = true);
+
+        void
+        unregister_type (const qualified_name& name);
 
         void
         register_element (const qualified_name& root,
                           const qualified_name& subst,
                           factory);
 
-        std::auto_ptr<type>
+        void
+        unregister_element (const qualified_name& root,
+                            const qualified_name& subst);
+
+        XSD_AUTO_PTR<type>
         create (const C* name, // element name
                 const C* ns,   // element namespace
                 factory static_type,
@@ -57,8 +66,8 @@ namespace xsd
         find (const qualified_name& name) const;
 
       private:
-        template <typename X>
-        static std::auto_ptr<type>
+        template <typename T>
+        static XSD_AUTO_PTR<type>
         traits_adapter (const xercesc::DOMElement&, flags, container*);
 
       private:
@@ -98,7 +107,7 @@ namespace xsd
       struct type_factory_plate
       {
         static type_factory_map<C>* map;
-        static unsigned long count;
+        static std::size_t count;
 
         type_factory_plate ();
         ~type_factory_plate ();
@@ -108,7 +117,7 @@ namespace xsd
       type_factory_map<C>* type_factory_plate<id, C>::map = 0;
 
       template<unsigned long id, typename C>
-      unsigned long type_factory_plate<id, C>::count = 0;
+      std::size_t type_factory_plate<id, C>::count = 0;
 
 
       //
@@ -123,23 +132,38 @@ namespace xsd
 
       //
       //
-      template<typename X>
-      std::auto_ptr<type>
+      template<typename T>
+      XSD_AUTO_PTR<type>
       factory_impl (const xercesc::DOMElement&, flags, container*);
 
       //
       //
-      template<unsigned long id, typename C, typename X>
+      template<unsigned long id, typename C, typename T>
       struct type_factory_initializer
       {
-        // Register type.
-        //
         type_factory_initializer (const C* name, const C* ns);
+        ~type_factory_initializer ();
 
-        // Register element.
-        //
-        type_factory_initializer (const C* root_name, const C* root_ns,
-                                  const C* subst_name, const C* subst_ns);
+      private:
+        const C* name_;
+        const C* ns_;
+      };
+
+      //
+      //
+      template<unsigned long id, typename C, typename T>
+      struct element_factory_initializer
+      {
+        element_factory_initializer (const C* root_name, const C* root_ns,
+                                     const C* subst_name, const C* subst_ns);
+
+        ~element_factory_initializer ();
+
+      private:
+        const C* root_name_;
+        const C* root_ns_;
+        const C* subst_name_;
+        const C* subst_ns_;
       };
     }
   }

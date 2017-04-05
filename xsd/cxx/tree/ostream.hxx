@@ -1,12 +1,16 @@
 // file      : xsd/cxx/tree/ostream.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_OSTREAM_HXX
 #define XSD_CXX_TREE_OSTREAM_HXX
 
+#include <map>
+#include <string>
+#include <memory>  // std::auto_ptr/unique_ptr
 #include <cstddef> // std::size_t
+
+#include <xsd/cxx/config.hxx> // XSD_AUTO_PTR
 
 namespace xsd
 {
@@ -17,106 +21,106 @@ namespace xsd
       class ostream_common
       {
       public:
-        template <typename X>
+        template <typename T>
         struct as_size
         {
-          explicit as_size (X x) : x_ (x) {}
-          X x_;
+          explicit as_size (T x) : x_ (x) {}
+          T x_;
         };
 
 
         // 8-bit
         //
-        template <typename X>
+        template <typename T>
         struct as_int8
         {
-          explicit as_int8 (X x) : x_ (x) {}
-          X x_;
+          explicit as_int8 (T x) : x_ (x) {}
+          T x_;
         };
 
-        template <typename X>
+        template <typename T>
         struct as_uint8
         {
-          explicit as_uint8 (X x) : x_ (x) {}
-          X x_;
+          explicit as_uint8 (T x) : x_ (x) {}
+          T x_;
         };
 
 
         // 16-bit
         //
-        template <typename X>
+        template <typename T>
         struct as_int16
         {
-          explicit as_int16 (X x) : x_ (x) {}
-          X x_;
+          explicit as_int16 (T x) : x_ (x) {}
+          T x_;
         };
 
-        template <typename X>
+        template <typename T>
         struct as_uint16
         {
-          explicit as_uint16 (X x) : x_ (x) {}
-          X x_;
+          explicit as_uint16 (T x) : x_ (x) {}
+          T x_;
         };
 
 
         // 32-bit
         //
-        template <typename X>
+        template <typename T>
         struct as_int32
         {
-          explicit as_int32 (X x) : x_ (x) {}
-          X x_;
+          explicit as_int32 (T x) : x_ (x) {}
+          T x_;
         };
 
-        template <typename X>
+        template <typename T>
         struct as_uint32
         {
-          explicit as_uint32 (X x) : x_ (x) {}
-          X x_;
+          explicit as_uint32 (T x) : x_ (x) {}
+          T x_;
         };
 
 
         // 64-bit
         //
-        template <typename X>
+        template <typename T>
         struct as_int64
         {
-          explicit as_int64 (X x) : x_ (x) {}
-          X x_;
+          explicit as_int64 (T x) : x_ (x) {}
+          T x_;
         };
 
-        template <typename X>
+        template <typename T>
         struct as_uint64
         {
-          explicit as_uint64 (X x) : x_ (x) {}
-          X x_;
+          explicit as_uint64 (T x) : x_ (x) {}
+          T x_;
         };
 
 
         // Boolean
         //
-        template <typename X>
+        template <typename T>
         struct as_bool
         {
-          explicit as_bool (X x) : x_ (x) {}
-          X x_;
+          explicit as_bool (T x) : x_ (x) {}
+          T x_;
         };
 
 
         // Floating-point
         //
-        template <typename X>
+        template <typename T>
         struct as_float32
         {
-          explicit as_float32 (X x) : x_ (x) {}
-          X x_;
+          explicit as_float32 (T x) : x_ (x) {}
+          T x_;
         };
 
-        template <typename X>
+        template <typename T>
         struct as_float64
         {
-          explicit as_float64 (X x) : x_ (x) {}
-          X x_;
+          explicit as_float64 (T x) : x_ (x) {}
+          T x_;
         };
       };
 
@@ -126,7 +130,7 @@ namespace xsd
       public:
         explicit
         ostream (S& s)
-            : s_ (s)
+            : s_ (s), seq_ (1)
         {
         }
 
@@ -136,13 +140,55 @@ namespace xsd
           return s_;
         }
 
+        // If the string is not in the pool, add it and return 0. Otherwise
+        // return the string's pool id. In the former case the application
+        // should serialize the original string.
+        //
+        // The returned ids are sequential and start with 1. 0 is reserved
+        // as a special marker to be used by the application for the first
+        // encounter of the string.
+        //
+        template <typename C>
+        std::size_t
+        pool_string (const std::basic_string<C>& s)
+        {
+          typedef pool_impl<C> pool_type;
+
+          if (pool_.get () == 0)
+            pool_.reset (new pool_type);
+
+          pool_type& p (*static_cast<pool_type*> (pool_.get ()));
+
+          std::pair<typename pool_type::iterator, bool> r (
+            p.insert (std::pair<std::basic_string<C>, std::size_t> (s, seq_)));
+
+          if (!r.second)
+            return r.first->second;
+
+          seq_++;
+          return 0;
+        }
+
       private:
         ostream (const ostream&);
         ostream&
         operator= (const ostream&);
 
       private:
+        struct pool
+        {
+          virtual
+          ~pool () {}
+        };
+
+        template <typename C>
+        struct pool_impl: pool, std::map<std::basic_string<C>, std::size_t>
+        {
+        };
+
         S& s_;
+        std::size_t seq_;
+        XSD_AUTO_PTR<pool> pool_;
       };
 
 

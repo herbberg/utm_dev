@@ -4,12 +4,6 @@
 /*--------------------------------------------------------------------*
  * headers
  *--------------------------------------------------------------------*/
-#include <limits.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <cstddef>
-#include <cerrno>
-#include <string.h>
 
 #include "tmUtil/tmUtil.hh"
 #include "tmTable/tmTable.hh"
@@ -17,6 +11,13 @@
 #include "tmXsd/tree2table.hh"
 #include "tmXsd/table2tree.hh"
 
+#include <boost/filesystem.hpp>
+
+#include <limits.h>
+#include <cstdlib>
+#include <unistd.h>
+#include <cstddef>
+#include <cerrno>
 
 /*====================================================================*
  * implementation
@@ -29,8 +30,9 @@ tmtable::Scale::getKeyForBin(const tmtable::Row& scale)
 {
   const std::string object = tmxsd::getValue(scale, "object");
   const std::string type = tmxsd::getValue(scale, "type");
-  std::string key = object + "-" + type;
-  return key;
+  std::ostringstream key;
+  key << object << "-" << type;
+  return key.str();
 }
 
 
@@ -42,14 +44,17 @@ tmtable::xml2scale(const char* fileName,
                    tmtable::Scale& scale,
                    const bool debug)
 {
-  char fullpath[PATH_MAX];
-  if (realpath(fileName, fullpath) == NULL)
+  // Get absolute path to file.
+  boost::filesystem::path abspath = boost::filesystem::system_complete(fileName);
+
+  // Check if file exists.
+  if (not boost::filesystem::exists(abspath))
   {
-    TM_FATAL_ERROR("tmtable::xml2scale: " << tmutil::getcwd() << " " << fileName);
+    TM_FATAL_ERROR("tmtable::xml2scale: file \"" << fileName << "\" does not exist.");
   }
 
   std::string message;
-  tmxsd::scale_set scale_set = tmxsd::xml2scale_set(fullpath, message, debug);
+  tmxsd::scale_set scale_set = tmxsd::xml2scale_set(abspath.string().c_str(), message, debug);
   if (message.empty())
   {
     tmxsd::tree2scale(scale_set, scale);
@@ -64,14 +69,17 @@ tmtable::xml2extSignal(const char* fileName,
                        tmtable::ExtSignal& extSignal,
                        const bool debug)
 {
-  char fullpath[PATH_MAX];
-  if (realpath(fileName, fullpath) == NULL)
+  // Get absolute path to file.
+  boost::filesystem::path abspath = boost::filesystem::system_complete(fileName);
+
+  // Check if file exists.
+  if (not boost::filesystem::exists(abspath))
   {
-    TM_FATAL_ERROR("tmtable::xml2extSignal: " << tmutil::getcwd() << " " << fileName);
+    TM_FATAL_ERROR("tmtable::xml2extSignal: file \"" << fileName << "\" does not exist.");
   }
 
   std::string message;
-  tmxsd::ext_signal_set ext_signal_set = tmxsd::xml2ext_signal_set(fullpath, message, debug);
+  tmxsd::ext_signal_set ext_signal_set = tmxsd::xml2ext_signal_set(abspath.string().c_str(), message, debug);
   if (message.empty())
   {
     tmxsd::tree2extSignal(ext_signal_set, extSignal);
@@ -88,47 +96,57 @@ tmtable::xml2menu(const char* fileName,
                   tmtable::ExtSignal& extSignal,
                   const bool debug)
 {
-  char fullpath[PATH_MAX];
-  if (realpath(fileName, fullpath) == NULL)
+  // Get absolute path to file.
+  boost::filesystem::path abspath = boost::filesystem::system_complete(fileName);
+
+  // Check if file exists.
+  if (not boost::filesystem::exists(abspath))
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: " << tmutil::getcwd() << " " << fileName);
+    TM_FATAL_ERROR("tmtable::xml2extSignal: file \"" << fileName << "\" does not exist.");
   }
 
-  std::string cwd = tmutil::getcwd();
+  boost::filesystem::path cwd = boost::filesystem::current_path();
   std::string message;
 
-  tmxsd::menu data = tmxsd::xml2menu(fullpath, message, debug);
+  tmxsd::menu data = tmxsd::xml2menu(abspath.string().c_str(), message, debug);
+
+  // If something went wrong we got a message, so try something else...
   if (message.size())
   {
-    tmutil::chdir(fullpath);
-    data = tmxsd::xml2menu(fullpath, message, debug);
+    // Change to XML file location (assuming XSD files resides there).
+    boost::filesystem::current_path(abspath.parent_path().string().c_str());
+    data = tmxsd::xml2menu(abspath.string().c_str(), message, debug);
 
+    // If again something went wrong, try to change to XSD directory (TODO: a better first choice)
     if (message.size())
     {
       char* xsd = getenv("UTM_XSD_DIR");
       if (xsd)
       {
-        char cwd[PATH_MAX];
-        if (getcwd(cwd, sizeof(cwd)-1) == NULL)
+        try
         {
-          TM_FATAL_ERROR("tmtable::xml2menu: getcwd: " << strerror(errno));
+          // Change to XSD spec location.
+          boost::filesystem::current_path(xsd);
+        }
+        catch (boost::filesystem::filesystem_error& e)
+        {
+          TM_FATAL_ERROR("tmtable::xml2menu: UTM_XSD_DIR: " << e.what());
         }
 
-        if (::chdir(xsd) == -1)
-        {
-          TM_FATAL_ERROR("tmtable::xml2menu: chdir: " << strerror(errno));
-        }
-
-        data = tmxsd::xml2menu(fullpath, message, debug);
-        if (::chdir(cwd) == -1)
-        {
-          TM_FATAL_ERROR("tmtable::xml2menu: chdir: " << strerror(errno));
-        }
+        data = tmxsd::xml2menu(abspath.string().c_str(), message, debug);
       }
     }
   }
 
-  tmutil::chdir(cwd);
+  try
+  {
+    // Return to initial directory location.
+    boost::filesystem::current_path(cwd);
+  }
+  catch (boost::filesystem::filesystem_error& e)
+  {
+    TM_FATAL_ERROR("tmtable::xml2menu: " << e.what());
+  }
 
   if (message.empty())
   {
@@ -149,19 +167,30 @@ tmtable::xml2menu(std::istream& is,
                   const bool debug)
 {
   char* xsd = getenv("UTM_XSD_DIR");
-  if (not xsd)
+  if (NULL == xsd)
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: please specify UTM_XSD_DIR environment variable ");
+    TM_FATAL_ERROR("tmtable::xml2menu: UTM_XSD_DIR environment variable not set.");
   }
 
-  std::string cwd = tmutil::getcwd();
-  if (::chdir(xsd) == -1)
+  if (not boost::filesystem::exists(xsd))
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: chdir: " << strerror(errno));
+    TM_FATAL_ERROR("tmtable::xml2menu: UTM_XSD_DIR does not exist: " << xsd);
   }
+
+  boost::filesystem::path cwd = boost::filesystem::current_path();
+
   std::string message;
   tmxsd::menu data = tmxsd::xml2menu(is, message, debug);
-  tmutil::chdir(cwd);
+
+  try
+  {
+    // Return to initial directory location.
+    boost::filesystem::current_path(cwd);
+  }
+  catch (boost::filesystem::filesystem_error& e)
+  {
+    TM_FATAL_ERROR("tmtable::xml2menu: " << e.what());
+  }
 
 
   if (message.empty())

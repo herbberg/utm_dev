@@ -8,7 +8,7 @@
 # XDAQ stuff
 
 
-VERSION = 0.1
+VERSION = 0.5.0
 LIBRARY = libtmtable.so
 PROGRAMS =
 
@@ -40,8 +40,8 @@ TOUCH = touch
 CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I. -I.. -I$(XERCES_ROOT)/include
-LIBDIR = -L../tmUtil -L../tmXsd -L$(XERCES_ROOT)/lib
-LIBS = -ltmutil -ltmxsd -lxerces-c
+LIBDIR = -L../tmUtil -L../tmXsd -L$(XERCES_ROOT)/lib -L/usr/lib/x86_64-linux-gnu/
+LIBS = -ltmutil -ltmxsd -lxerces-c -lboost_system -lboost_filesystem
 
 #
 # special built-in target

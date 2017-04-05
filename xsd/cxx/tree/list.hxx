@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/list.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_LIST_HXX
@@ -11,6 +10,7 @@
 #include <xercesc/dom/DOMAttr.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 
+#include <xsd/cxx/tree/elements.hxx>
 #include <xsd/cxx/tree/istream-fwd.hxx> // tree::istream
 #include <xsd/cxx/tree/containers.hxx>  // fundamental_p, sequence
 
@@ -21,41 +21,45 @@ namespace xsd
     namespace tree
     {
       // Class template for xsd:list mapping. Based on the sequence
-      // template. Note that I cannot get rid of 'fund' because HP
-      // aCC3 likes it this way.
+      // template.
       //
-      template <typename X, typename C, bool fund = fundamental_p<X>::r>
+      template <typename T,
+                typename C,
+                schema_type::value ST = schema_type::other,
+                bool fund = fundamental_p<T>::r>
       class list;
 
 
       //
       //
-      template <typename X, typename C>
-      class list<X, C, false>: public sequence<X>
+      template <typename T, typename C, schema_type::value ST>
+      class list<T, C, ST, false>: public sequence<T>
       {
       public:
         explicit
-        list (flags f = 0, container* c = 0)
-            : sequence<X> (f, c)
+        list (container* c = 0)
+            : sequence<T> (c)
         {
         }
 
-        list (typename sequence<X>::size_type n, const X& x)
-            : sequence<X> (n, x)
+        list (typename sequence<T>::size_type n,
+              const T& x,
+              container* c = 0)
+            : sequence<T> (n, x, c)
         {
         }
 
         template<typename I>
-        list (const I& b, const I& e)
-            : sequence<X> (b, e)
+        list (const I& b, const I& e, container* c = 0)
+            : sequence<T> (b, e, c)
         {
         }
 
         template <typename S>
         list (istream<S>&, flags = 0, container* c = 0);
 
-        list (const list<X, C, false>& v, flags f = 0, container* c = 0)
-            : sequence<X> (v, f, c)
+        list (const list<T, C, ST, false>& l, flags f = 0, container* c = 0)
+            : sequence<T> (l, f, c)
         {
         }
 
@@ -71,39 +75,41 @@ namespace xsd
 
       private:
         void
-        init (const std::basic_string<C>&, const xercesc::DOMElement*);
+        init (const std::basic_string<C>&,
+              const xercesc::DOMElement*,
+              flags);
       };
 
 
       //
       //
-      template <typename X, typename C>
-      class list<X, C, true>: public sequence<X>
+      template <typename T, typename C, schema_type::value ST>
+      class list<T, C, ST, true>: public sequence<T>
       {
       public:
         explicit
-        list (flags f = 0, container* c = 0)
-            : sequence<X> (f, c)
+        list (container* c = 0)
+            : sequence<T> (c)
         {
         }
 
         explicit
-        list (typename sequence<X>::size_type n, const X& x)
-            : sequence<X> (n, x)
+        list (typename sequence<T>::size_type n, const T& x, container* c = 0)
+            : sequence<T> (n, x, c)
         {
         }
 
         template<typename I>
-        list (const I& b, const I& e)
-            : sequence<X> (b, e)
+        list (const I& b, const I& e, container* c = 0)
+            : sequence<T> (b, e, c)
         {
         }
 
         template <typename S>
         list (istream<S>&, flags = 0, container* c = 0);
 
-        list (const list<X, C, true>& s, flags f = 0, container* c = 0)
-            : sequence<X> (s, f, c)
+        list (const list<T, C, ST, true>& l, flags f = 0, container* c = 0)
+            : sequence<T> (l, f, c)
         {
         }
 
@@ -125,5 +131,4 @@ namespace xsd
   }
 }
 
-#endif  // XSD_CXX_TREE_LIST_HXX
-
+#endif // XSD_CXX_TREE_LIST_HXX

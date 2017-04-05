@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/elements.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 /**
@@ -17,12 +16,19 @@
 #ifndef XSD_CXX_TREE_ELEMENTS_HXX
 #define XSD_CXX_TREE_ELEMENTS_HXX
 
+#include <xsd/cxx/config.hxx> // XSD_AUTO_PTR, XSD_CXX11
+
 #include <map>
 #include <string>
-#include <memory>  // std::auto_ptr
+#include <memory>  // std::auto_ptr/unique_ptr
+#include <cstddef> // std::size_t
 #include <istream>
 #include <sstream>
 #include <cassert>
+
+#ifdef XSD_CXX11
+#  include <utility> // std::move
+#endif
 
 #include <xercesc/dom/DOMNode.hpp>
 #include <xercesc/dom/DOMAttr.hpp>
@@ -30,11 +36,20 @@
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
 
-#include <xsd/cxx/xml/elements.hxx> // xml::properties
-#include <xsd/cxx/xml/dom/auto-ptr.hxx> // dom::auto_ptr
+#include <xercesc/util/XercesVersion.hpp>
 
+#include <xsd/cxx/xml/elements.hxx> // xml::properties
+#include <xsd/cxx/xml/dom/auto-ptr.hxx> // dom::auto_ptr/unique_ptr
+#include <xsd/cxx/xml/dom/wildcard-source.hxx> // dom::create_document()
+
+#include <xsd/cxx/tree/facet.hxx>
 #include <xsd/cxx/tree/exceptions.hxx>
 #include <xsd/cxx/tree/istream-fwd.hxx>
+#include <xsd/cxx/tree/containers-wildcard.hxx>
+
+#if _XERCES_VERSION < 30000
+#  error Xerces-C++ 2-series is not supported
+#endif
 
 namespace xsd
 {
@@ -76,7 +91,7 @@ namespace xsd
          *
          * This flag only makes sense together with the @c keep_dom
          * flag in the call to the %parsing function with the
-         * @c dom::auto_ptr<DOMDocument> argument.
+         * @c dom::auto_ptr/unique_ptr<DOMDocument> argument.
          *
          */
         static const unsigned long own_dom = 0x00000200UL;
@@ -88,6 +103,12 @@ namespace xsd
         static const unsigned long dont_validate = 0x00000400UL;
 
         /**
+         * @brief Extract XML content for anyType or anySimpleType.
+         * Normally you don't need to specify this flag explicitly.
+         */
+        static const unsigned long extract_content = 0x00000800UL;
+
+        /**
          * @brief Do not initialize the Xerces-C++ runtime.
          */
         static const unsigned long dont_initialize = 0x00000001UL;
@@ -97,6 +118,11 @@ namespace xsd
          */
         static const unsigned long no_xml_declaration = 0x00010000UL;
 
+        /**
+         * @brief Do not add extra spaces or new lines that make the
+         * resulting XML easier to read.
+         */
+        static const unsigned long dont_pretty_print = 0x00020000UL;
 
         //@cond
 
@@ -173,7 +199,6 @@ namespace xsd
         unsigned long x_;
       };
 
-
       // Parsing properties. Refer to xsd/cxx/xml/elements.hxx for XML-
       // related properties.
       //
@@ -181,6 +206,44 @@ namespace xsd
       class properties: public xml::properties<C>
       {
       };
+
+      /**
+       * @brief Content order sequence entry.
+       *
+       * @nosubgrouping
+       */
+      struct content_order
+      {
+        /**
+         * @brief Initialize an instance with passed id and index.
+         *
+         * @param id Content id.
+         * @param index Content index in the corresponding sequence.
+         */
+        content_order (std::size_t id, std::size_t index = 0)
+            : id (id), index (index)
+        {
+        }
+
+        /**
+         * @brief Content id.
+         */
+        std::size_t id;
+
+        /**
+         * @brief Content index.
+         */
+        std::size_t index;
+      };
+
+      bool
+      operator== (const content_order&, const content_order&);
+
+      bool
+      operator!= (const content_order&, const content_order&);
+
+      bool
+      operator< (const content_order&, const content_order&);
 
       //@cond
 
@@ -196,12 +259,6 @@ namespace xsd
 
       typedef user_data_keys_template<0> user_data_keys;
 
-      // HP aCC3 complains about unresolved symbols without an explicit
-      // instantiation.
-      //
-#if defined(__HP_aCC) && __HP_aCC <= 39999
-      template struct user_data_keys_template<0>;
-#endif
       //
       //
       struct identity
@@ -278,10 +335,20 @@ namespace xsd
         /**
          * @brief Default constructor.
          */
-        _type ()
-            : container_ (0)
-        {
-        }
+        _type ();
+
+        /**
+         * @brief Create an instance from a C string.
+         *
+         * @param s A string to initialize the instance with.
+         *
+         * Note that this constructor ignores the string and creates an
+         * empty anyType instance. In particular, it will not convert the
+         * string into DOM content. The purpose of such a strange constructor
+         * is to allow statically-initialized default values of anyType type.
+         */
+        template <typename C>
+        _type (const C* s);
 
       public:
         /**
@@ -293,17 +360,7 @@ namespace xsd
          *
          * For polymorphic object models use the @c _clone function instead.
          */
-        _type (const type& x, flags f = 0, container* c = 0)
-            : container_ (c)
-        {
-          while (&f == 0) /* unused */;
-
-          if (x.dom_info_.get ())
-          {
-            std::auto_ptr<dom_info> r (x.dom_info_->clone (*this, c));
-            dom_info_ = r;
-          }
-        }
+        _type (const type& x, flags f = 0, container* c = 0);
 
         /**
          * @brief Copy the instance polymorphically.
@@ -343,7 +400,9 @@ namespace xsd
          * @param c A pointer to the object that will contain the new
          * instance.
          */
-        _type (const xercesc::DOMElement& e, flags f = 0, container* c = 0);
+        _type (const xercesc::DOMElement& e,
+               flags f = flags::extract_content,
+               container* c = 0);
 
         /**
          * @brief Create an instance from a DOM Attribute.
@@ -381,9 +440,149 @@ namespace xsd
         type&
         operator= (const type& x)
         {
-          while (&x == 0) /* unused */;
+          if (this != &x)
+          {
+            if (x.content_.get () == 0)
+              content_.reset ();
+            else
+              content_ = x.content_->clone ();
+
+            // Drop DOM association.
+            //
+            dom_info_.reset ();
+          }
+
           return *this;
         }
+
+        // anyType content API.
+        //
+      public:
+        typedef element_optional dom_content_optional;
+
+        /**
+         * @brief Return a read-only (constant) reference to the anyType
+         * DOM content.
+         *
+         * @return A constant reference to the optional container.
+         *
+         * The DOM content is returned as an optional element container,
+         * the same container as used for optional element wildcards.
+         */
+        const dom_content_optional&
+        dom_content () const;
+
+        /**
+         * @brief Return a read-write reference to the anyType DOM content.
+         *
+         * @return A reference to the optional container.
+         *
+         * The DOM content is returned as an optional element container,
+         * the same container as used for optional element wildcards.
+         */
+        dom_content_optional&
+        dom_content ();
+
+        /**
+         * @brief Set the anyType DOM content.
+         *
+         * @param e A new element to set.
+         *
+         * This function makes a copy of its argument and sets it as the
+         * new DOM content.
+         */
+        void
+        dom_content (const xercesc::DOMElement& e);
+
+        /**
+         * @brief Set the anyType DOM content.
+         *
+         * @param e A new element to use.
+         *
+         * This function will use the passed element directly instead
+         * of making a copy. For this to work the element should belong
+         * to the DOM document associated with this anyType instance.
+         *
+         * @see dom_content_document
+         */
+        void
+        dom_content (xercesc::DOMElement* e);
+
+        /**
+         * @brief Set the anyType DOM content.
+         *
+         * @param d An optional container with the new element to set.
+         *
+         * If the element is present in @a d then this function makes a
+         * copy of this element and sets it as the new wildcard content.
+         * Otherwise the element container is set the 'not present' state.
+         */
+        void
+        dom_content (const dom_content_optional& d);
+
+        /**
+         * @brief Return a read-only (constant) reference to the DOM
+         * document associated with this anyType instance.
+         *
+         * @return A constant reference to the DOM document.
+         *
+         * The DOM document returned by this function is used to store
+         * the raw XML content corresponding to the anyType instance.
+         */
+        const xercesc::DOMDocument&
+        dom_content_document () const;
+
+        /**
+         * @brief Return a read-write reference to the DOM document
+         * associated with this anyType instance.
+         *
+         * @return A reference to the DOM document.
+         *
+         * The DOM document returned by this function is used to store
+         * the raw XML content corresponding to the anyType instance.
+         */
+        xercesc::DOMDocument&
+        dom_content_document ();
+
+        /**
+         * @brief Check for absence of DOM (anyType) and text (anySimpleType)
+         * content.
+         *
+         * @return True if there is no content and false otherwise.
+         *
+         * This is an optimization function that allows us to check for the
+         * lack of content without actually creating its empty representation
+         * (that is, empty DOM document for DOM or empty string for text).
+         */
+        bool
+        null_content () const;
+
+        //
+        //
+      public:
+        /**
+         * @brief Comparison operator. It uses DOM (anyType) or text
+         * (anySimpleType) content if present. If the content is missing
+         * then the types are assumed unequal.
+         *
+         * @return True if the instances are equal, false otherwise.
+         */
+        friend bool
+        operator== (const type& x, const type& y)
+        {
+          return x.content_.get () != 0 &&
+            x.content_->compare (y.content_.get ());
+        }
+
+        /**
+         * @brief Comparison operator. It uses DOM (anyType) or text
+         * (anySimpleType) content if present. If the content is missing
+         * then the types are assumed unequal.
+         *
+         * @return True if the instances are not equal, false otherwise.
+         */
+        friend bool
+        operator!= (const type& x, const type& y) {return !(x == y);}
 
         // Container API.
         //
@@ -423,23 +622,70 @@ namespace xsd
         virtual void
         _container (container* c)
         {
-          assert (container_ == 0);
+          container* dr (0);
 
           if (c != 0)
           {
-            if (map_.get () != 0)
+            dr = c->_root ();
+
+            if (dr == 0)
+              dr = c;
+          }
+
+          XSD_AUTO_PTR<map>& m (dr ? dr->map_ : map_);
+
+          if (container_ == 0)
+          {
+            if (c != 0 && map_.get () != 0)
             {
-              // Propagate our IDs to the new container.
+              // Transfer our IDs to the new root.
               //
-              for (map::iterator i (map_->begin ()), e (map_->end ());
-                   i != e; ++i)
+              if (m.get () != 0)
               {
-                c->_register_id (*i->first, i->second);
+                m->insert (map_->begin (), map_->end ());
+                map_.reset ();
+              }
+              else
+              {
+#ifdef XSD_CXX11
+                m = std::move (map_);
+#else
+                m = map_;
+#endif
               }
             }
-
-            container_ = c;
           }
+          else
+          {
+            container* sr (_root ());
+
+            if (sr->map_.get () != 0)
+            {
+              // Transfer IDs that belong to this subtree.
+              //
+              for (map::iterator i (sr->map_->begin ()), e (sr->map_->end ());
+                   i != e;)
+              {
+                type* x (i->second);
+                for (; x != this && x != sr; x = x->_container ()) ;
+
+                if (x != sr)
+                {
+                  // Part of our subtree.
+                  //
+                  if (m.get () == 0)
+                    m.reset (new map);
+
+                  m->insert (*i);
+                  sr->map_->erase (i++);
+                }
+                else
+                  ++i;
+              }
+            }
+          }
+
+          container_ = c;
         }
 
         /**
@@ -507,7 +753,7 @@ namespace xsd
          * @brief Exception indicating that a DOM node cannot be associated
          * with an object model node.
          */
-        class bad_dom_node_type: public std::exception //@@ Inherit exception.
+        class bad_dom_node_type: public std::exception //@@ Inherit exception<C>.
         {
         public:
           /**
@@ -543,37 +789,31 @@ namespace xsd
             {
               if (container_ != 0)
               {
-                // @@ Should be a throw.
-                //
                 assert (_root ()->_node () != 0);
                 assert (_root ()->_node ()->getOwnerDocument () ==
                         n->getOwnerDocument ());
               }
 
-              std::auto_ptr<dom_info> r (
+              dom_info_ =
                 dom_info_factory::create (
                   *static_cast<xercesc::DOMElement*> (n),
                   *this,
-                  container_ == 0));
+                  container_ == 0);
 
-              dom_info_ = r;
               break;
             }
           case xercesc::DOMNode::ATTRIBUTE_NODE:
             {
-              //@@ Should be a throw.
-              //
               assert (container_ != 0);
               assert (_root ()->_node () != 0);
               assert (_root ()->_node ()->getOwnerDocument () ==
                       n->getOwnerDocument ());
 
-              std::auto_ptr<dom_info> r (
+              dom_info_ =
                 dom_info_factory::create (
                   *static_cast<xercesc::DOMAttr*> (n),
-                  *this));
+                  *this);
 
-              dom_info_ = r;
               break;
             }
           default:
@@ -587,26 +827,23 @@ namespace xsd
         //@cond
 
         void
-        _register_id (const identity& id, type* t)
+        _register_id (const identity& i, type* t)
         {
+          // We should be the root.
+          //
+          assert (container_ == 0);
+
           if (map_.get () == 0)
             map_.reset (new map);
 
-          // First register on our container. If there are any duplications,
-          // they will be detected by this call and we don't need to clean
-          // the map.
-          //
-          if (container_ != 0)
-	    container_->_register_id (id, t);
-
           if (!map_->insert (
-                std::pair<const identity*, type*> (&id, t)).second)
+                std::pair<const identity*, type*> (&i, t)).second)
           {
-            id.throw_duplicate_id ();
+            i.throw_duplicate_id ();
           }
         }
 
-        //@@ Does not inherit from exception.
+        //@@ Does not inherit from exception<C>.
         //
         struct not_registered: std::exception
         {
@@ -620,22 +857,12 @@ namespace xsd
         void
         _unregister_id (const identity& id)
         {
-          if (map_.get ())
-          {
-            map::iterator it (map_->find (&id));
+          // We should be the root.
+          //
+          assert (container_ == 0);
 
-            if (it != map_->end ())
-            {
-              map_->erase (it);
-
-              if (container_ != 0)
-	        container_->_unregister_id (id);
-
-              return;
-            }
-          }
-
-          throw not_registered ();
+          if (map_.get () == 0 || map_->erase (&id) == 0)
+            throw not_registered ();
         }
 
         type*
@@ -660,15 +887,11 @@ namespace xsd
         struct dom_info
         {
           virtual
-          ~dom_info ()
-          {
-          }
+          ~dom_info () {}
 
-          dom_info ()
-          {
-          }
+          dom_info () {}
 
-          virtual std::auto_ptr<dom_info>
+          virtual XSD_AUTO_PTR<dom_info>
           clone (type& tree_node, container*) const = 0;
 
           virtual xercesc::DOMNode*
@@ -676,41 +899,41 @@ namespace xsd
 
         private:
           dom_info (const dom_info&);
-
-          dom_info&
-          operator= (const dom_info&);
+          dom_info& operator= (const dom_info&);
         };
-
 
         struct dom_element_info: public dom_info
         {
           dom_element_info (xercesc::DOMElement& e, type& n, bool root)
-              : doc_ (0), e_ (e)
+              : e_ (e)
           {
             e_.setUserData (user_data_keys::node, &n, 0);
 
             if (root)
             {
-              // The caller should have associated a dom::auto_ptr object
-              // that owns this document with the document node using the
-              // xml_schema::dom::tree_node_key key.
+              // The caller should have associated a dom::auto/unique_ptr
+              // object that owns this document with the document node
+              // using the xml_schema::dom::tree_node_key key.
               //
-              xml::dom::auto_ptr<xercesc::DOMDocument>* pd (
-                reinterpret_cast<xml::dom::auto_ptr<xercesc::DOMDocument>*> (
+              XSD_DOM_AUTO_PTR<xercesc::DOMDocument>* pd (
+                reinterpret_cast<XSD_DOM_AUTO_PTR<xercesc::DOMDocument>*> (
                   e.getOwnerDocument ()->getUserData (user_data_keys::node)));
 
               assert (pd != 0);
               assert (pd->get () == e.getOwnerDocument ());
 
-              doc_ = *pd; // Transfer ownership.
+              // Transfer ownership.
+#ifdef XSD_CXX11
+              doc_ = std::move (*pd);
+#else
+              doc_ = *pd;
+#endif
             }
           }
 
-          virtual std::auto_ptr<dom_info>
+          virtual XSD_AUTO_PTR<dom_info>
           clone (type& tree_node, container* c) const
           {
-            using std::auto_ptr;
-
             // Check if we are a document root.
             //
             if (c == 0)
@@ -718,11 +941,10 @@ namespace xsd
               // We preserver DOM associations only in complete
               // copies from root.
               //
-              if (doc_.get () == 0)
-                return auto_ptr<dom_info> (0);
-
-              return auto_ptr<dom_info> (
-                new dom_element_info (*doc_, tree_node));
+              return XSD_AUTO_PTR<dom_info> (
+                doc_.get () == 0
+                ? 0
+                : new dom_element_info (*doc_, tree_node));
             }
 
             // Check if our container does not have DOM association (e.g.,
@@ -733,8 +955,7 @@ namespace xsd
             DOMNode* cn (c->_node ());
 
             if (cn == 0)
-              return auto_ptr<dom_info> (0);
-
+              return XSD_AUTO_PTR<dom_info> ();
 
             // Now we are going to find the corresponding element in
             // the new tree.
@@ -766,7 +987,7 @@ namespace xsd
 
               assert (dn->getNodeType () == DOMNode::ELEMENT_NODE);
 
-              return auto_ptr<dom_info> (
+              return XSD_AUTO_PTR<dom_info> (
                 new dom_element_info (static_cast<DOMElement&> (*dn),
                                       tree_node,
                                       false));
@@ -789,7 +1010,7 @@ namespace xsd
           }
 
         private:
-          xml::dom::auto_ptr<xercesc::DOMDocument> doc_;
+          XSD_DOM_AUTO_PTR<xercesc::DOMDocument> doc_;
           xercesc::DOMElement& e_;
         };
 
@@ -802,11 +1023,9 @@ namespace xsd
             a_.setUserData (user_data_keys::node, &n, 0);
           }
 
-          virtual std::auto_ptr<dom_info>
+          virtual XSD_AUTO_PTR<dom_info>
           clone (type& tree_node, container* c) const
           {
-            using std::auto_ptr;
-
             // Check if we are a document root.
             //
             if (c == 0)
@@ -814,7 +1033,7 @@ namespace xsd
               // We preserver DOM associations only in complete
               // copies from root.
               //
-              return auto_ptr<dom_info> (0);
+              return XSD_AUTO_PTR<dom_info> ();
             }
 
             // Check if our container does not have DOM association (e.g.,
@@ -825,7 +1044,7 @@ namespace xsd
             DOMNode* cn (c->_node ());
 
             if (cn == 0)
-              return auto_ptr<dom_info> (0);
+              return XSD_AUTO_PTR<dom_info> ();
 
             // We are going to find the corresponding attribute in
             // the new tree.
@@ -843,7 +1062,7 @@ namespace xsd
             //
             assert (size != 0);
 
-            for ( ;i < size && !a_.isSameNode (nl.item (i)); ++i);
+            for ( ;i < size && !a_.isSameNode (nl.item (i)); ++i)/*noop*/;
 
             // a_ should be in the list.
             //
@@ -852,7 +1071,7 @@ namespace xsd
             DOMNode& n (*cn->getAttributes ()->item (i));
             assert (n.getNodeType () == DOMNode::ATTRIBUTE_NODE);
 
-            return auto_ptr<dom_info> (
+            return XSD_AUTO_PTR<dom_info> (
               new dom_attribute_info (static_cast<DOMAttr&> (n), tree_node));
           }
 
@@ -873,18 +1092,18 @@ namespace xsd
 
         struct dom_info_factory
         {
-          static std::auto_ptr<dom_info>
+          static XSD_AUTO_PTR<dom_info>
           create (const xercesc::DOMElement& e, type& n, bool root)
           {
-            return std::auto_ptr<dom_info> (
+            return XSD_AUTO_PTR<dom_info> (
               new dom_element_info (
                 const_cast<xercesc::DOMElement&> (e), n, root));
           }
 
-          static std::auto_ptr<dom_info>
+          static XSD_AUTO_PTR<dom_info>
           create (const xercesc::DOMAttr& a, type& n)
           {
-            return std::auto_ptr<dom_info> (
+            return XSD_AUTO_PTR<dom_info> (
               new dom_attribute_info (
                 const_cast<xercesc::DOMAttr&> (a), n));
           }
@@ -892,7 +1111,7 @@ namespace xsd
 
         //@endcond
 
-        std::auto_ptr<dom_info> dom_info_;
+        XSD_AUTO_PTR<dom_info> dom_info_;
 
 
         // ID/IDREF map.
@@ -915,12 +1134,77 @@ namespace xsd
         std::map<const identity*, type*, identity_comparator>
         map;
 
-        std::auto_ptr<map> map_;
+        XSD_AUTO_PTR<map> map_;
+
+        // anyType and anySimpleType content.
+        //
+      protected:
+
+        //@cond
+
+        struct content_type
+        {
+          virtual
+          ~content_type () {}
+
+          content_type () {}
+
+          virtual XSD_AUTO_PTR<content_type>
+          clone () const = 0;
+
+          virtual bool
+          compare (const content_type*) const = 0;
+
+        private:
+          content_type (const content_type&);
+          content_type& operator= (const content_type&);
+        };
+
+        struct dom_content_type: content_type
+        {
+          dom_content_type ()
+              : doc (xml::dom::create_document<char> ()), dom (*doc) {}
+
+          explicit
+          dom_content_type (const xercesc::DOMElement& e)
+              : doc (xml::dom::create_document<char> ()), dom (e, *doc) {}
+
+          explicit
+          dom_content_type (xercesc::DOMElement* e)
+              : doc (xml::dom::create_document<char> ()), dom (e, *doc) {}
+
+          explicit
+          dom_content_type (const dom_content_optional& d)
+              : doc (xml::dom::create_document<char> ()), dom (d, *doc) {}
+
+          virtual XSD_AUTO_PTR<content_type>
+          clone () const
+          {
+            return XSD_AUTO_PTR<content_type> (new dom_content_type (dom));
+          }
+
+          virtual bool
+          compare (const content_type* c) const
+          {
+            if (const dom_content_type* dc =
+                dynamic_cast<const dom_content_type*> (c))
+              return dom == dc->dom;
+
+            return false;
+          }
+
+        public:
+          XSD_DOM_AUTO_PTR<xercesc::DOMDocument> doc;
+          dom_content_optional dom;
+        };
+
+        //@endcond
+
+        mutable XSD_AUTO_PTR<content_type> content_;
 
       private:
         container* container_;
       };
-
 
       /**
        * @brief Class corresponding to the XML Schema anySimpleType built-in
@@ -928,7 +1212,7 @@ namespace xsd
        *
        * @nosubgrouping
        */
-      template <typename B>
+      template <typename C, typename B>
       class simple_type: public B
       {
       public:
@@ -940,9 +1224,21 @@ namespace xsd
         /**
          * @brief Default constructor.
          */
-        simple_type ()
-        {
-        }
+        simple_type ();
+
+        /**
+         * @brief Create an instance from a C string.
+         *
+         * @param s A string to initialize the instance with.
+         */
+        simple_type (const C* s);
+
+        /**
+         * @brief Create an instance from a string.
+         *
+         * @param s A string to initialize the instance with.
+         */
+        simple_type (const std::basic_string<C>& s);
 
       public:
         /**
@@ -981,7 +1277,9 @@ namespace xsd
          * instance.
          */
         template <typename S>
-        simple_type (istream<S>& s, flags f = 0, container* c = 0);
+        simple_type (istream<S>& s,
+                     flags f = flags::extract_content,
+                     container* c = 0);
 
         /**
          * @brief Create an instance from a DOM element.
@@ -992,7 +1290,7 @@ namespace xsd
          * instance.
          */
         simple_type (const xercesc::DOMElement& e,
-                     flags f = 0,
+                     flags f = flags::extract_content,
                      container* c = 0);
 
         /**
@@ -1004,7 +1302,7 @@ namespace xsd
          * instance.
          */
         simple_type (const xercesc::DOMAttr& a,
-                     flags f = 0,
+                     flags f = flags::extract_content,
                      container* c = 0);
 
         /**
@@ -1016,44 +1314,251 @@ namespace xsd
          * @param c A pointer to the object that will contain the new
          * instance.
          */
-        template <typename C>
         simple_type (const std::basic_string<C>& s,
                      const xercesc::DOMElement* e,
-                     flags f = 0,
+                     flags f = flags::extract_content,
                      container* c = 0);
         //@}
+
+        // anySimpleType content API.
+        //
+      public:
+        /**
+         * @brief Return a read-only (constant) reference to the anySimpleType
+         * text content.
+         *
+         * @return A constant reference to the text string.
+         */
+        const std::basic_string<C>&
+        text_content () const;
+
+        /**
+         * @brief Return a read-write reference to the anySimpleType text
+         * content.
+         *
+         * @return A reference to the text string.
+         */
+        std::basic_string<C>&
+        text_content ();
+
+        /**
+         * @brief Set the anySimpleType text content.
+         *
+         * @param e A new text string to set.
+         */
+        void
+        text_content (const std::basic_string<C>& t);
+
+      protected:
+        //@cond
+
+        typedef typename B::content_type content_type;
+
+        struct text_content_type: content_type
+        {
+          text_content_type () {}
+
+          explicit
+          text_content_type (const std::basic_string<C>& t): text (t) {}
+
+          explicit
+          text_content_type (const C* t): text (t) {}
+
+          virtual XSD_AUTO_PTR<content_type>
+          clone () const
+          {
+            return XSD_AUTO_PTR<content_type> (new text_content_type (text));
+          }
+
+          virtual bool
+          compare (const content_type* c) const
+          {
+            if (const text_content_type* tc =
+                dynamic_cast<const text_content_type*> (c))
+              return text == tc->text;
+
+            return false;
+          }
+
+        public:
+          // It would have been more elegant to store text content as DOMText.
+          // However, that would require Xerces-C++ initialization. Also
+          // having a separate DOMDocument for each text node seems like
+          // an overkill.
+          //
+          std::basic_string<C> text;
+        };
+
+        //@endcond
+      };
+
+
+      /**
+       * @brief Base class for element types.
+       *
+       * This class is a base for every generated element type.
+       *
+       * @nosubgrouping
+       */
+      template <typename C, typename T>
+      class element_type
+      {
+      public:
+        virtual
+        ~element_type ()
+        {
+        }
+
+        /**
+         * @brief Copy the instance polymorphically.
+         *
+         * @param f Flags to create the copy with.
+         * @return A pointer to the dynamically allocated copy.
+         *
+         * This function ensures that the dynamic type of the instance
+         * is used for copying and should be used for polymorphic object
+         * models instead of the copy constructor.
+         */
+        virtual element_type*
+        _clone (flags f = 0) const = 0;
+
+        /**
+         * @brief Return the element name.
+         *
+         * @return A read-only string reference containing the element
+         * name.
+         */
+        virtual const std::basic_string<C>&
+        _name () const = 0;
+
+        /**
+         * @brief Return the element namespace.
+         *
+         * @return A read-only string reference containing the element
+         * namespace. Empty string is returned if the element is
+         * unqualified.
+         */
+        virtual const std::basic_string<C>&
+        _namespace () const = 0;
+
+        /**
+         * @brief Return the element value.
+         *
+         * @return A pointer to the element value or 0 if the element
+         * is of a fundamental type.
+         */
+        virtual T*
+        _value () = 0;
+
+        /**
+         * @brief Return the element value.
+         *
+         * @return A read-only pointer to the element value or 0 if the
+         * element is of a fundamental type.
+         */
+        virtual const T*
+        _value () const = 0;
       };
 
 
       //@cond
 
-      template <typename T, typename C>
+      // Extra schema type id to disambiguate certain cases where
+      // different XML Schema types (e.g., double and decimal) are
+      // mapped to the same fundamental C++ type (e.g., double).
+      //
+      struct schema_type
+      {
+        enum value
+        {
+          other,
+          double_,
+          decimal
+        };
+      };
+
+      //@endcond
+
+
+      //@cond
+      template <typename T,
+                typename C,
+                schema_type::value ST = schema_type::other>
       struct traits
       {
         typedef T type;
 
-        static std::auto_ptr<T>
+        static XSD_AUTO_PTR<T>
         create (const xercesc::DOMElement& e, flags f, container* c)
         {
-          return std::auto_ptr<T> (new T (e, f, c));
+          return XSD_AUTO_PTR<T> (new T (e, f, c));
         }
 
-        static std::auto_ptr<T>
+        static XSD_AUTO_PTR<T>
         create (const xercesc::DOMAttr& a, flags f, container* c)
         {
-          return std::auto_ptr<T> (new T (a, f, c));
+          return XSD_AUTO_PTR<T> (new T (a, f, c));
         }
 
-        static std::auto_ptr<T>
+        static XSD_AUTO_PTR<T>
         create (const std::basic_string<C>& s,
                 const xercesc::DOMElement* e,
                 flags f,
                 container* c)
         {
-          return std::auto_ptr<T> (new T (s, e, f, c));
+          return XSD_AUTO_PTR<T> (new T (s, e, f, c));
+        }
+
+        // For now for istream we only go through traits for non-
+        // fundamental types.
+        //
+        template <typename S>
+        static XSD_AUTO_PTR<T>
+        create (istream<S>& s, flags f, container* c)
+        {
+          return XSD_AUTO_PTR<T> (new T (s, f, c));
         }
       };
 
+      template <typename B,
+                typename C,
+                schema_type::value ST>
+      struct traits<simple_type<C, B>, C, ST>
+      {
+        typedef simple_type<C, B> type;
+
+        static XSD_AUTO_PTR<type>
+        create (const xercesc::DOMElement& e, flags f, container* c)
+        {
+          return XSD_AUTO_PTR<type> (
+            new type (e, f | flags::extract_content, c));
+        }
+
+        static XSD_AUTO_PTR<type>
+        create (const xercesc::DOMAttr& a, flags f, container* c)
+        {
+          return XSD_AUTO_PTR<type> (
+            new type (a, f | flags::extract_content, c));
+        }
+
+        static XSD_AUTO_PTR<type>
+        create (const std::basic_string<C>& s,
+                const xercesc::DOMElement* e,
+                flags f,
+                container* c)
+        {
+          return XSD_AUTO_PTR<type> (
+            new type (s, e, f | flags::extract_content, c));
+        }
+
+        template <typename S>
+        static XSD_AUTO_PTR<type>
+        create (istream<S>& s, flags f, container* c)
+        {
+          return XSD_AUTO_PTR<type> (
+            new type (s, f | flags::extract_content, c));
+        }
+      };
       //@endcond
 
 
@@ -1063,7 +1568,10 @@ namespace xsd
        *
        * @nosubgrouping
        */
-      template <typename X, typename C, typename B>
+      template <typename T,
+                typename C,
+                typename B,
+                schema_type::value ST = schema_type::other>
       class fundamental_base: public B
       {
       public:
@@ -1076,7 +1584,7 @@ namespace xsd
          * @brief Default constructor.
          */
         fundamental_base ()
-            : x_ ()
+            : facet_table_ (0), x_ ()
         {
         }
 
@@ -1085,8 +1593,8 @@ namespace xsd
          *
          * @param x An underlying type value.
          */
-        fundamental_base (X x)
-            : x_ (x)
+        fundamental_base (T x)
+            : facet_table_ (0), x_ (x)
         {
         }
 
@@ -1103,7 +1611,7 @@ namespace xsd
         fundamental_base (const fundamental_base& x,
                           flags f = 0,
                           container* c = 0)
-            : B (x, f, c), x_ (x.x_)
+            : B (x, f, c), facet_table_ (0), x_ (x.x_)
         {
         }
 
@@ -1181,7 +1689,7 @@ namespace xsd
          * @return A reference to the instance.
          */
         fundamental_base&
-        operator= (const X& x)
+        operator= (const T& x)
         {
           if (&x_ != &x)
             x_ = x;
@@ -1196,7 +1704,7 @@ namespace xsd
          *
          * @return A constant reference to the underlying type.
          */
-        operator const X& () const
+        operator const T& () const
         {
           return x_;
         }
@@ -1207,26 +1715,23 @@ namespace xsd
          *
          * @return A reference to the underlying type.
          */
-        operator X& ()
+        operator T& ()
         {
           return x_;
         }
 
-        // A call to one of the following operators causes ICE on VC++ 7.1.
-        // Refer to the following discussion for details:
+        // The following extra conversion operators causes problems on
+        // some compilers (notably VC 9.0) and are disabled by default.
         //
-        // http://codesynthesis.com/pipermail/xsd-users/2006-June/000399.html
-        //
-#if defined(_MSC_VER) && _MSC_VER >= 1400
-
+#ifdef XSD_TREE_EXTRA_FUND_CONV
         /**
          * @brief Implicitly convert the instance to another type (const
          * version).
          *
          * @return A value converted to the target type.
          */
-        template <typename Y>
-        operator Y () const
+        template <typename T2>
+        operator T2 () const
         {
           return x_;
         }
@@ -1236,18 +1741,43 @@ namespace xsd
          *
          * @return A value converted to the target type.
          */
-        template <typename Y>
-        operator Y ()
+        template <typename T2>
+        operator T2 ()
         {
           return x_;
         }
-#endif
+#endif // XSD_TREE_EXTRA_FUND_CONV
+
+      public:
+        /**
+         * @brief Get the facet table associated with this type.
+         *
+         * @return A pointer to read-only facet table or 0.
+         */
+        const facet*
+        _facet_table () const
+        {
+          return facet_table_;
+        }
+
+      protected:
+        /**
+         * @brief Set the facet table associated with this type.
+         *
+         * @param ft A pointer to read-only facet table.
+         */
+        void
+        _facet_table (const facet* ft)
+        {
+          facet_table_ = ft;
+        }
 
       private:
-        X x_;
+        const facet* facet_table_;
+        T x_;
       };
 
-      // While this operators are not normally necessary, they
+      // While thse operators are not normally necessary, they
       // help resolve ambiguities between implicit conversion and
       // construction.
       //
@@ -1257,13 +1787,13 @@ namespace xsd
        *
        * @return True if the underlying values are equal, false otherwise.
        */
-      template <typename X, typename C, typename B>
+      template <typename T, typename C, typename B, schema_type::value ST>
       inline bool
-      operator== (const fundamental_base<X, C, B>& x,
-                  const fundamental_base<X, C, B>& y)
+      operator== (const fundamental_base<T, C, B, ST>& x,
+                  const fundamental_base<T, C, B, ST>& y)
       {
-        X x_ (x);
-        X y_ (y);
+        T x_ (x);
+        T y_ (y);
         return x_ == y_;
       }
 
@@ -1272,15 +1802,16 @@ namespace xsd
        *
        * @return True if the underlying values are not equal, false otherwise.
        */
-      template <typename X, typename C, typename B>
+      template <typename T, typename C, typename B, schema_type::value ST>
       inline bool
-      operator!= (const fundamental_base<X, C, B>& x,
-                  const fundamental_base<X, C, B>& y)
+      operator!= (const fundamental_base<T, C, B, ST>& x,
+                  const fundamental_base<T, C, B, ST>& y)
       {
-        X x_ (x);
-        X y_ (y);
+        T x_ (x);
+        T y_ (y);
         return x_ != y_;
       }
+
 
       //@cond
 
@@ -1321,6 +1852,7 @@ namespace xsd
   }
 }
 
+#include <xsd/cxx/tree/elements.ixx>
 #include <xsd/cxx/tree/elements.txx>
 
 #endif  // XSD_CXX_TREE_ELEMENTS_HXX

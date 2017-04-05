@@ -1,6 +1,5 @@
 // file      : xsd/cxx/parser/validating/inheritance-map.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_PARSER_VALIDATING_INHERITANCE_MAP_HXX
@@ -37,6 +36,12 @@ namespace xsd
           insert (const C* derived, const C* base)
           {
             map_[derived] = base;
+          }
+
+          void
+          erase (const C* derived)
+          {
+            map_.erase (derived);
           }
 
           bool
@@ -80,6 +85,10 @@ namespace xsd
         struct inheritance_map_entry
         {
           inheritance_map_entry (const C* derived, const C* base);
+          ~inheritance_map_entry ();
+
+        private:
+          const C* derived_;
         };
       }
     }
@@ -89,4 +98,3 @@ namespace xsd
 #include <xsd/cxx/parser/validating/inheritance-map.txx>
 
 #endif  // XSD_CXX_PARSER_VALIDATING_INHERITANCE_MAP_HXX
-

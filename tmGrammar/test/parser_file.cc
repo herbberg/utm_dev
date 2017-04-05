@@ -12,6 +12,7 @@
  * headers
  *--------------------------------------------------------------------*/
 #include <fstream>
+#include <unistd.h>
 
 #include "tmUtil/tmUtil.hh"
 #include "Algorithm.hh"
@@ -58,7 +59,7 @@ main(int argc, char *argv[])
 
   const std::string indent = "  ";
   std::string line;
-  while (getline(file, line))
+  while (std::getline(file, line))
   {
     Algorithm::Logic::clear();
 

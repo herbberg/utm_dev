@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/error-handler.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_ERROR_HANDLER_HXX
@@ -19,9 +18,9 @@ namespace xsd
       template <typename C>
       class error_handler: public xml::error_handler<C>
       {
+      public:
         typedef typename xml::error_handler<C>::severity severity;
 
-      public:
         error_handler ()
             : failed_ (false)
         {
@@ -34,12 +33,19 @@ namespace xsd
                 severity,
                 const std::basic_string<C>& message);
 
-        template <typename X>
+        template <typename E>
         void
         throw_if_failed () const
         {
           if (failed_)
-            throw X (diagnostics_);
+            throw E (diagnostics_);
+        }
+
+        void
+        reset ()
+        {
+          failed_ = false;
+          diagnostics_.clear ();
         }
 
       private:

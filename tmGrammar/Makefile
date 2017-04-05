@@ -8,7 +8,7 @@
 # XDAQ stuff
 
 
-VERSION = 0.1
+VERSION = 0.5.0
 LIBRARY = libtmgrammar.so
 PROGRAMS =
 
@@ -20,7 +20,7 @@ HDRS = Algorithm.hh Object.hh Function.hh Cut.hh CutGrammar.hh ObjectGrammar.hh 
 OBJS = $(SRCS:.cc=.o)
 DISTFILES = $(SRCS) $(HDRS) Makefile
 GARBAGE = core* *.o *~ *.d *.log *.pyc a.out gmon.out
-          
+
 
 #
 # commands
@@ -63,7 +63,7 @@ LIBS = -ltmutil
 #
 $(LIBRARY): $(OBJS)
 	echo '//     creating $(LIBRARY)'
-	$(AR) -o $(LIBRARY) $(OBJS)
+	$(AR) -o $(LIBRARY) $(OBJS) $(LIBDIR) $(LIBS)
 
 python: $(HDRS) $(SRCS) tmGrammar.i
 	echo '//     creating python interface'

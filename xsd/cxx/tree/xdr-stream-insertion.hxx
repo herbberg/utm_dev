@@ -1,12 +1,25 @@
 // file      : xsd/cxx/tree/xdr-stream-insertion.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_XDR_STREAM_INSERTION_HXX
 #define XSD_CXX_TREE_XDR_STREAM_INSERTION_HXX
 
+#include <rpc/types.h>
 #include <rpc/xdr.h>
+
+// Of course BSD has to be different and name its functions u_intXX
+// instead of uintXX. Plus it does not have XX == 8.
+//
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__)
+#  if !defined(XSD_CXX_TREE_ASSUME_SUN_XDR) && !defined(xdr_int8_t)
+#    define xdr_int8_t(x, y) xdr_char(x, reinterpret_cast<char*> (y))
+#    define xdr_uint8_t(x, y) xdr_u_char(x, reinterpret_cast<unsigned char*> (y))
+#    define xdr_uint16_t xdr_u_int16_t
+#    define xdr_uint32_t xdr_u_int32_t
+#    define xdr_uint64_t xdr_u_int64_t
+#  endif
+#endif
 
 #include <string>
 
@@ -32,9 +45,9 @@ namespace xsd
       // as_size
       //
 #ifdef XSD_CXX_TREE_USE_64_BIT_SIZE
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_size<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_size<T> x)
       {
         uint64_t v (static_cast<uint64_t> (x.x_));
 
@@ -44,9 +57,9 @@ namespace xsd
         return s;
       }
 #else
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_size<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_size<T> x)
       {
         uint32_t v (static_cast<uint32_t> (x.x_));
 
@@ -60,9 +73,9 @@ namespace xsd
 
       // 8-bit
       //
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_int8<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_int8<T> x)
       {
         int8_t v (static_cast<int8_t> (x.x_));
 
@@ -72,9 +85,9 @@ namespace xsd
         return s;
       }
 
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint8<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint8<T> x)
       {
         uint8_t v (static_cast<uint8_t> (x.x_));
 
@@ -87,9 +100,9 @@ namespace xsd
 
       // 16-bit
       //
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_int16<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_int16<T> x)
       {
         int16_t v (static_cast<int16_t> (x.x_));
 
@@ -99,9 +112,9 @@ namespace xsd
         return s;
       }
 
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint16<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint16<T> x)
       {
         uint16_t v (static_cast<uint16_t> (x.x_));
 
@@ -114,9 +127,9 @@ namespace xsd
 
       // 32-bit
       //
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_int32<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_int32<T> x)
       {
         int32_t v (static_cast<int32_t> (x.x_));
 
@@ -126,9 +139,9 @@ namespace xsd
         return s;
       }
 
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint32<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint32<T> x)
       {
         uint32_t v (static_cast<uint32_t> (x.x_));
 
@@ -141,9 +154,9 @@ namespace xsd
 
       // 64-bit
       //
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_int64<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_int64<T> x)
       {
         int64_t v (static_cast<int64_t> (x.x_));
 
@@ -153,9 +166,9 @@ namespace xsd
         return s;
       }
 
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint64<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_uint64<T> x)
       {
         uint64_t v (static_cast<uint64_t> (x.x_));
 
@@ -168,9 +181,9 @@ namespace xsd
 
       // Boolean
       //
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_bool<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_bool<T> x)
       {
         bool_t v (static_cast<bool_t> (x.x_));
 
@@ -183,9 +196,9 @@ namespace xsd
 
       // Floating-point
       //
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_float32<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_float32<T> x)
       {
         float v (static_cast<float> (x.x_));
 
@@ -195,9 +208,9 @@ namespace xsd
         return s;
       }
 
-      template <typename X>
+      template <typename T>
       inline ostream<XDR>&
-      operator<< (ostream<XDR>& s, ostream<XDR>::as_float64<X> x)
+      operator<< (ostream<XDR>& s, ostream<XDR>::as_float64<T> x)
       {
         double v (static_cast<double> (x.x_));
 

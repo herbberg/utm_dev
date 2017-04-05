@@ -4,16 +4,21 @@
 /*--------------------------------------------------------------------*
  * headers
  *--------------------------------------------------------------------*/
-#include <fstream>
-#include <sstream>
-#include <stdexcept>
-#include <iostream>
 
+// utm
 #include "tmXsd/tree2table.hh"
 #include "tmXsd/reader.hh"
 #include "tmTable/tmTable.hh"
 #include "tmUtil/tmUtil.hh"
 
+// boost
+#include <boost/lexical_cast.hpp>
+
+// stl
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 /*====================================================================*
  * implementation
@@ -29,13 +34,13 @@ tmxsd::tree2scale(const tmxsd::scale_set& scale_set,
   str = scale_set.comment();
   if (not str.empty()) data.scaleSet["comment"] = str;
 
-  str = tmutil::toString(scale_set.scale_set_id());
+  str = boost::lexical_cast<std::string>(scale_set.scale_set_id());
   if (not str.empty()) data.scaleSet["scale_set_id"] = str;
 
   str = scale_set.datetime();
   if (not str.empty()) data.scaleSet["datetime"] = str;
 
-  str = tmutil::toString(scale_set.is_valid());
+  str = boost::lexical_cast<std::string>(scale_set.is_valid());
   if (not str.empty()) data.scaleSet["is_valid"] = str;
 
   for (size_t ii = 0; ii < scale_set.scale().size(); ii++)
@@ -47,18 +52,18 @@ tmxsd::tree2scale(const tmxsd::scale_set& scale_set,
     row_scale["minimum"] = scale.minimum();
     row_scale["maximum"] = scale.maximum();
     row_scale["step"] = scale.step();
-    row_scale["n_bits"] = tmutil::toString(scale.n_bits());
+    row_scale["n_bits"] = boost::lexical_cast<std::string>(scale.n_bits());
 
     str = scale.comment();
     if (not str.empty()) row_scale["comment"] = str;
 
-    str = tmutil::toString(scale.scale_id());
+    str = boost::lexical_cast<std::string>(scale.scale_id());
     if (not str.empty()) row_scale["scale_id"] = str;
 
     str = scale.datetime();
     if (not str.empty()) row_scale["datetime"] = str;
 
-    str = tmutil::toString(scale.n_bins());
+    str = boost::lexical_cast<std::string>(scale.n_bins());
     if (not str.empty()) row_scale["n_bins"] = str;
 
     tmtable::Table table_bin;
@@ -66,14 +71,14 @@ tmxsd::tree2scale(const tmxsd::scale_set& scale_set,
     {
       const tmxsd::bin& bin = scale.bin().at(jj);
       tmtable::Row row_bin;
-      row_bin["number"] = tmutil::toString(bin.number());
+      row_bin["number"] = boost::lexical_cast<std::string>(bin.number());
       row_bin["minimum"] = bin.minimum();
       row_bin["maximum"] = bin.maximum();
 
-      str = tmutil::toString(bin.bin_id());
+      str = boost::lexical_cast<std::string>(bin.bin_id());
       if (not str.empty()) row_bin["bin_id"] = str;
 
-      str = tmutil::toString(bin.scale_id());
+      str = boost::lexical_cast<std::string>(bin.scale_id());
       if (not str.empty()) row_bin["scale_id"] = str;
 
       table_bin.push_back(row_bin);
@@ -115,13 +120,13 @@ tmxsd::tree2extSignal(const tmxsd::ext_signal_set& ext_signal_set,
   str = ext_signal_set.comment();
   if (not str.empty()) data.extSignalSet["comment"] = str;
 
-  str = tmutil::toString(ext_signal_set.ext_signal_set_id());
+  str = boost::lexical_cast<std::string>(ext_signal_set.ext_signal_set_id());
   if (not str.empty()) data.extSignalSet["ext_signal_set_id"] = str;
 
   str = ext_signal_set.datetime();
   if (not str.empty()) data.extSignalSet["datetime"] = str;
 
-  str = tmutil::toString(ext_signal_set.is_valid());
+  str = boost::lexical_cast<std::string>(ext_signal_set.is_valid());
   if (not str.empty()) data.extSignalSet["is_valid"] = str;
 
   for (size_t ii = 0; ii < ext_signal_set.ext_signal().size(); ii++)
@@ -130,8 +135,8 @@ tmxsd::tree2extSignal(const tmxsd::ext_signal_set& ext_signal_set,
     tmtable::Row row;
     row["name"] = ext_signal.name();
     row["system"] = ext_signal.system();
-    row["cable"] = tmutil::toString(ext_signal.cable());
-    row["channel"] = tmutil::toString(ext_signal.channel());
+    row["cable"] = boost::lexical_cast<std::string>(ext_signal.cable());
+    row["channel"] = boost::lexical_cast<std::string>(ext_signal.channel());
 
     str = ext_signal.description();
     if (not str.empty()) row["description"] = str;
@@ -139,7 +144,7 @@ tmxsd::tree2extSignal(const tmxsd::ext_signal_set& ext_signal_set,
     str = ext_signal.label();
     if (not str.empty()) row["label"] = str;
 
-    str = tmutil::toString(ext_signal.ext_signal_id());
+    str = boost::lexical_cast<std::string>(ext_signal.ext_signal_id());
     if (not str.empty()) row["ext_signal_id"] = str;
 
     str = ext_signal.datetime();
@@ -178,22 +183,22 @@ tmxsd::tree2menu(const tmxsd::menu& data,
   tree2extSignal(data.ext_signal_set(), extSignal);
 
   // MENU
-  menu.menu["ancestor_id"] = tmutil::toString(data.ancestor_id());
+  menu.menu["ancestor_id"] = boost::lexical_cast<std::string>(data.ancestor_id());
   menu.menu["name"] = data.name();
   menu.menu["uuid_menu"] = data.uuid_menu();
   menu.menu["uuid_firmware"] = data.uuid_firmware();
   menu.menu["global_tag"] = data.global_tag();
   menu.menu["grammar_version"] = data.grammar_version();
-  menu.menu["n_modules"] = tmutil::toString(data.n_modules());
-  menu.menu["is_valid"] = tmutil::toString(data.is_valid());
-  menu.menu["is_obsolete"] = tmutil::toString(data.is_obsolete());
+  menu.menu["n_modules"] = boost::lexical_cast<std::string>(data.n_modules());
+  menu.menu["is_valid"] = boost::lexical_cast<std::string>(data.is_valid());
+  menu.menu["is_obsolete"] = boost::lexical_cast<std::string>(data.is_obsolete());
 
   std::string str;
 
   str = data.comment();
   if (not str.empty()) menu.menu["comment"] = str;
 
-  str = tmutil::toString(data.menu_id());
+  str = boost::lexical_cast<std::string>(data.menu_id());
   if (not str.empty()) menu.menu["menu_id"] = str;
 
   str = data.datetime();
@@ -207,14 +212,14 @@ tmxsd::tree2menu(const tmxsd::menu& data,
     tmtable::Row row_algo;
     row_algo["name"] = algorithm.name();
     row_algo["expression"] = algorithm.expression();
-    row_algo["index"] = tmutil::toString(algorithm.index());
-    row_algo["module_id"] = tmutil::toString(algorithm.module_id());
-    row_algo["module_index"] = tmutil::toString(algorithm.module_index());
+    row_algo["index"] = boost::lexical_cast<std::string>(algorithm.index());
+    row_algo["module_id"] = boost::lexical_cast<std::string>(algorithm.module_id());
+    row_algo["module_index"] = boost::lexical_cast<std::string>(algorithm.module_index());
 
     str = algorithm.comment();
     if (not str.empty()) row_algo["comment"] = str;
 
-    str = tmutil::toString(algorithm.algorithm_id());
+    str = boost::lexical_cast<std::string>(algorithm.algorithm_id());
     if (not str.empty()) row_algo["algorithm_id"] = str;
 
     str = algorithm.datetime();
@@ -238,7 +243,7 @@ tmxsd::tree2menu(const tmxsd::menu& data,
       str = cut.comment();
       if (not str.empty()) row_cut["comment"] = str;
 
-      str = tmutil::toString(cut.cut_id());
+      str = boost::lexical_cast<std::string>(cut.cut_id());
       if (not str.empty()) row_cut["cut_id"] = str;
 
       str = cut.datetime();
@@ -256,12 +261,12 @@ tmxsd::tree2menu(const tmxsd::menu& data,
       row_object["type"] = object.type();
       row_object["comparison_operator"] = object.comparison_operator();
       row_object["threshold"] = object.threshold();
-      row_object["bx_offset"] = tmutil::toString(object.bx_offset());
+      row_object["bx_offset"] = boost::lexical_cast<std::string>(object.bx_offset());
 
       str = object.comment();
       if (not str.empty()) row_object["comment"] = str;
 
-      str = tmutil::toString(object.requirement_id());
+      str = boost::lexical_cast<std::string>(object.requirement_id());
       if (not str.empty()) row_object["requirement_id"] = str;
 
       str = object.datetime();
@@ -276,15 +281,15 @@ tmxsd::tree2menu(const tmxsd::menu& data,
       const tmxsd::external_requirement& external = algorithm.external_requirement().at(jj);
       tmtable::Row row_external;
       row_external["name"] = external.name();
-      row_external["bx_offset"] = tmutil::toString(external.bx_offset());
+      row_external["bx_offset"] = boost::lexical_cast<std::string>(external.bx_offset());
 
       str = external.comment();
       if (not str.empty()) row_external["comment"] = str;
 
-      str = tmutil::toString(external.requirement_id());
+      str = boost::lexical_cast<std::string>(external.requirement_id());
       if (not str.empty()) row_external["requirement_id"] = str;
 
-      str = tmutil::toString(external.ext_signal_id());
+      str = boost::lexical_cast<std::string>(external.ext_signal_id());
       if (not str.empty()) row_external["ext_signal_id"] = str;
 
       str = external.datetime();

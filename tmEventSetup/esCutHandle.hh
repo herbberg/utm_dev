@@ -47,7 +47,7 @@ class esCutHandle : public esCut
     static void print(const esCut&);
 
     /** set data */
-    void setData(const std::string& x);
+    void setData(const std::string& data);
 
     /** get a key for accessing a scale */
     void setKey();

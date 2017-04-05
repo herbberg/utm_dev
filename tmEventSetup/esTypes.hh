@@ -23,7 +23,7 @@ namespace tmeventsetup
 /*-----------------------------------------------------------------*
  * constants
  *-----------------------------------------------------------------*/
-const int Undef = -9999; /**< undefined value for enums */
+const int Undef = -9999; /**< undefined value for enums -- seriously? */
 
 const char ET_THR[] = "ET"; /**< text for Et threshold */
 
@@ -34,7 +34,8 @@ const char PRECISION_DELTA[] = "Delta";   /**< text for delta precision type */
 const char PRECISION_MASS[] = "Mass";     /**< text for mass precision type */
 const char PRECISION_MASSPT[] = "MassPt"; /**< text for mass precision type */
 const char PRECISION_MATH[] = "Math";     /**< text for math precision type */
-
+const char PRECISION_TBPT[] = "TwoBodyPt"; /**< text for two body pt precision type */
+const char PRECISION_TBPT_MATH[] = "TwoBodyPtMath"; /**< text for two body pt math precision type */
 
 /** type of cuts */
 enum esCutType
@@ -51,6 +52,8 @@ enum esCutType
   Mass,             /**< invariant mass cut for mass function */
   ChargeCorrelation,/**< charge correlation cut for comb function */
   Count,            /**< number of counts */
+  Slice,            /**< object collection slice */
+  TwoBodyPt,        /**< two body Pt for mass_inv/mass_trv function */
   nCutType
 };
 
@@ -82,7 +85,9 @@ enum esFunctionType
 {
   CombFunction = 10, /**< combination */
   DistFunction = 11, /**< distance */
-  MassFunction = 12  /**< invariant mass */
+  MassFunction = 12,  /**< invariant mass(alias) */
+  InvariantMassFunction = 20,  /**< invariant mass */
+  TransverseMassFunction = 21  /**< transverse mass */
 };
 
 /** list of comparison operator */
@@ -134,6 +139,7 @@ enum esConditionType
   CaloCaloCorrelation,    /**< Calo-Calo correlation condition */
   CaloEsumCorrelation,    /**< Calo-Esum correlation condition */
   InvariantMass,          /**< Invariant mass condition */
+  TransverseMass,         /**< Transverse mass condition */
   MinBiasHFP0,  /**< Minimum Bias HF+ threshold 0 */
   MinBiasHFP1,  /**< Minimum Bias HF+ threshold 1 */
   MinBiasHFM0,  /**< Minimum Bias HF+ threshold 0 */
@@ -154,7 +160,9 @@ enum esScaleType
   MassPrecision,    /**< precision for mass */
   MassPtPrecision,  /**< precision for mass pt */
   MathPrecision,    /**< precision for math */
-  CountScale        /**< Count scale */
+  CountScale,       /**< Count scale */
+  TwoBodyPtPrecision, /**< precision for two body pt */
+  TwoBodyPtMathPrecision /**< precision for two body math */
 };
 
 } // namespace tmeventsetup

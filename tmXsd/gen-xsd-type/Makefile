@@ -1,3 +1,4 @@
+# Makefile for CMSSW environment
 #
 # Authors: Takashi Matsushita
 #          Bernhard Arnold <bernhard.arnold@cern.ch>
@@ -54,18 +55,6 @@ MKDEPEND = c++ -MMD -MP
 RM = rm -f
 TOUCH = touch
 
-
-XSD_TREE = $(XSDCXX) cxx-tree \
-	--namespace-map http://www.cern.ch/tmxsd/1.0.0=tmxsdtree \
-	--cxx-suffix .cc --hxx-suffix .hxx \
-	--generate-serialization --generate-doxygen
-
-XSD_PARSER = $(XSDCXX) cxx-parser \
-	--namespace-map http://www.cern.ch/tmxsd/1.0.0=tmxsd \
-	--cxx-suffix .cc --hxx-suffix .hh \
-	--generate-validation --generate-print-impl --force-overwrite \
-	--type-map utm.map
-
 #
 # command flags
 #
@@ -94,7 +83,6 @@ LIBS = -ltmutil -lxerces-c
 #
 srcs: $(SRCS)
 objs: $(OBJS)
-
 
 ## test code
 scale_set-parser: scale_set-parser.o $(LIBRARY)

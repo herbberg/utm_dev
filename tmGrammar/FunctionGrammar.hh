@@ -95,8 +95,10 @@ struct function_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
 
     name
       = string(comb)
-      | string(mass)
       | string(dist)
+      | string(mass)
+      | string(mass_inv)
+      | string(mass_trv)
     ;
 
     objects

@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/stream-insertion-map.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsd/cxx/tree/types.hxx>
@@ -32,7 +31,7 @@ namespace xsd
           &inserter_impl<S, type>,
           false);
 
-        typedef simple_type<type> simple_type;
+        typedef simple_type<C, type> simple_type;
         register_type (
           typeid (simple_type),
           qualified_name (bits::any_simple_type<C> (), xsd),
@@ -108,7 +107,7 @@ namespace xsd
           &inserter_impl<S, id>,
           false);
 
-        typedef idref<type, C, ncname> idref;
+        typedef idref<C, ncname, type> idref;
         register_type (
           typeid (idref),
           qualified_name (bits::idref<C> (), xsd),
@@ -248,10 +247,17 @@ namespace xsd
       register_type (const type_id& tid,
                      const qualified_name& name,
                      inserter i,
-                     bool override)
+                     bool replace)
       {
-        if (override || type_map_.find (&tid) == type_map_.end ())
+        if (replace || type_map_.find (&tid) == type_map_.end ())
           type_map_[&tid] = type_info (name, i);
+      }
+
+      template <typename S, typename C>
+      void stream_insertion_map<S, C>::
+      unregister_type (const type_id& tid)
+      {
+        type_map_.erase (&tid);
       }
 
       template <typename S, typename C>
@@ -262,7 +268,24 @@ namespace xsd
         {
           const qualified_name& qn (ti->name ());
 
-          s << qn.namespace_ () << qn.name ();
+          // Pool the namespace and name strings.
+          //
+          const std::basic_string<C>& ns (qn.namespace_ ());
+          const std::basic_string<C>& n (qn.name ());
+
+          std::size_t ns_id (s.pool_string (ns));
+          std::size_t n_id (s.pool_string (n));
+
+          s << ostream_common::as_size<std::size_t> (ns_id);
+
+          if (ns_id == 0)
+            s << ns;
+
+          s << ostream_common::as_size<std::size_t> (n_id);
+
+          if (n_id == 0)
+            s << n;
+
           ti->inserter () (s, x);
         }
         else
@@ -302,25 +325,32 @@ namespace xsd
 
       //
       //
-      template<typename S, typename X>
+      template<typename S, typename T>
       void
       inserter_impl (ostream<S>& s, const type& x)
       {
-        s << static_cast<const X&> (x);
+        s << static_cast<const T&> (x);
       }
 
       // stream_insertion_initializer
       //
-      template<unsigned long id, typename S, typename C, typename X>
-      stream_insertion_initializer<id, S, C, X>::
+      template<unsigned long id, typename S, typename C, typename T>
+      stream_insertion_initializer<id, S, C, T>::
       stream_insertion_initializer (const C* name, const C* ns)
       {
         stream_insertion_map_instance<id, S, C> ().register_type (
-          typeid (X),
+          typeid (T),
           xml::qualified_name<C> (name, ns),
-          &inserter_impl<S, X>);
+          &inserter_impl<S, T>);
+      }
+
+      template<unsigned long id, typename S, typename C, typename T>
+      stream_insertion_initializer<id, S, C, T>::
+      ~stream_insertion_initializer ()
+      {
+        stream_insertion_map_instance<id, S, C> ().unregister_type (
+          typeid (T));
       }
     }
   }
 }
-

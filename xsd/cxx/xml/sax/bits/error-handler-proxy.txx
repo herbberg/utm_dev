@@ -1,6 +1,5 @@
 // file      : xsd/cxx/xml/sax/bits/error-handler-proxy.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsd/cxx/xml/string.hxx>
@@ -65,12 +64,9 @@ namespace xsd
             if (id == 0)
               id = e.getSystemId ();
 
-            XMLSSize_t l (e.getLineNumber ());
-            XMLSSize_t c (e.getColumnNumber ());
-
             eh_->handle (transcode<C> (id),
-                         (l == -1 ? 0 : static_cast<unsigned long> (l)),
-                         (c == -1 ? 0 : static_cast<unsigned long> (c)),
+                         static_cast<unsigned long> (e.getLineNumber ()),
+                         static_cast<unsigned long> (e.getColumnNumber ()),
                          s,
                          transcode<C> (e.getMessage ()));
           }
@@ -79,5 +75,3 @@ namespace xsd
     }
   }
 }
-
-

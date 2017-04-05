@@ -1,6 +1,5 @@
 // file      : xsd/cxx/parser/validating/parser.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_PARSER_VALIDATING_PARSER_HXX
@@ -24,7 +23,7 @@ namespace xsd
         //
         //
         template <typename C>
-        struct empty_content: virtual parser_base<C>
+        struct empty_content: parser_base<C>
         {
           // These functions are called when wildcard content
           // is encountered. Use them to handle mixed content
@@ -128,7 +127,7 @@ namespace xsd
         //
         //
         template <typename C>
-        struct simple_content: virtual empty_content<C>
+        struct simple_content: empty_content<C>
         {
           //
           //
@@ -188,7 +187,7 @@ namespace xsd
         //
         //
         template <typename C>
-        struct complex_content: virtual empty_content<C>
+        struct complex_content: empty_content<C>
         {
           //
           //
@@ -331,19 +330,19 @@ namespace xsd
         // Base for xsd:list.
         //
         template <typename C>
-        struct list_base: virtual simple_content<C>
+        struct list_base: simple_content<C>
         {
           virtual void
           _xsd_parse_item (const ro_string<C>&) = 0;
 
           virtual void
-          _pre ();
+          _pre_impl ();
 
           virtual void
           _characters (const ro_string<C>&);
 
           virtual void
-          _post ();
+          _post_impl ();
 
         protected:
           std::basic_string<C> buf_;

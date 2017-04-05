@@ -121,7 +121,7 @@ class esTriggerMenuHandle : public esTriggerMenu
     esCondition getDistCondition(const Function::Item& item,
                                  const tmtable::Table& cuts_in_algo);
 
-    /** get invariant mass condition
+    /** get invariant/transverse mass condition
      *
      * @param token [in] token of algorithm expression in grammar
      * @param cuts_in_algo [in] list of cuts used in algorithm
@@ -150,7 +150,9 @@ class esTriggerMenuHandle : public esTriggerMenu
      * @param bins [in] tmtable::Table instance for scale
      * @return HW index of a bin
      */
-    unsigned int getIndex(const esCutValue& cut, const std::string& range, const tmtable::Table& bins);
+    unsigned int getIndex(const esCutValue& cut,
+                          const std::string& range,
+                          const tmtable::Table& bins);
 
     void setPrefix4Precision(const std::vector<esObject>& objects,
                              std::string& prefix);

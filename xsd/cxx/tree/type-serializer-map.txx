@@ -1,7 +1,9 @@
 // file      : xsd/cxx/tree/type-serializer-map.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+#include <xercesc/util/XMLUni.hpp>
+#include <xercesc/validators/schema/SchemaSymbols.hpp>
 
 #include <xsd/cxx/xml/bits/literals.hxx> // xml::bits::{xsi_namespace, type}
 #include <xsd/cxx/xml/dom/serialization-source.hxx> // dom::{create_*, prefix}
@@ -34,7 +36,7 @@ namespace xsd
           &serializer_impl<type>,
           false);
 
-        typedef simple_type<type> simple_type;
+        typedef simple_type<C, type> simple_type;
         register_type (
           typeid (simple_type),
           qualified_name (bits::any_simple_type<C> (), xsd),
@@ -110,7 +112,7 @@ namespace xsd
           &serializer_impl<id>,
           false);
 
-        typedef idref<type, C, ncname> idref;
+        typedef idref<C, ncname, type> idref;
         register_type (
           typeid (idref),
           qualified_name (bits::idref<C> (), xsd),
@@ -250,10 +252,17 @@ namespace xsd
       register_type (const type_id& tid,
                      const qualified_name& name,
                      serializer s,
-                     bool override)
+                     bool replace)
       {
-        if (override || type_map_.find (&tid) == type_map_.end ())
+        if (replace || type_map_.find (&tid) == type_map_.end ())
           type_map_[&tid] = type_info (name, s);
+      }
+
+      template <typename C>
+      void type_serializer_map<C>::
+      unregister_type (const type_id& tid)
+      {
+        type_map_.erase (&tid);
       }
 
       template <typename C>
@@ -264,6 +273,21 @@ namespace xsd
                         serializer s)
       {
         element_map_[root][&tid] = type_info (subst, s);
+      }
+
+      template <typename C>
+      void type_serializer_map<C>::
+      unregister_element (const qualified_name& root, const type_id& tid)
+      {
+        typename element_map::iterator i (element_map_.find (root));
+
+        if (i != element_map_.end ())
+        {
+          i->second.erase (&tid);
+
+          if (i->second.empty ())
+            element_map_.erase (root);
+        }
       }
 
       template <typename C>
@@ -310,7 +334,7 @@ namespace xsd
             : xml::dom::create_element (name, parent));
 
           ti->serializer () (e, x);
-          set_xsi_type (e, *ti);
+          set_xsi_type (parent, e, *ti);
           return;
         }
 
@@ -363,7 +387,7 @@ namespace xsd
         if (const type_info* ti = find (tid))
         {
           ti->serializer () (e, x);
-          set_xsi_type (e, *ti);
+          set_xsi_type (e, e, *ti);
           return;
         }
 
@@ -372,7 +396,7 @@ namespace xsd
       }
 
       template <typename C>
-      xml::dom::auto_ptr<xercesc::DOMDocument> type_serializer_map<C>::
+      XSD_DOM_AUTO_PTR<xercesc::DOMDocument> type_serializer_map<C>::
       serialize (const C* name,
                  const C* ns,
                  const xml::dom::namespace_infomap<C>& m,
@@ -441,56 +465,35 @@ namespace xsd
 
       template <typename C>
       void type_serializer_map<C>::
-      set_xsi_type (xercesc::DOMElement& e, const type_info& ti) const
+      set_xsi_type (xercesc::DOMElement& parent,
+                    xercesc::DOMElement& e,
+                    const type_info& ti) const
       {
-        try
+        std::basic_string<C> id;
+        const std::basic_string<C>& ns (ti.name ().namespace_ ());
+
+        if (!ns.empty ())
         {
-          xercesc::DOMAttr& a (
-            xml::dom::create_attribute (
-              xml::bits::type<C> (), xml::bits::xsi_namespace<C> (), e));
+          id = xml::dom::prefix (ns, e);
 
-          std::basic_string<C> id;
-          const std::basic_string<C>& ns (ti.name ().namespace_ ());
-
-          if (!ns.empty ())
-          {
-            id = xml::dom::prefix (ns, e);
-
-            if (!id.empty ())
-              id += C (':');
-          }
-
-          id += ti.name ().name ();
-
-          a << id;
+          if (!id.empty ())
+            id += C (':');
         }
-        catch (const xml::dom::no_prefix&)
-        {
-          // No prefix for xsi namespace. Let try to fix this for
-          // everybody.
-          //
 
-          // Check if 'xsi' is already taken.
-          //
-          if (e.lookupNamespaceURI (
-                xml::string (xml::bits::xsi_prefix<C> ()).c_str ()) != 0)
-          {
-            throw xsi_already_in_use<C> ();
-          }
-          std::basic_string<C> xsi (xml::bits::xmlns_prefix<C> ());
-          xsi += C(':');
-          xsi += xml::bits::xsi_prefix<C> ();
+        id += ti.name ().name ();
 
-          xercesc::DOMElement& root (
-            *e.getOwnerDocument ()->getDocumentElement ());
+        std::basic_string<C> name = xml::dom::prefix (
+          xml::bits::xsi_namespace<C> (), parent, xml::bits::xsi_prefix<C> ());
 
-          root.setAttributeNS (
-            xml::string (xml::bits::xmlns_namespace<C> ()).c_str (),
-            xml::string (xsi).c_str (),
-            xml::string (xml::bits::xsi_namespace<C> ()).c_str ());
+        if (!name.empty ())
+          name += C (':');
 
-          set_xsi_type (e, ti);
-        }
+        name += xml::bits::type<C> ();
+
+        e.setAttributeNS (
+          xercesc::SchemaSymbols::fgURI_XSI,
+          xml::string (name).c_str (),
+          xml::string (id).c_str ());
       }
 
 
@@ -517,38 +520,53 @@ namespace xsd
 
       //
       //
-      template<typename X>
+      template<typename T>
       void
       serializer_impl (xercesc::DOMElement& e, const type& x)
       {
-        e << static_cast<const X&> (x);
+        e << static_cast<const T&> (x);
       }
-
 
       // type_serializer_initializer
       //
-      template<unsigned long id, typename C, typename X>
-      type_serializer_initializer<id, C, X>::
+      template<unsigned long id, typename C, typename T>
+      type_serializer_initializer<id, C, T>::
       type_serializer_initializer (const C* name, const C* ns)
       {
         type_serializer_map_instance<id, C> ().register_type (
-          typeid (X),
+          typeid (T),
           xml::qualified_name<C> (name, ns),
-          &serializer_impl<X>);
+          &serializer_impl<T>);
       }
 
-      template<unsigned long id, typename C, typename X>
-      type_serializer_initializer<id, C, X>::
-      type_serializer_initializer (const C* root_name,
-                             const C* root_ns,
-                             const C* subst_name,
-                             const C* subst_ns)
+      template<unsigned long id, typename C, typename T>
+      type_serializer_initializer<id, C, T>::
+      ~type_serializer_initializer ()
+      {
+        type_serializer_map_instance<id, C> ().unregister_type (typeid (T));
+      }
+
+      // element_serializer_initializer
+      //
+      template<unsigned long id, typename C, typename T>
+      element_serializer_initializer<id, C, T>::
+      element_serializer_initializer (const C* root_name, const C* root_ns,
+                                   const C* subst_name, const C* subst_ns)
+          : root_name_ (root_name), root_ns_ (root_ns)
       {
         type_serializer_map_instance<id, C> ().register_element (
           xml::qualified_name<C> (root_name, root_ns),
           xml::qualified_name<C> (subst_name, subst_ns),
-          typeid (X),
-          &serializer_impl<X>);
+          typeid (T),
+          &serializer_impl<T>);
+      }
+
+      template<unsigned long id, typename C, typename T>
+      element_serializer_initializer<id, C, T>::
+      ~element_serializer_initializer ()
+      {
+        type_serializer_map_instance<id, C> ().unregister_element (
+          xml::qualified_name<C> (root_name_, root_ns_), typeid (T));
       }
     }
   }

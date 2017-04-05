@@ -1,10 +1,13 @@
 // file      : xsd/cxx/parser/validating/xml-schema-pimpl.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <limits>
 #include <locale>
+
+#ifdef XSD_CXX11
+#  include <utility> // std::move
+#endif
 
 #include <xsd/cxx/zc-istream.hxx>
 #include <xsd/cxx/parser/validating/exceptions.hxx>
@@ -1136,19 +1139,97 @@ namespace xsd
         // id
         //
         template <typename C>
+        void id_pimpl<C>::
+        _pre ()
+        {
+          str_.clear ();
+        }
+
+        template <typename C>
+        void id_pimpl<C>::
+        _characters (const ro_string<C>& s)
+        {
+          if (str_.size () == 0)
+          {
+            ro_string<C> tmp (s.data (), s.size ());
+
+            if (trim_left (tmp) != 0)
+              str_ += tmp;
+          }
+          else
+            str_ += s;
+        }
+
+        template <typename C>
+        void id_pimpl<C>::
+        _post ()
+        {
+          typedef typename ro_string<C>::size_type size_type;
+
+          ro_string<C> tmp (str_);
+          size_type size (trim_right (tmp));
+
+          if (!bits::valid_ncname (tmp.data (), size))
+            throw invalid_value<C> (bits::id<C> (), tmp);
+
+          str_.resize (size);
+        }
+
+        template <typename C>
         std::basic_string<C> id_pimpl<C>::
         post_id ()
         {
-          return this->post_ncname ();
+          std::basic_string<C> r;
+          r.swap (str_);
+          return r;
         }
 
         // idref
         //
         template <typename C>
+        void idref_pimpl<C>::
+        _pre ()
+        {
+          str_.clear ();
+        }
+
+        template <typename C>
+        void idref_pimpl<C>::
+        _characters (const ro_string<C>& s)
+        {
+          if (str_.size () == 0)
+          {
+            ro_string<C> tmp (s.data (), s.size ());
+
+            if (trim_left (tmp) != 0)
+              str_ += tmp;
+          }
+          else
+            str_ += s;
+        }
+
+        template <typename C>
+        void idref_pimpl<C>::
+        _post ()
+        {
+          typedef typename ro_string<C>::size_type size_type;
+
+          ro_string<C> tmp (str_);
+          size_type size (trim_right (tmp));
+
+          if (!bits::valid_ncname (tmp.data (), size))
+            throw invalid_value<C> (bits::idref<C> (), tmp);
+
+          str_.resize (size);
+        }
+
+        template <typename C>
         std::basic_string<C> idref_pimpl<C>::
         post_idref ()
         {
-          return this->post_ncname ();
+          std::basic_string<C> r;
+          r.swap (str_);
+          return r;
         }
 
         // idrefs
@@ -1556,10 +1637,14 @@ namespace xsd
         }
 
         template <typename C>
-        std::auto_ptr<buffer> base64_binary_pimpl<C>::
+        XSD_AUTO_PTR<buffer> base64_binary_pimpl<C>::
         post_base64_binary ()
         {
+#ifdef XSD_CXX11
+          return std::move (buf_);
+#else
           return buf_;
+#endif
         }
 
         // hex_binary
@@ -1643,10 +1728,14 @@ namespace xsd
         }
 
         template <typename C>
-        std::auto_ptr<buffer> hex_binary_pimpl<C>::
+        XSD_AUTO_PTR<buffer> hex_binary_pimpl<C>::
         post_hex_binary ()
         {
+#ifdef XSD_CXX11
+          return std::move (buf_);
+#else
           return buf_;
+#endif
         }
 
         // time_zone
@@ -2666,4 +2755,3 @@ namespace xsd
     }
   }
 }
-

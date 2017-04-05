@@ -1,6 +1,5 @@
 // file      : xsd/cxx/parser/validating/xml-schema-pimpl.ixx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #if defined(XSD_CXX_PARSER_USE_CHAR) || !defined(XSD_CXX_PARSER_USE_WCHAR)
@@ -163,6 +162,20 @@ namespace xsd
           ncname<char> ()
           {
             return "NCName";
+          }
+
+          template<>
+          inline const char*
+          id<char> ()
+          {
+            return "ID";
+          }
+
+          template<>
+          inline const char*
+          idref<char> ()
+          {
+            return "IDREF";
           }
 
           template<>
@@ -477,7 +490,7 @@ namespace xsd
           inline const wchar_t*
           nmtokens<wchar_t> ()
           {
-            return L"SNMTOKEN";
+            return L"NMTOKENS";
           }
 
           template<>
@@ -485,6 +498,20 @@ namespace xsd
           ncname<wchar_t> ()
           {
             return L"NCName";
+          }
+
+          template<>
+          inline const wchar_t*
+          id<wchar_t> ()
+          {
+            return L"ID";
+          }
+
+          template<>
+          inline const wchar_t*
+          idref<wchar_t> ()
+          {
+            return L"IDREF";
           }
 
           template<>

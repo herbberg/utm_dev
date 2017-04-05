@@ -1,6 +1,5 @@
 // file      : xsd/cxx/parser/non-validating/xml-schema-pskel.ixx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #if defined(XSD_CXX_PARSER_USE_CHAR) || !defined(XSD_CXX_PARSER_USE_WCHAR)
@@ -16,7 +15,7 @@ namespace xsd
     {
       namespace non_validating
       {
-                template<>
+        template<>
         inline const char* any_type_pskel<char>::
         _static_type ()
         {
@@ -639,7 +638,7 @@ namespace xsd
     {
       namespace non_validating
       {
-
+        template<>
         inline const wchar_t* any_type_pskel<wchar_t>::
         _static_type ()
         {

@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/serialization/date-time.txx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <locale>
@@ -372,7 +371,7 @@ namespace xsd
 
             size_type size (s.size ()), n (size);
 
-            for (; n > 0 && s[n - 1] == C ('0'); --n);
+            for (; n > 0 && s[n - 1] == C ('0'); --n)/*noop*/;
 
             if (n > 0 && s[n - 1] == C ('.'))
               --n;
@@ -458,7 +457,7 @@ namespace xsd
 
             size_type size (s.size ()), n (size);
 
-            for (; n > 0 && s[n - 1] == C ('0'); --n);
+            for (; n > 0 && s[n - 1] == C ('0'); --n)/*noop*/;
 
             if (n > 0 && s[n - 1] == C ('.'))
               --n;
@@ -578,7 +577,7 @@ namespace xsd
 
             size_type size (s.size ()), n (size);
 
-            for (; n > 0 && s[n - 1] == C ('0'); --n);
+            for (; n > 0 && s[n - 1] == C ('0'); --n)/*noop*/;
 
             if (n > 0 && s[n - 1] == C ('.'))
               --n;

@@ -5,6 +5,7 @@
 VERSION = 0.1
 LIBRARY =
 PROGRAMS = test_tmeventsetup
+UNITTEST = unittest
 
 #
 # files
@@ -14,7 +15,7 @@ HDRS =
 OBJS = $(SRCS:.cc=.o)
 DISTFILES = $(SRCS) $(HDRS) Makefile
 GARBAGE = core* *.o *~ *.d *.log *.pyc a.out gmon.out
-          
+
 SUBDIRS =
 
 #
@@ -56,7 +57,12 @@ default: all
 #
 # local target
 #
-test: $(PROGRAMS)
+test: $(UNITTEST) $(PROGRAMS)
+	./$(UNITTEST) # run unittest
+
+$(UNITTEST): unittest.cc
+	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< -lboost_unit_test_framework $(LIBRARY) $(LIBDIR) $(LIBS)
+
 test_tmeventsetup: test_tmeventsetup.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)

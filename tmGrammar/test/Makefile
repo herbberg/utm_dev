@@ -5,6 +5,7 @@
 VERSION = 0.1
 LIBRARY =
 PROGRAMS = parser test_algorithm test_object test_function test_cut parser_file
+UNITTEST = unittest
 
 #
 # files
@@ -14,7 +15,7 @@ HDRS =
 OBJS = $(SRCS:.cc=.o)
 DISTFILES = $(SRCS) $(HDRS) Makefile
 GARBAGE = core* *.o *~ *.d *.log *.pyc a.out gmon.out
-          
+
 
 #
 # commands
@@ -57,6 +58,9 @@ default: all
 #
 # local target
 #
+$(UNITTEST): unittest.cc
+	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< -lboost_unit_test_framework $(LIBRARY) $(LIBDIR) $(LIBS)
+
 parser: parser.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
@@ -65,16 +69,21 @@ parser_file: parser_file.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
 
-test: $(PROGRAMS) $(LIBRARY)
+test: $(UNITTEST) $(PROGRAMS) $(LIBRARY)
+	./$(UNITTEST) # run unittest
+
 test_algorithm: test_algorithm.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
+
 test_object: test_object.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
+
 test_function: test_function.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
+
 test_cut: test_cut.o $(LIBRARY)
 	echo '//     creating $@'
 	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)

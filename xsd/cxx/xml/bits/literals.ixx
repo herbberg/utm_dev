@@ -1,6 +1,5 @@
 // file      : xsd/cxx/xml/bits/literals.ixx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_XML_BITS_LITERALS_IXX
@@ -73,7 +72,7 @@ namespace xsd
 
         template <>
         inline const char*
-        nil<char> ()
+        nil_lit<char> ()
         {
           return "nil";
         }
@@ -90,6 +89,41 @@ namespace xsd
         no_namespace_schema_location<char> ()
         {
           return "noNamespaceSchemaLocation";
+        }
+
+        template <>
+        inline const char*
+        first_prefix<char> ()
+        {
+          return "p1";
+        }
+
+        template <>
+        inline const char*
+        second_prefix<char> ()
+        {
+          return "p2";
+        }
+
+        template <>
+        inline const char*
+        third_prefix<char> ()
+        {
+          return "p3";
+        }
+
+        template <>
+        inline const char*
+        fourth_prefix<char> ()
+        {
+          return "p4";
+        }
+
+        template <>
+        inline const char*
+        fifth_prefix<char> ()
+        {
+          return "p5";
         }
       }
     }
@@ -164,7 +198,7 @@ namespace xsd
 
         template <>
         inline const wchar_t*
-        nil<wchar_t> ()
+        nil_lit<wchar_t> ()
         {
           return L"nil";
         }
@@ -181,6 +215,41 @@ namespace xsd
         no_namespace_schema_location<wchar_t> ()
         {
           return L"noNamespaceSchemaLocation";
+        }
+
+        template <>
+        inline const wchar_t*
+        first_prefix<wchar_t> ()
+        {
+          return L"p1";
+        }
+
+        template <>
+        inline const wchar_t*
+        second_prefix<wchar_t> ()
+        {
+          return L"p2";
+        }
+
+        template <>
+        inline const wchar_t*
+        third_prefix<wchar_t> ()
+        {
+          return L"p3";
+        }
+
+        template <>
+        inline const wchar_t*
+        fourth_prefix<wchar_t> ()
+        {
+          return L"p4";
+        }
+
+        template <>
+        inline const wchar_t*
+        fifth_prefix<wchar_t> ()
+        {
+          return L"p5";
         }
       }
     }

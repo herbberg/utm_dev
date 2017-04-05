@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/stream-extraction.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_STREAM_EXTRACTION_HXX
@@ -29,33 +28,39 @@ namespace xsd
 
       // simple_type
       //
-      template <typename B>
+      template <typename C, typename B>
       template <typename S>
-      inline simple_type<B>::
+      inline simple_type<C, B>::
       simple_type (istream<S>& s, flags f, container* c)
-          : type (s, f, c)
+          : type (s, f & ~flags::extract_content, c)
       {
+        if (f & flags::extract_content)
+        {
+          std::basic_string<C> t;
+          s >> t;
+          this->content_.reset (new text_content_type (t));
+        }
       }
 
       // fundamental_base
       //
-      template <typename X, typename C, typename B>
+      template <typename T, typename C, typename B, schema_type::value ST>
       template <typename S>
-      inline fundamental_base<X, C, B>::
+      inline fundamental_base<T, C, B, ST>::
       fundamental_base (istream<S>& s, flags f, container* c)
-          : B (s, f, c)
+          : B (s, f, c), facet_table_ (0)
       {
-        X& r (*this);
+        T& r (*this);
         s >> r;
       }
 
       // list
       //
-      template <typename X, typename C>
+      template <typename T, typename C, schema_type::value ST>
       template <typename S>
-      list<X, C, false>::
+      list<T, C, ST, false>::
       list (istream<S>& s, flags f, container* c)
-          : sequence<X> (f, c)
+          : sequence<T> (c)
       {
         std::size_t size;
         istream_common::as_size<std::size_t> as_size (size);
@@ -66,18 +71,15 @@ namespace xsd
           this->reserve (size);
 
           while (size--)
-          {
-            std::auto_ptr<X> p (new X (s, f, c));
-            push_back (p);
-          }
+            this->push_back (traits<T, C, ST>::create (s, f, c));
         }
       }
 
-      template <typename X, typename C>
+      template <typename T, typename C, schema_type::value ST>
       template <typename S>
-      list<X, C, true>::
-      list (istream<S>& s, flags f, container* c)
-          : sequence<X> (f, c)
+      list<T, C, ST, true>::
+      list (istream<S>& s, flags, container* c)
+          : sequence<T> (c)
       {
         std::size_t size;
         istream_common::as_size<std::size_t> as_size (size);
@@ -89,7 +91,7 @@ namespace xsd
 
           while (size--)
           {
-            X x;
+            T x;
             s >> x;
             this->push_back (x);
           }
@@ -152,7 +154,7 @@ namespace xsd
       template <typename S>
       inline nmtokens<C, B, nmtoken>::
       nmtokens (istream<S>& s, flags f, container* c)
-          : B (s, f, c), base_type (s, f, c)
+          : B (s, f, c), base_type (s, f, this)
       {
       }
 
@@ -204,9 +206,9 @@ namespace xsd
 
       // idref
       //
-      template <typename X, typename C, typename B>
+      template <typename C, typename B, typename T>
       template <typename S>
-      inline idref<X, C, B>::
+      inline idref<C, B, T>::
       idref (istream<S>& s, flags f, container* c)
           : B (s, f, c), identity_ (*this)
       {
@@ -219,7 +221,7 @@ namespace xsd
       template <typename S>
       inline idrefs<C, B, idref>::
       idrefs (istream<S>& s, flags f, container* c)
-          : B (s, f, c), base_type (s, f, c)
+          : B (s, f, c), base_type (s, f, this)
       {
       }
 
@@ -291,7 +293,7 @@ namespace xsd
       template <typename S>
       inline entities<C, B, entity>::
       entities (istream<S>& s, flags f, container* c)
-          : B (s, f, c), base_type (s, f, c)
+          : B (s, f, c), base_type (s, f, this)
       {
       }
     }

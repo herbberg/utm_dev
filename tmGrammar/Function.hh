@@ -31,15 +31,17 @@ namespace Function {
 
 // functions
 const char comb[] = "comb"; /**< combination */
-const char mass[] = "mass"; /**< invariant mass */
 const char dist[] = "dist"; /**< distance */
-
+const char mass[] = "mass"; /**< invariant mass (alias) */
+const char mass_inv[] = "mass_inv"; /**< invariant mass */
+const char mass_trv[] = "mass_trv"; /**< transverse mass */
 
 /** type of functions */
 enum {
   Unknown = 0,
   Combination,
   InvariantMass,
+  TransverseMass,
   Distance
 };
 
@@ -110,7 +112,7 @@ std::vector<std::string> getObjectCuts(const Item& item);
 
 /** list of names */
 typedef std::map<std::string, int> reserved;
-extern const reserved functionName; /**< list of allowed function name */
+extern const reserved functionName; /**< list of allowed function names */
 
 } // namespace Function
 

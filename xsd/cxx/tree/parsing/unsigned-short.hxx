@@ -1,6 +1,5 @@
 // file      : xsd/cxx/tree/parsing/unsigned-short.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2008 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSD_CXX_TREE_PARSING_UNSIGNED_SHORT_HXX
@@ -20,7 +19,7 @@ namespace xsd
     namespace tree
     {
       template <typename C>
-      struct traits<unsigned short, C>
+      struct traits<unsigned short, C, schema_type::other>
       {
         typedef unsigned short type;
 
@@ -38,21 +37,21 @@ namespace xsd
       };
 
       template <typename C>
-      unsigned short traits<unsigned short, C>::
+      unsigned short traits<unsigned short, C, schema_type::other>::
       create (const xercesc::DOMElement& e, flags f, container* c)
       {
-        return create (text_content<C> (e), 0, f, c);
+        return create (tree::text_content<C> (e), 0, f, c);
       }
 
       template <typename C>
-      unsigned short traits<unsigned short, C>::
+      unsigned short traits<unsigned short, C, schema_type::other>::
       create (const xercesc::DOMAttr& a, flags f, container* c)
       {
         return create (xml::transcode<C> (a.getValue ()), 0, f, c);
       }
 
       template <typename C>
-      unsigned short traits<unsigned short, C>::
+      unsigned short traits<unsigned short, C, schema_type::other>::
       create (const std::basic_string<C>& s,
               const xercesc::DOMElement*,
               flags,
