@@ -13,7 +13,7 @@ cd CMSSW_9_0_0
 cmsenv
 git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
 cd utm
-git checkout utm_0_5_x_dev
+git checkout utm_0_6_x_dev
 scram tool info xerces-c
 export XERCES_C_BASE=<XERCES_C_BASE directory printed by the above command>
 scram tool info boost

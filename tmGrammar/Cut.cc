@@ -50,6 +50,9 @@ const reserved::value_type cut_names[] = {
   reserved::value_type(MASS, 1),
   reserved::value_type(CHGCOR, 1),
   reserved::value_type(TBPT, 1),
+  reserved::value_type(ORMDETA, 1),
+  reserved::value_type(ORMDPHI, 1),
+  reserved::value_type(ORMDR, 1),
 };
 const int n_cut_names = sizeof(cut_names) / sizeof(cut_names[0]);
 const reserved cutName(cut_names, cut_names + n_cut_names);
@@ -64,15 +67,16 @@ const reserved cutName(cut_names, cut_names + n_cut_names);
 // ---------------------------------------------------------------------
 // methods
 // ---------------------------------------------------------------------
-void
-Item::print()
+std::ostream&
+Item::print(std::ostream& os) const
 {
-  std::cout << "cut = ";
+  os << "cut = ";
   for (size_t ii = 0; ii < name.size(); ii++)
   {
-    std::cout << "'" << name.at(ii) << "' ";
+    os << "'" << name.at(ii) << "' ";
   }
-  std::cout << std::endl;
+  os << std::endl;
+  return os;
 }
 
 

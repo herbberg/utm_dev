@@ -5,8 +5,8 @@
 
 /** @todo */
 
-#ifndef Algorithm_hh
-#define Algorithm_hh
+#ifndef tmGrammar_Algorithm_hh
+#define tmGrammar_Algorithm_hh
 
 /*====================================================================*
  * declarations
@@ -71,11 +71,12 @@ struct Logic
   static const std::vector<std::string>& getTokens() { return tokens; }
 
   /** print contents of tokens */
-  static void print()
+  static std::ostream& print(std::ostream& os = std::cout)
   {
-    std::cout << "tokens: \n";
+    os << "tokens: \n";
     for (size_t ii = 0; ii < tokens.size(); ii++)
-      std::cout << "  " << tokens.at(ii) << std::endl;
+      os << "  " << tokens.at(ii) << std::endl;
+    return os;
   }
 }; // struct Logic
 
@@ -87,5 +88,5 @@ extern const reserved gateName; /**< list of allowed operator names */
 
 } // namespace Algorithm
 
-#endif // Algorithm_hh
+#endif // tmGrammar_Algorithm_hh
 /* eof */

@@ -31,6 +31,7 @@ const char COUNT[] = "COUNT";     /**< text for Minimum Bias HF type  */
 
 const char PRECISION[] = "PRECISION";     /**< text for precision type */
 const char PRECISION_DELTA[] = "Delta";   /**< text for delta precision type */
+const char PRECISION_OVRM_DELTA[] = "OvRmDelta";   /**< text for delta precision for overlap removal type */
 const char PRECISION_MASS[] = "Mass";     /**< text for mass precision type */
 const char PRECISION_MASSPT[] = "MassPt"; /**< text for mass precision type */
 const char PRECISION_MATH[] = "Math";     /**< text for math precision type */
@@ -54,6 +55,9 @@ enum esCutType
   Count,            /**< number of counts */
   Slice,            /**< object collection slice */
   TwoBodyPt,        /**< two body Pt for mass_inv/mass_trv function */
+  OvRmDeltaEta, /**< overlap removal with delta eta */
+  OvRmDeltaPhi, /**< overlap removal with delta phi */
+  OvRmDeltaR,   /**< overlap removal with delta R */
   nCutType
 };
 
@@ -86,8 +90,15 @@ enum esFunctionType
   CombFunction = 10, /**< combination */
   DistFunction = 11, /**< distance */
   MassFunction = 12,  /**< invariant mass(alias) */
-  InvariantMassFunction = 20,  /**< invariant mass */
-  TransverseMassFunction = 21  /**< transverse mass */
+  InvariantMassFunction = 20, /**< invariant mass */
+  TransverseMassFunction = 21, /**< transverse mass */
+  SingleOvRmFunction = 22, /**< single object with overlap removal */
+  DoubleOvRmFunction = 23, /**< double combination with overlap removal */
+  TripleOvRmFunction = 24, /**< triple combination with overlap removal */
+  QuadOvRmFunction = 25, /**< quad combination with overlap removal */
+  DistOvRmFunction = 26, /**< distance with overlap removal */
+  InvariantMassOvRmFunction = 27, /**< invariant mass with overlap removal */
+  TransverseMassOvRmFunction = 28 /**< transverse mass with overlap removal */
 };
 
 /** list of comparison operator */
@@ -147,6 +158,21 @@ enum esConditionType
   TotalEtEM,    /**< total Et with ECAL only condition */
   MissingEtHF,  /**< missing Et with HF condition */
   TowerCount,   /**< Calo tower count */
+  SingleEgammaOvRm, /**< single e/gamma condition with overlap removal */
+  DoubleEgammaOvRm, /**< double e/gamma condition with overlap removal */
+  TripleEgammaOvRm, /**< triple e/gamma condition with overlap removal */
+  QuadEgammaOvRm,   /**< quad e/gamma condition with overlap removal */
+  SingleTauOvRm,    /**< single tau condition with overlap removal */
+  DoubleTauOvRm,    /**< double tau condition with overlap removal */
+  TripleTauOvRm,    /**< triple tau condition with overlap removal */
+  QuadTauOvRm,      /**< quad tau condition with overlap removal */
+  SingleJetOvRm,    /**< single jet condition with overlap removal */
+  DoubleJetOvRm,    /**< double jet condition with overlap removal */
+  TripleJetOvRm,    /**< triple jet condition with overlap removal */
+  QuadJetOvRm,      /**< quad jet condition with overlap removal */
+  CaloCaloCorrelationOvRm,    /**< Calo-Calo correlation condition with overlap removal */
+  InvariantMassOvRm,          /**< Invariant mass condition with overlap removal */
+  TransverseMassOvRm,         /**< Transverse mass condition with overlap removal */
   nConditionType
 };
 
@@ -162,7 +188,8 @@ enum esScaleType
   MathPrecision,    /**< precision for math */
   CountScale,       /**< Count scale */
   TwoBodyPtPrecision, /**< precision for two body pt */
-  TwoBodyPtMathPrecision /**< precision for two body math */
+  TwoBodyPtMathPrecision, /**< precision for two body math */
+  OvRmDeltaPrecision   /**< precision for overlap removal delta */
 };
 
 } // namespace tmeventsetup

@@ -38,10 +38,10 @@ class esTriggerMenuHandle : public esTriggerMenu
     static const std::string TupleName[]; /**< list of tuple name to be used for condition name */
 
     // ctor
-    esTriggerMenuHandle():esTriggerMenu() { };
+    esTriggerMenuHandle();
 
     // dtor
-    virtual ~esTriggerMenuHandle() { };
+    virtual ~esTriggerMenuHandle();
 
     /** parse algorithm expression
      *
@@ -121,6 +121,14 @@ class esTriggerMenuHandle : public esTriggerMenu
     esCondition getDistCondition(const Function::Item& item,
                                  const tmtable::Table& cuts_in_algo);
 
+    /** get distance (correlation) condition
+     *
+     * @param token [in] token of algorithm expression in grammar
+     * @param cuts_in_algo [in] list of cuts used in algorithm
+     */
+    esCondition getDistOverlapRemovalCondition(const Function::Item& item,
+                                               const tmtable::Table& cuts_in_algo);
+
     /** get invariant/transverse mass condition
      *
      * @param token [in] token of algorithm expression in grammar
@@ -129,19 +137,32 @@ class esTriggerMenuHandle : public esTriggerMenu
     esCondition getMassCondition(const Function::Item& item,
                                  const tmtable::Table& cuts_in_algo);
 
+    /** get invariant/transverse mass condition
+     *
+     * @param token [in] token of algorithm expression in grammar
+     * @param cuts_in_algo [in] list of cuts used in algorithm
+     */
+    esCondition getMassOverlapRemovalCondition(const Function::Item& item,
+                                               const tmtable::Table& cuts_in_algo);
+
+    /** get single/combination overlap removal condition
+     */
+    esCondition getOverlapRemovalCondition(const Function::Item& item,
+                                           const tmtable::Table& cuts_in_algo);
+
     /** get name of object
      *
      * @param type [in] type of object
      * @return character array representing object name
      */
-    const char* getObjectName(const int type);
+    const std::string getObjectName(const int type);
 
     /** get name of condition
      *
      * @param type [in] type of condition
      * @return character array representing object name
      */
-    const char* getConditionName(const int type);
+    const std::string getConditionName(const int type);
 
     /** get HW index of a bin
      *

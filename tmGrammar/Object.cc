@@ -106,23 +106,25 @@ const reserved comparisonName(comparison_names, comparison_names + n_comparison_
 // ---------------------------------------------------------------------
 // methods
 // ---------------------------------------------------------------------
-void Item::print()
+std::ostream&
+Item::print(std::ostream& os) const
 {
-  std::cout << "obj = '" << name
-            << "' comp = '" << comparison
-            << "' thre = '" << threshold
-            << "' bx_o = '" << bx_offset
-            << "' cuts = ";
+  os << "obj = '" << name
+     << "' comp = '" << comparison
+     << "' thre = '" << threshold
+     << "' bx_o = '" << bx_offset
+     << "' cuts = ";
   for (size_t ii = 0; ii < cuts.size(); ii++)
   {
-    std::cout << "'" << cuts.at(ii) << "' ";
+    os << "'" << cuts.at(ii) << "' ";
   }
-  std::cout << std::endl;
+  os << std::endl;
+  return os;
 }
 
 
 int
-Item::getType()
+Item::getType() const
 {
   if (strncmp(name.c_str(), MU, strlen(MU)) == 0) return Muon;
   if (strncmp(name.c_str(), EG, strlen(EG)) == 0) return Egamma;

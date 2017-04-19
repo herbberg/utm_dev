@@ -5,8 +5,8 @@
  * Created:     23 Feb 2015
  */
 
-#ifndef FunctionGrammar_hh
-#define FunctionGrammar_hh
+#ifndef tmGrammar_FunctionGrammar_hh
+#define tmGrammar_FunctionGrammar_hh
 
 /*====================================================================*
  * declarations
@@ -99,6 +99,10 @@ struct function_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(mass)
       | string(mass_inv)
       | string(mass_trv)
+      | string(single_orm)
+      | string(double_orm)
+      | string(triple_orm)
+      | string(quad_orm)
     ;
 
     objects
@@ -133,5 +137,5 @@ struct function_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
 };
 
 } // namespace Function
-#endif // FunctionGrammar_hh
+#endif // tmGrammar_FunctionGrammar_hh
 /* eof */

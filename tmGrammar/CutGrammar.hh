@@ -3,8 +3,8 @@
  * Created:     23 Feb 2015
  */
 
-#ifndef CutGrammar_hh
-#define CutGrammar_hh
+#ifndef tmGrammar_CutGrammar_hh
+#define tmGrammar_CutGrammar_hh
 
 /*====================================================================*
  * declarations
@@ -101,6 +101,9 @@ struct cut_grammar : qi::grammar<Iterator, Item(), ascii::space_type>
       | raw[string(MASS) >> '_' >> +char_(charset)]
       | raw[string(CHGCOR) >> '_' >> +char_(charset)]
       | raw[string(TBPT) >> '_' >> +char_(charset)]
+      | raw[string(ORMDETA) >> '_' >> +char_(charset)]
+      | raw[string(ORMDPHI) >> '_' >> +char_(charset)]
+      | raw[string(ORMDR) >> '_' >> +char_(charset)]
     ;
 
     BOOST_SPIRIT_DEBUG_NODE(cut);
@@ -111,5 +114,5 @@ struct cut_grammar : qi::grammar<Iterator, Item(), ascii::space_type>
 };
 
 } // namespace Cut
-#endif // CutGrammar_hh
+#endif // tmGrammar_CutGrammar_hh
 /* eof */
