@@ -893,10 +893,8 @@ esTriggerMenuHandle::setFunctionCuts()
       }
 
       cut.setMinimumValue(minimum);
-      cut.setMinimumIndex(precision); // TODO: depricated
       cut.setMaximumValue(maximum);
-      cut.setMaximumIndex(precision); // TODO: depricated
-      cut.setPrecision(precision);
+      cut.setPrecision(precision); // TODO set both minimum/maximum index
     } // for cut
   } // for condition
 }

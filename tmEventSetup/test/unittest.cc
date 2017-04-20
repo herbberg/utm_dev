@@ -27,7 +27,6 @@ BOOST_AUTO_TEST_CASE(esTriggerMenu_attributes)
   const std::string version = "1.42";
   const std::string comment = "NO-body expects the Spanish Inquisition!";
   const std::string datetime = "2016-12-25T18:00:00+0000";
-  const std::string menuUuid = "d6b0e191-d97c-4c2d-9cdc-08bfae3e7571";
   const std::string firmwareUuid = "f06d0803-1852-4ac8-9f79-01299371a28b";
   const std::string scaleSetName = "spam";
   const size_t nModules = 4;
@@ -40,7 +39,6 @@ BOOST_AUTO_TEST_CASE(esTriggerMenu_attributes)
   menu.setVersion(version);
   menu.setComment(comment);
   menu.setDatetime(datetime);
-  menu.setMenuUuid(menuUuid);
   menu.setFirmwareUuid(firmwareUuid);
   menu.setScaleSetName(scaleSetName);
   menu.setNmodules(nModules);
@@ -50,7 +48,6 @@ BOOST_AUTO_TEST_CASE(esTriggerMenu_attributes)
   BOOST_CHECK_EQUAL(version, menu.getVersion());
   BOOST_CHECK_EQUAL(comment, menu.getComment());
   BOOST_CHECK_EQUAL(datetime, menu.getDatetime());
-  BOOST_CHECK_EQUAL(menuUuid, menu.getMenuUuid());
   BOOST_CHECK_EQUAL(firmwareUuid, menu.getFirmwareUuid());
   BOOST_CHECK_EQUAL(scaleSetName, menu.getScaleSetName());
   BOOST_CHECK_EQUAL(nModules, menu.getNmodules());

@@ -37,7 +37,7 @@ class esCut
     // ctor
     esCut()
       : name_(), object_type_(), cut_type_(),
-        minimum_(), maximum_(), data_(), key_(), precision_(0), version(0) { };
+        minimum_(), maximum_(), data_(), key_(), version(0) { };
 
     // dtor
     virtual ~esCut() { };
@@ -71,7 +71,7 @@ class esCut
     void setMaximum(const esCutValue& maximum) { maximum_ = maximum; };
 
     /** set precision for cut value calculations */
-    void setPrecision(const unsigned int precision) { precision_ = precision; };
+    void setPrecision(const unsigned int precision) { setMaximumIndex(precision); setMinimumIndex(precision); }; // HACK
 
     /** get cut name */
     const std::string& getName() const { return name_; };
@@ -107,7 +107,7 @@ class esCut
     const std::string& getKey() const { return key_; };
 
     /** get precision */
-    const unsigned int getPrecision() const { return precision_; };
+    const unsigned int getPrecision() const { return getMinimumIndex(); }; // HACK
 
 
   protected:
@@ -118,7 +118,6 @@ class esCut
     esCutValue maximum_;        /**< maximum value of cut range */
     std::string data_;          /**< data for charge/quality/isolation/charge correlation */
     std::string key_;           /**< key for accessing a scale */
-    unsigned int precision_;    /**< optional precision for cut values */
     unsigned int version;
 };
 
