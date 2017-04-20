@@ -272,7 +272,7 @@ esCutHandle::print() const
   std::cout << "  maximum.index = " << maximum_.index << "\n";
   std::cout << "  data = " << data_ << "\n";
   std::cout << "  key = " << key_ << "\n";
-  std::cout << "  precision = " << precision_ << "\n";
+  std::cout << "  precision = " << minimum_.index << "\n";
 }
 
 void

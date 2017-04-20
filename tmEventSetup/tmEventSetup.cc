@@ -52,7 +52,9 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   estm->setVersion(version);
   estm->setComment(getValue(menu.menu, kComment));
   estm->setDatetime(getValue(menu.menu, kDateTime));
+#if defined(SWIG)
   estm->setMenuUuid(getValue(menu.menu, kUUIDMenu));
+#endif
   estm->setFirmwareUuid(getValue(menu.menu, kUUIDFirmware));
   estm->setNmodules(boost::lexical_cast<unsigned int>(getValue(menu.menu, kNModules)));
   estm->setScaleSetName(getValue(scale.scaleSet, kName));
