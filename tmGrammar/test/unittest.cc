@@ -134,18 +134,29 @@ BOOST_AUTO_TEST_CASE(Function_parser_valid)
   std::vector<std::string> expressions;
   expressions.push_back("comb{MU0,MU0}");
   expressions.push_back("dist{TAU0,EG1}[DETA_X,DR_X]");
+
   expressions.push_back("mass{TAU0,EG1}[MASS_X]");
-  expressions.push_back("single_orm{JET0,TAU0}[ORMDETA_X]");
-  expressions.push_back("double_orm{JET0,JET0}[ORMDETA_X]");
-  expressions.push_back("double_orm{JET0,JET0,TAU0}[ORMDR_X]");
-  expressions.push_back("triple_orm{JET3,JET2,JET1}[ORMDETA_X]");
-  expressions.push_back("triple_orm{JET3,JET2,JET1,TAU0}[ORMDR_X]");
-  expressions.push_back("quad_orm{JET4,JET3,JET2,JET1}[ORMDETA_X]");
-  expressions.push_back("quad_orm{JET4,JET3,JET2,JET1,TAU0}[ORMDR_X]");
-  expressions.push_back("dist_orm{TAU0,EG1}[DETA_X,DR_X]");
-  expressions.push_back("dist_orm{TAU0,TAU2,EG1}[DETA_X,DR_X]");
+  expressions.push_back("mass{TAU0,EG1}[DR_X,MASS_X]");
+  expressions.push_back("mass{TAU0,EG1}[DETA_X,MASS_X]");
+  expressions.push_back("mass{TAU0,EG1}[DPHI_X,MASS_X]");
+  expressions.push_back("mass{TAU0,EG1}[DETA_X,DPHI_X,MASS_X]");
+  expressions.push_back("mass{TAU0,EG1}[DR_X,DPHI_X,MASS_X]");
+  expressions.push_back("mass{TAU0,EG1}[DR_X,DETA_X,MASS_X]");
+  expressions.push_back("mass{TAU0,EG1}[DR_X,DETA_X,DPHI_X,MASS_X]");
+
+  expressions.push_back("comb_orm{JET0,TAU0}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET0,JET1,TAU0}[ORMDR_X]");
+  expressions.push_back("comb_orm{JET3,JET2,JET1,TAU0}[ORMDR_X]");
+  expressions.push_back("comb_orm{JET4,JET3,JET2,JET1,TAU0}[ORMDR_X]");
+
+  expressions.push_back("dist_orm{TAU0,EG1}[ORMDETA_X,DR_X]");
+  expressions.push_back("dist_orm{TAU0,TAU1,EG1}[ORMDETA_X,DR_X]");
+
   expressions.push_back("mass_inv_orm{TAU0,EG1}[ORMDETA_X,MASS_X]");
+  expressions.push_back("mass_inv_orm{TAU0,TAU1,EG1}[ORMDETA_X,MASS_X]");
+
   expressions.push_back("mass_trv_orm{TAU0,EG1}[ORMDETA_X,MASS_X]");
+  expressions.push_back("mass_trv_orm{TAU0,TAU1,EG1}[ORMDETA_X,MASS_X]");
 
   std::vector<std::string>::const_iterator cit;
   for (cit = expressions.begin(); cit != expressions.end(); ++cit)
@@ -159,13 +170,30 @@ BOOST_AUTO_TEST_CASE(Function_parser_valid)
 BOOST_AUTO_TEST_CASE(Function_parser_invalid)
 {
   std::vector<std::string> expressions;
-  expressions.push_back("single_orm{JET0}[ORMDETA_X]");
-  expressions.push_back("double_orm{JET0}[ORMDETA_X]");
-  expressions.push_back("double_orm{JET0,JET0,JET0}[ORMDETA_X]");
-  expressions.push_back("triple_orm{JET3,JET2}[ORMDETA_X]");
-  expressions.push_back("triple_orm{JET3,JET2,JET1,JET1}[ORMDETA_X]");
-  expressions.push_back("quad_orm{JET4,JET3,JET2}[ORMDETA_X]");
-  expressions.push_back("quad_orm{JET4,JET3,JET2,JET1,JET0}[ORMDR_X]");
+  expressions.push_back("comb_orm{JET0}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET0,JET0,JET0}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET3,JET2}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET3,JET2,JET1,JET1}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET4,JET3,JET2}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET4,JET3,JET2,JET1,JET0}[ORMDR_X]");
+
+  expressions.push_back("dist_orm{JET0,JET1}[DR_X]"); // missing overlap removal cut
+  expressions.push_back("dist_orm{JET0,TAU0}[ORMDR_X]"); // missing delta cut
+  expressions.push_back("dist_orm{JET0,TAU0,TAU0}[ORMDR_X,DR_X]");
+  expressions.push_back("dist_orm{JET0,JET1,JET2,TAU0}[ORMDR_X,DR_X]");
+  expressions.push_back("dist_orm{JET0,JET1,TAU0,TAU1}[ORMDR_X,DR_X]");
+
+  expressions.push_back("mass_inv_orm{JET0,JET1}[MASS_Z]"); // missing overlap removal cut
+  expressions.push_back("mass_inv_orm{JET0,TAU0}[ORMDR_X]"); // missing mass cut
+  expressions.push_back("mass_inv_orm{JET0,TAU0,TAU0}[ORMDR_X,MASS_Z]");
+  expressions.push_back("mass_inv_orm{JET0,JET1,JET2,TAU0}[ORMDR_X,MASS_Z]");
+  expressions.push_back("mass_inv_orm{JET0,JET1,TAU0,TAU1}[ORMDR_X,MASS_Z]");
+
+  expressions.push_back("mass_trv_orm{JET0,JET1}[MASS_Z]"); // missing overlap removal cut
+  expressions.push_back("mass_trv_orm{JET0,TAU0}[ORMDR_X]"); // missing mass cut
+  expressions.push_back("mass_trv_orm{JET0,TAU0,TAU0}[ORMDR_X,MASS_Z]");
+  expressions.push_back("mass_trv_orm{JET0,JET1,JET2,TAU0}[ORMDR_X,MASS_Z]");
+  expressions.push_back("mass_trv_orm{JET0,JET1,TAU0,TAU1}[ORMDR_X,MASS_Z]");
 
   std::vector<std::string>::const_iterator cit;
   for (cit = expressions.begin(); cit != expressions.end(); ++cit)
@@ -182,13 +210,10 @@ BOOST_AUTO_TEST_CASE(Function_isFunction)
   expressions.push_back("comb{MU0,MU0}");
   expressions.push_back("dist{TAU0,EG1}[DETA_X,DR_X]");
   expressions.push_back("mass{TAU0,EG1}[MASS_X]");
-  expressions.push_back("single_orm{JET0,TAU0}[ORMDETA_X]");
-  expressions.push_back("double_orm{JET0,JET0}[ORMDETA_X]");
-  expressions.push_back("double_orm{JET0,JET0,TAU0}[ORMDR_X]");
-  expressions.push_back("triple_orm{JET3,JET2,JET1}[ORMDETA_X]");
-  expressions.push_back("triple_orm{JET3,JET2,JET1,TAU0}[ORMDR_X]");
-  expressions.push_back("quad_orm{JET4,JET3,JET2,JET1}[ORMDETA_X]");
-  expressions.push_back("quad_orm{JET4,JET3,JET2,JET1,TAU0}[ORMDR_X]");
+  expressions.push_back("comb_orm{JET0,TAU0}[ORMDETA_X]");
+  expressions.push_back("comb_orm{JET0,JET0,TAU0}[ORMDR_X]");
+  expressions.push_back("comb_orm{JET3,JET2,JET1,TAU0}[ORMDR_X]");
+  expressions.push_back("comb_orm{JET4,JET3,JET2,JET1,TAU0}[ORMDR_X]");
 
   std::vector<std::string>::const_iterator cit;
   for (cit = expressions.begin(); cit != expressions.end(); ++cit)

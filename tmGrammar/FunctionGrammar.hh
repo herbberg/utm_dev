@@ -96,13 +96,13 @@ struct function_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
     name
       = string(comb)
       | string(dist)
-      | string(mass)
+      | string(mass) // alias for mass_inv
       | string(mass_inv)
       | string(mass_trv)
-      | string(single_orm)
-      | string(double_orm)
-      | string(triple_orm)
-      | string(quad_orm)
+      | string(comb_orm)
+      | string(dist_orm)
+      | string(mass_inv_orm)
+      | string(mass_trv_orm)
     ;
 
     objects

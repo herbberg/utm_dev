@@ -37,10 +37,7 @@ const std::string mass_inv = "mass_inv"; /**< invariant mass */
 const std::string mass_trv = "mass_trv"; /**< transverse mass */
 
 // overlap removal functions
-const std::string single_orm = "single_orm"; /**< overlap removal for single object */
-const std::string double_orm = "double_orm"; /**< overlap removal for double objects */
-const std::string triple_orm = "triple_orm"; /**< overlap removal for triple objects */
-const std::string quad_orm = "quad_orm"; /**< overlap removal for quad objects */
+const std::string comb_orm = "comb_orm"; /**< overlap removal for object combinations */
 const std::string dist_orm = "dist_orm"; /**< distance with overlap removal */
 const std::string mass_inv_orm = "mass_inv_orm"; /**< invariant mass with overlap removal */
 const std::string mass_trv_orm = "mass_trv_orm"; /**< transverse mass with overlap removal */
@@ -53,10 +50,7 @@ enum {
   Distance,
   InvariantMass,
   TransverseMass,
-  SingleOvRm,
-  DoubleOvRm,
-  TripleOvRm,
-  QuadOvRm,
+  CombinationOvRm,
   DistanceOvRm,
   InvariantMassOvRm,
   TransverseMassOvRm,
@@ -95,6 +89,9 @@ struct Item
 
   /** get type of function */
   int getType() const;
+
+  /** append to item message */
+  void appendMessage(const std::string& message);
 };
 
 

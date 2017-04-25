@@ -193,6 +193,10 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
   {
     condition = getCombCondition(item, cuts_in_algo);
   }
+  else if (item.type == Function::CombinationOvRm)
+  {
+    condition = getOverlapRemovalCondition(item, cuts_in_algo);
+  }
   else if (item.type == Function::Distance)
   {
     condition = getDistCondition(item, cuts_in_algo);
@@ -216,22 +220,6 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
   else if (item.type == Function::TransverseMassOvRm)
   {
     condition = getMassOverlapRemovalCondition(item, cuts_in_algo);
-  }
-  else if (item.type == Function::SingleOvRm)
-  {
-    condition = getOverlapRemovalCondition(item, cuts_in_algo);
-  }
-  else if (item.type == Function::DoubleOvRm)
-  {
-    condition = getOverlapRemovalCondition(item, cuts_in_algo);
-  }
-  else if (item.type == Function::TripleOvRm)
-  {
-    condition = getOverlapRemovalCondition(item, cuts_in_algo);
-  }
-  else if (item.type == Function::QuadOvRm)
-  {
-    condition = getOverlapRemovalCondition(item, cuts_in_algo);
   }
   else
   {
@@ -374,16 +362,16 @@ esTriggerMenuHandle::getOverlapRemovalCondition(const Function::Item& item,
   // get type of first object
   const esObjectType type = static_cast<esObjectType>(objects.front().getType());
 
-  // get type of possible reference object (always last one)
+  // get type of possible different object (always last one)
   const esObjectType typeReference = static_cast<esObjectType>(objects.back().getType());
 
-  // check for appended reference objet of different type
+  // check for appended reference object of different type
   const bool hasReference = (type != typeReference);
 
   // count of objects (without possible reference)
   const size_t count = (hasReference ? objects.size() - 1 : objects.size());
 
-  // distinguish number of objects
+  // distinguish number of left side objects
   switch (count)
   {
     case 1: // SingleOverlapRemoval

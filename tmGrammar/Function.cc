@@ -20,6 +20,7 @@
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 /*====================================================================*
  * implementation
@@ -28,14 +29,6 @@ namespace Function
 {
 
 /** @cond INTERNAL */
-class ObjectCountError : virtual public std::exception {
-  // ...
-};
-
-class ReferenceObjectError : virtual public std::exception {
-  // ...
-};
-
 struct Item_
 {
   std::string name;
@@ -55,6 +48,26 @@ struct Item_
     std::cout << std::endl;
   }
 }; // struct Item_
+
+/** Comparison functor for object types .*/
+struct equalObjectType
+{
+  int type;
+  equalObjectType(int type) : type(type) {}
+  bool operator()(const Object::Item& item) { return item.type == type; }
+};
+
+/** Get typ name of cut. TODO
+ * getCutType("MU-ISO_FOO"); --> "MU-ISO"
+ */
+std::string
+getCutType(const std::string& cut)
+{
+  std::vector<std::string> tokens;
+  boost::split(tokens, cut, boost::is_any_of("_"));
+  return tokens.front();
+};
+
 /** @endcond */
 
 
@@ -63,94 +76,199 @@ struct Item_
 // static variables
 // ---------------------------------------------------------------------
 
-// all the function names (sorted for string )
 /** @cond INTERNAL */
 const reserved::value_type function_names[] = {
   reserved::value_type(comb, 1),
+  reserved::value_type(comb_orm, 1),
   reserved::value_type(dist, 1),
   reserved::value_type(dist_orm, 1),
   reserved::value_type(mass, 1),
   reserved::value_type(mass_inv, 1),
   reserved::value_type(mass_inv_orm, 1),
   reserved::value_type(mass_trv, 1),
-  reserved::value_type(mass_trv_orm, 1),
-  reserved::value_type(single_orm, 1),
-  reserved::value_type(double_orm, 1),
-  reserved::value_type(triple_orm, 1),
-  reserved::value_type(quad_orm, 1)
+  reserved::value_type(mass_trv_orm, 1)
 };
 const int n_function_names = sizeof(function_names) / sizeof(function_names[0]);
 const reserved functionName(function_names, function_names + n_function_names);
 
+// list of cuts for all overlap removal functions
+const char* cutOvRm_[] = {
+  Cut::ORMDETA,
+  Cut::ORMDPHI,
+  Cut::ORMDR
+};
+const std::vector<std::string> cutOvRm(cutOvRm_, cutOvRm_ + sizeof(cutOvRm_)/sizeof(cutOvRm_[0]));
 
 // comb
-const char* objComb_[] = {Object::MU, Object::EG, Object::TAU, Object::JET};
+const char* objComb_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objComb(objComb_, objComb_ + sizeof(objComb_)/sizeof(objComb_[0]));
 
-const char* cutComb_[] = {Cut::CHGCOR};
+const char* cutComb_[] = {
+  Cut::CHGCOR,
+  Cut::TBPT
+};
 const std::vector<std::string> cutComb(cutComb_, cutComb_ + sizeof(cutComb_)/sizeof(cutComb_[0]));
 
 // comb with overlap removal
-const char* objCombOvRm_[] = {Object::EG, Object::TAU, Object::JET};
+const char* objCombOvRm_[] = {
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objCombOvRm(objCombOvRm_, objCombOvRm_ + sizeof(objCombOvRm_)/sizeof(objCombOvRm_[0]));
 
-const char* cutCombOvRm_[] = {Cut::ORMDETA, Cut::ORMDPHI, Cut::ORMDR};
+const char* cutCombOvRm_[] = {
+  Cut::ORMDETA,
+  Cut::ORMDPHI,
+  Cut::ORMDR
+};
 const std::vector<std::string> cutCombOvRm(cutCombOvRm_, cutCombOvRm_ + sizeof(cutCombOvRm_)/sizeof(cutCombOvRm_[0]));
 
 
 // invariant mass objects
-const char* objMassInv_[] = {Object::MU, Object::EG, Object::TAU, Object::JET};
+const char* objMassInv_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objMassInv(objMassInv_, objMassInv_ + sizeof(objMassInv_)/sizeof(objMassInv_[0]));
 
 // transverse mass objects
-const char* objMassTrv_[] = {Object::MU, Object::EG, Object::TAU, Object::JET, Object::ETM, Object::HTM, Object::ETMHF};
+const char* objMassTrv_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET,
+  Object::ETM,
+  Object::HTM,
+  Object::ETMHF
+};
 const std::vector<std::string> objMassTrv(objMassTrv_, objMassTrv_ + sizeof(objMassTrv_)/sizeof(objMassTrv_[0]));
 
 // invariant mass cuts
-const char* cutInvMass_[] = {Cut::MASS, Cut::DETA, Cut::DPHI, Cut::DR, Cut::CHGCOR, Cut::TBPT};
+const char* cutInvMass_[] = {
+  Cut::MASS,
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR,
+  Cut::CHGCOR,
+  Cut::TBPT
+};
 const std::vector<std::string> cutInvMass(cutInvMass_, cutInvMass_ + sizeof(cutInvMass_)/sizeof(cutInvMass_[0]));
 
 // transverse mass cuts
-const char* cutTrvMass_[] = {Cut::MASS, Cut::DETA, Cut::DPHI, Cut::DR, Cut::CHGCOR, Cut::TBPT};
+const char* cutTrvMass_[] = {
+  Cut::MASS,
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR,
+  Cut::CHGCOR,
+  Cut::TBPT
+};
 const std::vector<std::string> cutTrvMass(cutTrvMass_, cutTrvMass_ + sizeof(cutTrvMass_)/sizeof(cutTrvMass_[0]));
 
 
 // invariant mass objects with overlap removal
-const char* objMassInvOvRm_[] = {Object::EG, Object::TAU, Object::JET};
+const char* objMassInvOvRm_[] = {
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objMassInvOvRm(objMassInvOvRm_, objMassInvOvRm_ + sizeof(objMassInvOvRm_)/sizeof(objMassInvOvRm_[0]));
 
 // transverse mass objects with overlap removal
-const char* objMassTrvOvRm_[] = {Object::EG, Object::TAU, Object::JET};
+const char* objMassTrvOvRm_[] = {
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objMassTrvOvRm(objMassTrvOvRm_, objMassTrvOvRm_ + sizeof(objMassTrvOvRm_)/sizeof(objMassTrvOvRm_[0]));
 
 // invariant mass cuts with overlap removal
-const char* cutInvMassOvRm_[] = {Cut::ORMDETA, Cut::ORMDPHI, Cut::ORMDR, Cut::MASS, Cut::DETA, Cut::DPHI, Cut::DR, Cut::TBPT};
+const char* cutInvMassOvRm_[] = {
+  Cut::ORMDETA,
+  Cut::ORMDPHI,
+  Cut::ORMDR,
+  Cut::MASS,
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR,
+  Cut::TBPT
+};
 const std::vector<std::string> cutInvMassOvRm(cutInvMassOvRm_, cutInvMassOvRm_ + sizeof(cutInvMassOvRm_)/sizeof(cutInvMassOvRm_[0]));
 
 // transverse mass cuts with overlap removal
-const char* cutTrvMassOvRm_[] = {Cut::ORMDETA, Cut::ORMDPHI, Cut::ORMDR, Cut::MASS, Cut::DETA, Cut::DPHI, Cut::DR, Cut::TBPT};
+const char* cutTrvMassOvRm_[] = {
+  Cut::ORMDETA,
+  Cut::ORMDPHI,
+  Cut::ORMDR,
+  Cut::MASS,
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR,
+  Cut::TBPT
+};
 const std::vector<std::string> cutTrvMassOvRm(cutTrvMassOvRm_, cutTrvMassOvRm_ + sizeof(cutTrvMassOvRm_)/sizeof(cutTrvMassOvRm_[0]));
 
 
 // dist
-const char* objDelta_[] = {Object::MU, Object::EG, Object::TAU, Object::JET};
+const char* objDelta_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objDelta(objDelta_, objDelta_ + sizeof(objDelta_)/sizeof(objDelta_[0]));
 
-const char* objDeltaPhi_[] = {Object::MU, Object::EG, Object::TAU, Object::JET, Object::ETM, Object::HTM};
+const char* objDeltaPhi_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET,
+  Object::ETM,
+  Object::HTM
+};
 const std::vector<std::string> objDeltaPhi(objDeltaPhi_, objDeltaPhi_ + sizeof(objDeltaPhi_)/sizeof(objDeltaPhi_[0]));
 
-const char* cutDist_[] = {Cut::DETA, Cut::DPHI, Cut::DR, Cut::CHGCOR};
+const char* cutDist_[] = {
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR,
+  Cut::CHGCOR,
+  Cut::TBPT
+};
 const std::vector<std::string> cutDist(cutDist_, cutDist_ + sizeof(cutDist_)/sizeof(cutDist_[0]));
 
 
 // dist with overlap removal
-const char* objDeltaOvRm_[] = {Object::EG, Object::TAU, Object::JET};
+const char* objDeltaOvRm_[] = {
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objDeltaOvRm(objDeltaOvRm_, objDeltaOvRm_ + sizeof(objDeltaOvRm_)/sizeof(objDeltaOvRm_[0]));
 
-const char* objDeltaPhiOvRm_[] = {Object::EG, Object::TAU, Object::JET};
+const char* objDeltaPhiOvRm_[] = {
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
 const std::vector<std::string> objDeltaPhiOvRm(objDeltaPhiOvRm_, objDeltaPhiOvRm_ + sizeof(objDeltaPhiOvRm_)/sizeof(objDeltaPhiOvRm_[0]));
 
-const char* cutDistOvRm_[] = {Cut::ORMDETA, Cut::ORMDPHI, Cut::ORMDR, Cut::DETA, Cut::DPHI, Cut::DR};
+const char* cutDistOvRm_[] = {
+  Cut::ORMDETA,
+  Cut::ORMDPHI,
+  Cut::ORMDR,
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR
+};
 const std::vector<std::string> cutDistOvRm(cutDistOvRm_, cutDistOvRm_ + sizeof(cutDistOvRm_)/sizeof(cutDistOvRm_[0]));
 
 /** @endcond */
@@ -198,7 +316,7 @@ Item::isValidObject(const std::string& object,
       if (not objects)
       {
         std::ostringstream oss;
-        oss << "Function::isValidObject: no metric specified for dist";
+        oss << "Function::isValidObject: no metric specified for " << Function::dist;
         if (message.length())
           message.append(", ");
         message.append(oss.str());
@@ -213,7 +331,7 @@ Item::isValidObject(const std::string& object,
       if (not objects)
       {
         std::ostringstream oss;
-        oss << "Function::isValidObject: no metric specified for dist_orm";
+        oss << "Function::isValidObject: no metric specified for " << Function::dist_orm;
         if (message.length())
           message.append(", ");
         message.append(oss.str());
@@ -223,6 +341,10 @@ Item::isValidObject(const std::string& object,
 
     case Combination:
       objects = &objComb;
+      break;
+
+    case CombinationOvRm:
+      objects = &objCombOvRm;
       break;
 
     case InvariantMass:
@@ -239,13 +361,6 @@ Item::isValidObject(const std::string& object,
 
     case TransverseMassOvRm:
       objects = &objMassTrvOvRm;
-      break;
-
-    case SingleOvRm:
-    case DoubleOvRm:
-    case TripleOvRm:
-    case QuadOvRm:
-      objects = &objCombOvRm;
       break;
 
   } // switch (type)
@@ -286,6 +401,10 @@ Item::isValidCut(const std::string& cut,
       cuts = &cutComb;
       break;
 
+    case CombinationOvRm:
+      cuts = &cutCombOvRm;
+      break;
+
     case InvariantMass:
       cuts = &cutInvMass;
       break;
@@ -301,20 +420,15 @@ Item::isValidCut(const std::string& cut,
     case TransverseMassOvRm:
       cuts = &cutTrvMassOvRm;
       break;
-
-    case SingleOvRm:
-    case DoubleOvRm:
-    case TripleOvRm:
-    case QuadOvRm:
-      cuts = &cutCombOvRm;
-      break;
   }
 
   if (not cuts)
   {
     std::ostringstream oss;
     oss << " Function::Item::isValidCut: unkown cut type: " << type;
-    message += oss.str();
+    if (message.length())
+      message.append(", ");
+    message.append(oss.str());
     return false;
   }
 
@@ -354,7 +468,11 @@ Item::isValidCut(const std::string& cut,
     }
   }
 
-  message += " Function::Item::isValidCut: unkown cut: '" + cut + "'";
+  std::ostringstream oss;
+  oss << " Function::Item::isValidCut: unkown cut: '" << cut << "'";
+  if (message.length())
+    message.append(", ");
+  message.append(oss.str());
 
   return false;
 }
@@ -374,6 +492,10 @@ Item::getType() const
   else if (comb == name)
   {
     return Combination;
+  }
+  else if (comb_orm == name)
+  {
+    return CombinationOvRm;
   }
   else if (mass == name) // for backward compatibility
   {
@@ -395,23 +517,15 @@ Item::getType() const
   {
     return TransverseMassOvRm;
   }
-  else if (single_orm == name)
-  {
-    return SingleOvRm;
-  }
-  else if (double_orm == name)
-  {
-    return DoubleOvRm;
-  }
-  else if (triple_orm == name)
-  {
-    return TripleOvRm;
-  }
-  else if (quad_orm == name)
-  {
-    return QuadOvRm;
-  }
   return Unknown;
+}
+
+void
+Item::appendMessage(const std::string& message)
+{
+  if (this->message.length())
+    this->message.append(", ");
+  this->message.append(message);
 }
 
 
@@ -454,13 +568,271 @@ getObjects(const std::string& token,
   if (objects.size() < 2)
   {
     std::ostringstream oss;
-    oss << "Function::getObjects: # of object  < 2 '" << text << "'";
+    oss << "Function::getObjects: # of object < 2 '" << text << "'";
     if (message.length())
       message.append(", ");
     message.append(oss.str());
     TM_LOG_ERR(oss.str());
     return false;
   }
+
+  return true;
+}
+
+bool
+validateObjectCount(Function::Item& item, const size_t min, const size_t max)
+{
+  const size_t count = item.objects.size();
+  if (count < min or count > max)
+  {
+    std::ostringstream message;
+    message << "Function::validateObjectCount:"
+            << " invalid object count for function '" << item.name << "': "
+            << count << " (" << min << " <= objects <= " << max << ")";
+    item.appendMessage(message.str());
+    TM_LOG_ERR(message.str());
+    return false;
+  }
+  return true;
+}
+
+bool
+validateCombinationFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 4))
+    return false;
+
+  const size_t count = item.objects.size();
+  const int firstType = item.objects.front().getType();
+
+  // Check that all objects are of same type
+  const size_t equalCount = std::count_if(item.objects.begin(), item.objects.end(), equalObjectType(firstType));
+  if (count != equalCount)
+  {
+    std::ostringstream message;
+    message << "Function::validateCombinationFunction:"
+            << " invalid object combination for function '"
+            << item.name << "': all objects must be of same type";
+    item.appendMessage(message.str());
+    TM_LOG_ERR(message.str());
+    return false;
+  }
+
+  return true;
+}
+
+/** Validate overlap removal objects assignment. */
+bool
+validateOvRmObjects(Function::Item& item)
+{
+  const size_t count = item.objects.size();
+  const size_t countRight = 1;
+  const size_t countLeft = count - countRight;
+  const int firstType = item.objects.front().getType();
+  const int lastType = item.objects.back().getType();
+
+  // Check that first and last object is of different type
+  if (firstType == lastType)
+  {
+    std::ostringstream message;
+    message << "Function::validateOvRmObjects:"
+            << " invalid object combination for overlap removal function '"
+            << item.name << "': right object must be of different type, eg. (tautau + jet)";
+    item.appendMessage(message.str());
+    TM_LOG_ERR(message.str());
+    return false;
+  }
+
+  // Check that left objects are of same type
+  const size_t equalCount = std::count_if(item.objects.begin(), item.objects.end(), equalObjectType(firstType));
+  if (countLeft != equalCount)
+  {
+    std::ostringstream message;
+    message << "Function::validateOvRmObjects:"
+            << " invalid object combination for overlap removal function '"
+            << item.name << "': left objects must be of same type, eg. (tautau + jet)";
+    item.appendMessage(message.str());
+    TM_LOG_ERR(message.str());
+    return false;
+  }
+
+  return true;
+}
+
+/** Validate if there is at least one overlap removal cut assigned. */
+bool
+validateOvRmCuts(Function::Item& item)
+{
+  std::vector<std::string>::const_iterator cit;
+  for (cit = item.cuts.begin(); cit != item.cuts.end(); ++cit)
+  {
+    const std::string type = getCutType(*cit);
+    if (std::count(cutOvRm.begin(), cutOvRm.end(), type))
+      return true; // found at least one ovlerap removal cut
+  }
+
+  std::ostringstream message;
+  message << "Function::validateOvRmCuts:"
+          << " missing overlap removal cut for function '" << item.name << "'";
+  item.appendMessage(message.str());
+  TM_LOG_ERR(message.str());
+
+  return false;
+}
+
+/** Validate if there is at least one distance cut assigned. */
+bool
+validateDistanceCuts(Function::Item& item)
+{
+  std::vector<std::string>::const_iterator cit;
+  for (cit = item.cuts.begin(); cit != item.cuts.end(); ++cit)
+  {
+    const std::string type = getCutType(*cit);
+    if (Cut::DR == type or Cut::DETA == type or Cut::DPHI == type)
+      return true; // found at least one distance cut
+  }
+
+  std::ostringstream message;
+  message << "Function::validateDistanceCuts:"
+          << " missing distance cut for function '" << item.name << "'";
+  item.appendMessage(message.str());
+  TM_LOG_ERR(message.str());
+
+  return false;
+}
+
+/** Validate if there is at least one mass cut assigned. */
+bool
+validateMassCuts(Function::Item& item)
+{
+  std::vector<std::string>::const_iterator cit;
+  for (cit = item.cuts.begin(); cit != item.cuts.end(); ++cit)
+  {
+    const std::string type = getCutType(*cit);
+    if (Cut::MASS == type)
+      return true; // found at least one mass cut
+  }
+
+  std::ostringstream message;
+  message << "Function::validateMassCuts:"
+          << " missing mass cut for function '" << item.name << "'";
+  item.appendMessage(message.str());
+  TM_LOG_ERR(message.str());
+
+  return false;
+}
+
+/** Validate combination with overlap removal function objects and cuts. */
+bool
+validateCombinationOvRmFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 5))
+    return false;
+
+  // Check overlap removal objects type and order
+  if (not validateOvRmObjects(item))
+    return false;
+
+  return true;
+}
+
+/** Validate distance function objects and cuts. */
+bool
+validateDistanceFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 2))
+    return false;
+
+  return true;
+}
+
+/** Validate distance with overlap removal function objects and cuts. */
+bool
+validateDistanceOvRmFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 3))
+    return false;
+
+  // Check overlap removal objects type and order
+  if (not validateOvRmObjects(item))
+    return false;
+
+  if (not validateOvRmCuts(item))
+    return false;
+
+  return true;
+}
+
+/** Validate invariant mass function objects and cuts. */
+bool
+validateInvariantMassFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 2))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  return true;
+}
+
+/** Validate invariant mass with overlap removal function objects and cuts. */
+bool
+validateInvariantMassOvRmFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 3))
+    return false;
+
+  // Check overlap removal objects type and order
+  if (not validateOvRmObjects(item))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  if (not validateOvRmCuts(item))
+    return false;
+
+  return true;
+}
+
+/** Validate transverse mass function objects and cuts. */
+bool
+validateTransverseMassFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 2))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  return true;
+}
+
+/** Validate transverse mass with overlap removal function objects and cuts. */
+bool
+validateTransverseMassOvRmFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 3))
+    return false;
+
+  // Check overlap removal objects type and order
+  if (not validateOvRmObjects(item))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  if (not validateOvRmCuts(item))
+    return false;
 
   return true;
 }
@@ -472,20 +844,18 @@ parser(const std::string& function,
        Function::Item& item)
 {
   const std::string trimmed = boost::trim_copy(function);
-  std::ostringstream name_;
-  name_ << "(" << comb << "|"
-               << mass << "|"
-               << mass_inv << "|"
-               << mass_inv_orm << "|"
-               << mass_trv << "|"
-               << mass_trv_orm << "|"
-               << dist << "|"
-               << dist_orm << "|"
-               << single_orm << "|"
-               << double_orm << "|"
-               << triple_orm << "|"
-               << quad_orm << ")";
-  const std::string name = name_.str();
+  // Build regular expression list of function names.
+  std::ostringstream names;
+  names << "(";
+  reserved::const_iterator cit;
+  for (cit = functionName.begin(); cit != functionName.end(); ++cit)
+  {
+    if (cit != functionName.begin())
+      names << "|";
+    names << cit->first;
+  }
+  names << ")";
+  const std::string name = names.str();
   const std::string objects = "\\{(.+)\\}";
   const std::string cuts = "\\[(.+)\\]";
   regex_t regex;
@@ -496,9 +866,7 @@ parser(const std::string& function,
   {
     std::ostringstream message;
     message << "tmutil::regex_compile::error '" << expression << "'";
-    if (item.message.length())
-      item.message.append(", ");
-    item.message.append(message.str());
+    item.appendMessage(message.str());
     return false;
   }
 
@@ -525,9 +893,7 @@ parser(const std::string& function,
     {
       std::ostringstream message;
       message << "tmutil::regex_compile::error '" << expression << "'";
-      if (item.message.length())
-        item.message.append(", ");
-      item.message.append(message.str());
+      item.appendMessage(message.str());
       return false;
     }
 
@@ -551,9 +917,7 @@ parser(const std::string& function,
   {
     std::ostringstream message;
     message << "Function::parser: no cut specified for '" << item.name << "'";
-    if (item.message.length())
-      item.message.append(", ");
-    item.message.append(message.str());
+    item.appendMessage(message.str());
     TM_LOG_ERR(message.str());
     return false;
   }
@@ -564,7 +928,7 @@ parser(const std::string& function,
     Cut::Item cut;
     if (not Cut::parser(item_.cuts, cut))
     {
-      item.message += cut.message;
+      item.appendMessage(cut.message);
       return false;
     }
 
@@ -575,10 +939,8 @@ parser(const std::string& function,
       {
         std::ostringstream message;
         message << "Function::parser: cut '" << cut.name.at(ii)
-                << "' is not valid for '" << item.name << "'";
-        if (item.message.length())
-          item.message.append(", ");
-        item.message.append(message.str());
+                << "' is not valid for function '" << item.name << "'";
+        item.appendMessage(message.str());
         TM_LOG_ERR(message.str());
         return false;
       }
@@ -600,7 +962,7 @@ parser(const std::string& function,
     Object::Item object;
     if (not Object::parser(item_.objects.at(ii), object))
     {
-      item.message += object.message;
+      item.appendMessage(object.message);
       return false;
     }
 
@@ -608,142 +970,45 @@ parser(const std::string& function,
     {
       std::ostringstream message;
       message << "Function::parser: object '" << item_.objects.at(ii)
-              << "' is not valid for '" << item.name << "'"
+              << "' is not valid for function '" << item.name << "'"
               << ((item.type == Distance) ? " with the given metric" : "");
-      if (item.message.length())
-        item.message.append(", ");
-      item.message.append(message.str());
+      item.appendMessage(message.str());
       TM_LOG_ERR(message.str());
       return false;
     }
 
-    if (item.type == Combination)
-    {
-      if (objectType == Object::Unknown) objectType = object.getType();
-      if (objectType != object.getType())
-      {
-        std::ostringstream message;
-        message << "Function::parser: differnet type of objects passed to comb(): "
-                << function;
-        if (item.message.length())
-          item.message.append(", ");
-        item.message.append(message.str());
-        TM_LOG_ERR(message.str());
-        return false;
-      }
-    }
     item.objects.push_back(object);
   }
 
-  try
+  // Validate function integrity
+  switch (item.type)
   {
-    // validate object combinations
-    // TODO: this is not efficient, use an OOP approach instead
-    switch (item.type)
-    {
-      case DistanceOvRm:
-      case InvariantMassOvRm:
-      case TransverseMassOvRm:
-      {
-        if (item.objects.size() == 2) // two objects
-        {
-        }
-        else if (item.objects.size() == (2 + 1)) // two objects and a reference object
-        {
-          if (item.objects.front().getType() == item.objects.back().getType())
-            throw ReferenceObjectError(); // hm....
-        }
-        else
-        {
-          throw ObjectCountError();
-        }
-      } break;
+    case Combination:
+      return validateCombinationFunction(item);
 
-      case SingleOvRm:
-      {
-        if (item.objects.size() == (1 + 1)) // one object and a reference object
-        {
-          if (item.objects.front().getType() == item.objects.back().getType())
-            throw ReferenceObjectError();
-        }
-        else
-        {
-          throw ObjectCountError();
-        }
-      } break;
+    case CombinationOvRm:
+      return validateCombinationOvRmFunction(item);
 
-      case DoubleOvRm:
-      {
-        if (item.objects.size() == 2) // two objects
-        {
-        }
-        else if (item.objects.size() == (2 + 1)) // two objects and a reference object
-        {
-          if (item.objects.front().getType() == item.objects.back().getType())
-            throw ReferenceObjectError();
-        }
-        else
-        {
-          throw ObjectCountError();
-        }
-      } break;
+    case Distance:
+      return validateDistanceFunction(item);
 
-      case TripleOvRm:
-      {
-        if (item.objects.size() == 3) // three objects
-        {
-        }
-        else if (item.objects.size() == (3 + 1)) // three objects and a reference object
-        {
-          if (item.objects.front().getType() == item.objects.back().getType())
-            throw ReferenceObjectError();
-        }
-        else
-        {
-          throw ObjectCountError();
-        }
-      } break;
+    case DistanceOvRm:
+      return validateDistanceOvRmFunction(item);
 
-      case QuadOvRm:
-      {
-        if (item.objects.size() == 4) // four objects
-        {
-        }
-        else if (item.objects.size() == (4 + 1)) // four objects and a reference object
-        {
-          if (item.objects.front().getType() == item.objects.back().getType())
-            throw ReferenceObjectError();
-        }
-        else
-        {
-          throw ObjectCountError();
-        }
-      } break;
+    case InvariantMass:
+      return validateInvariantMassFunction(item);
 
-    } // switch type
-  }
-  catch (ObjectCountError& e)
-  {
-    std::ostringstream message;
-    message << "Function::parser: invalid object count for function '" << item.name << "': " << item.objects.size();
-    if (item.message.length())
-      item.message.append(", ");
-    item.message.append(message.str());
-    TM_LOG_ERR(message.str());
-    return false;
-  }
-  catch (ReferenceObjectError& e)
-  {
-    std::ostringstream message;
-    message << "Function::parser: reference object for overlap removal must be of different type for function '" << item.name << "'";
-    if (item.message.length())
-      item.message.append(", ");
-    item.message.append(message.str());
-    TM_LOG_ERR(message.str());
-    return false;
+    case InvariantMassOvRm:
+      return validateInvariantMassOvRmFunction(item);
+
+    case TransverseMass:
+      return validateTransverseMassFunction(item);
+
+    case TransverseMassOvRm:
+      return validateTransverseMassOvRmFunction(item);
   }
 
-  return true;
+  return false;
 }
 
 
