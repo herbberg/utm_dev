@@ -77,7 +77,9 @@ getCutType(const std::string& cut)
 // ---------------------------------------------------------------------
 
 /** @cond INTERNAL */
-const reserved::value_type function_names[] = {
+
+// map of functions
+const reserved::value_type functionNames[] = {
   reserved::value_type(comb, 1),
   reserved::value_type(comb_orm, 1),
   reserved::value_type(dist, 1),
@@ -88,8 +90,9 @@ const reserved::value_type function_names[] = {
   reserved::value_type(mass_trv, 1),
   reserved::value_type(mass_trv_orm, 1)
 };
-const int n_function_names = sizeof(function_names) / sizeof(function_names[0]);
-const reserved functionName(function_names, function_names + n_function_names);
+const int nFunctionNames = sizeof(functionNames) / sizeof(functionNames[0]);
+const reserved functionName(functionNames, functionNames + nFunctionNames);
+
 
 // list of cuts for all overlap removal functions
 const char* cutOvRm_[] = {
@@ -99,7 +102,8 @@ const char* cutOvRm_[] = {
 };
 const std::vector<std::string> cutOvRm(cutOvRm_, cutOvRm_ + sizeof(cutOvRm_)/sizeof(cutOvRm_[0]));
 
-// comb
+
+// objects for combination function
 const char* objComb_[] = {
   Object::MU,
   Object::EG,
@@ -108,13 +112,15 @@ const char* objComb_[] = {
 };
 const std::vector<std::string> objComb(objComb_, objComb_ + sizeof(objComb_)/sizeof(objComb_[0]));
 
+// cuts for combination function
 const char* cutComb_[] = {
   Cut::CHGCOR,
   Cut::TBPT
 };
 const std::vector<std::string> cutComb(cutComb_, cutComb_ + sizeof(cutComb_)/sizeof(cutComb_[0]));
 
-// comb with overlap removal
+
+// objects for combination with overlap removal function
 const char* objCombOvRm_[] = {
   Object::EG,
   Object::TAU,
@@ -122,15 +128,17 @@ const char* objCombOvRm_[] = {
 };
 const std::vector<std::string> objCombOvRm(objCombOvRm_, objCombOvRm_ + sizeof(objCombOvRm_)/sizeof(objCombOvRm_[0]));
 
+// cuts for combination with overlap removal function
 const char* cutCombOvRm_[] = {
   Cut::ORMDETA,
   Cut::ORMDPHI,
-  Cut::ORMDR
+  Cut::ORMDR,
+  Cut::TBPT
 };
 const std::vector<std::string> cutCombOvRm(cutCombOvRm_, cutCombOvRm_ + sizeof(cutCombOvRm_)/sizeof(cutCombOvRm_[0]));
 
 
-// invariant mass objects
+// objects for invariant mass function
 const char* objMassInv_[] = {
   Object::MU,
   Object::EG,
@@ -139,7 +147,18 @@ const char* objMassInv_[] = {
 };
 const std::vector<std::string> objMassInv(objMassInv_, objMassInv_ + sizeof(objMassInv_)/sizeof(objMassInv_[0]));
 
-// transverse mass objects
+// cuts for invariant mass function
+const char* cutInvMass_[] = {
+  Cut::MASS,
+  Cut::DETA,
+  Cut::DPHI,
+  Cut::DR,
+  Cut::CHGCOR,
+  Cut::TBPT
+};
+const std::vector<std::string> cutInvMass(cutInvMass_, cutInvMass_ + sizeof(cutInvMass_)/sizeof(cutInvMass_[0]));
+
+// objects for transverse mass function
 const char* objMassTrv_[] = {
   Object::MU,
   Object::EG,
@@ -151,18 +170,7 @@ const char* objMassTrv_[] = {
 };
 const std::vector<std::string> objMassTrv(objMassTrv_, objMassTrv_ + sizeof(objMassTrv_)/sizeof(objMassTrv_[0]));
 
-// invariant mass cuts
-const char* cutInvMass_[] = {
-  Cut::MASS,
-  Cut::DETA,
-  Cut::DPHI,
-  Cut::DR,
-  Cut::CHGCOR,
-  Cut::TBPT
-};
-const std::vector<std::string> cutInvMass(cutInvMass_, cutInvMass_ + sizeof(cutInvMass_)/sizeof(cutInvMass_[0]));
-
-// transverse mass cuts
+// cuts for transverse mass function
 const char* cutTrvMass_[] = {
   Cut::MASS,
   Cut::DETA,
@@ -217,7 +225,7 @@ const char* cutTrvMassOvRm_[] = {
 const std::vector<std::string> cutTrvMassOvRm(cutTrvMassOvRm_, cutTrvMassOvRm_ + sizeof(cutTrvMassOvRm_)/sizeof(cutTrvMassOvRm_[0]));
 
 
-// dist
+// objects for distance function with eta and phi
 const char* objDelta_[] = {
   Object::MU,
   Object::EG,
@@ -226,6 +234,7 @@ const char* objDelta_[] = {
 };
 const std::vector<std::string> objDelta(objDelta_, objDelta_ + sizeof(objDelta_)/sizeof(objDelta_[0]));
 
+// objects for distance function with phi
 const char* objDeltaPhi_[] = {
   Object::MU,
   Object::EG,
@@ -236,6 +245,7 @@ const char* objDeltaPhi_[] = {
 };
 const std::vector<std::string> objDeltaPhi(objDeltaPhi_, objDeltaPhi_ + sizeof(objDeltaPhi_)/sizeof(objDeltaPhi_[0]));
 
+// cuts for distance function
 const char* cutDist_[] = {
   Cut::DETA,
   Cut::DPHI,
@@ -246,7 +256,7 @@ const char* cutDist_[] = {
 const std::vector<std::string> cutDist(cutDist_, cutDist_ + sizeof(cutDist_)/sizeof(cutDist_[0]));
 
 
-// dist with overlap removal
+// objects for distance with overlap removal function with eta and phi
 const char* objDeltaOvRm_[] = {
   Object::EG,
   Object::TAU,
@@ -254,6 +264,7 @@ const char* objDeltaOvRm_[] = {
 };
 const std::vector<std::string> objDeltaOvRm(objDeltaOvRm_, objDeltaOvRm_ + sizeof(objDeltaOvRm_)/sizeof(objDeltaOvRm_[0]));
 
+// objects for distance with overlap removal function with phi
 const char* objDeltaPhiOvRm_[] = {
   Object::EG,
   Object::TAU,
@@ -261,13 +272,15 @@ const char* objDeltaPhiOvRm_[] = {
 };
 const std::vector<std::string> objDeltaPhiOvRm(objDeltaPhiOvRm_, objDeltaPhiOvRm_ + sizeof(objDeltaPhiOvRm_)/sizeof(objDeltaPhiOvRm_[0]));
 
+// cuts for distance with overlap removal function
 const char* cutDistOvRm_[] = {
   Cut::ORMDETA,
   Cut::ORMDPHI,
   Cut::ORMDR,
   Cut::DETA,
   Cut::DPHI,
-  Cut::DR
+  Cut::DR,
+  Cut::TBPT
 };
 const std::vector<std::string> cutDistOvRm(cutDistOvRm_, cutDistOvRm_ + sizeof(cutDistOvRm_)/sizeof(cutDistOvRm_[0]));
 
