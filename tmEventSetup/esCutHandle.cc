@@ -92,6 +92,21 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
         object_type_ = static_cast<esObjectType>(MassFunction);
         cut_type_ = TwoBodyPt;
       }
+      else if (token == Cut::ORMDETA)
+      {
+        object_type_ = static_cast<esObjectType>(DistFunction); // HACK
+        cut_type_ = OvRmDeltaEta;
+      }
+      else if (token == Cut::ORMDPHI)
+      {
+        object_type_ = static_cast<esObjectType>(DistFunction); // HACK
+        cut_type_ = OvRmDeltaPhi;
+      }
+      else if (token == Cut::ORMDR)
+      {
+        object_type_ = static_cast<esObjectType>(DistFunction); // HACK
+        cut_type_ = OvRmDeltaR;
+      }
       else
       {
         TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown cut_type '" << token << "'");
@@ -233,6 +248,9 @@ esCutHandle::setKey()
     case Slice: key_ += Cut::SLICE; break;
     case Count: key_ += COUNT; break;
     case TwoBodyPt: key_ += Cut::TBPT; break;
+    case OvRmDeltaEta: key_ += Cut::ORMDETA; break;
+    case OvRmDeltaPhi: key_ += Cut::ORMDPHI; break;
+    case OvRmDeltaR: key_ += Cut::ORMDR; break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << cut_type_ << "'");
       break;

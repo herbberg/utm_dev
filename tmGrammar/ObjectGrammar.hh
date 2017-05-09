@@ -3,8 +3,8 @@
  * Created:     23 Feb 2015
  */
 
-#ifndef ObjectGrammar_hh
-#define ObjectGrammar_hh
+#ifndef tmGrammar_ObjectGrammar_hh
+#define tmGrammar_ObjectGrammar_hh
 
 /*====================================================================*
  * declarations
@@ -148,5 +148,5 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
 };
 
 } // namespace Object
-#endif // ObjectGrammar_hh
+#endif // tmGrammar_ObjectGrammar_hh
 /* eof */

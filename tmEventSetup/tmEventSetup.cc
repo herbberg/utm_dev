@@ -13,8 +13,19 @@
 
 namespace tmeventsetup
 {
-  // TODO: better to define with tmGrammar?
-  const std::string GRAMMAR_VERSION = "0.5";
+
+// TODO: better to define with tmGrammar?
+const std::string GRAMMAR_VERSION = "0.6";
+
+// keys for menu tables
+const std::string kGrammarVersion("grammar_version");
+const std::string kName("name");
+const std::string kComment("comment");
+const std::string kDateTime("datetime");
+const std::string kUUIDMenu("uuid_menu");
+const std::string kUUIDFirmware("uuid_firmware");
+const std::string kNModules("n_modules");
+const std::string kExpression("expression");
 
 const esTriggerMenu*
 _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
@@ -27,8 +38,9 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   estm->setScaleMap(scale);
 
   // verify grammar version
-  const std::string version = getValue(menu.menu, "grammar_version");
-  if (version > GRAMMAR_VERSION)
+  const std::string version = getValue(menu.menu, kGrammarVersion);
+
+  if (version > GRAMMAR_VERSION) // TODO: weak comparison
   {
     std::stringstream message;
     message << "utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION;
@@ -36,26 +48,26 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   }
 
   // set menu information
-  estm->setName(getValue(menu.menu, "name"));
+  estm->setName(getValue(menu.menu, kName));
   estm->setVersion(version);
-  estm->setComment(getValue(menu.menu, "comment"));
-  estm->setDatetime(getValue(menu.menu, "datetime"));
+  estm->setComment(getValue(menu.menu, kComment));
+  estm->setDatetime(getValue(menu.menu, kDateTime));
 #if defined(SWIG)
-  estm->setMenuUuid(getValue(menu.menu, "uuid_menu"));
+  estm->setMenuUuid(getValue(menu.menu, kUUIDMenu));
 #endif
-  estm->setFirmwareUuid(getValue(menu.menu, "uuid_firmware"));
-  estm->setNmodules(boost::lexical_cast<unsigned int>(getValue(menu.menu, "n_modules")));
-  estm->setScaleSetName(getValue(scale.scaleSet, "name"));
+  estm->setFirmwareUuid(getValue(menu.menu, kUUIDFirmware));
+  estm->setNmodules(boost::lexical_cast<unsigned int>(getValue(menu.menu, kNModules)));
+  estm->setScaleSetName(getValue(scale.scaleSet, kName));
 
   // set condition and algorithm maps
   for (size_t ii = 0; ii < menu.algorithms.size(); ii++)
   {
     const tmtable::Row& algorithm = menu.algorithms.at(ii);
-    const std::string& algo_name = algorithm.find("name")->second;
+    const std::string& algo_name = algorithm.find(kName)->second;
 
     tmtable::StringTableMap::const_iterator cit = menu.cuts.find(algo_name);
     const tmtable::Table cuts_in_algo = (cit != menu.cuts.end()) ? cit->second : tmtable::Table();
-    std::vector<std::string> rpn = estm->parse(algorithm.find("expression")->second);
+    std::vector<std::string> rpn = estm->parse(algorithm.find(kExpression)->second);
 
     for (size_t jj = 0; jj < rpn.size(); jj++)
     {
@@ -87,10 +99,10 @@ getTriggerMenu(const std::string& path)
 
   std::string message;
   message = tmtable::xml2menu(path.c_str(), menu, scale, extSignal);
-  if (message.size())
+  if (message.length())
   {
     TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
-    TM_FATAL_ERROR("couldn't open an input file");
+    TM_FATAL_ERROR("couldn't open input file: '" << path << "'");
   }
 
   return _getTriggerMenu(menu, scale, extSignal);
@@ -109,10 +121,10 @@ getTriggerMenu(std::istringstream& iss)
 
   std::string message;
   message = tmtable::xml2menu(iss, menu, scale, extSignal);
-  if (message.size())
+  if (message.length())
   {
     TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
-    TM_FATAL_ERROR("couldn't open an input file");
+    TM_FATAL_ERROR("couldn't open input stream");
   }
 
   return _getTriggerMenu(menu, scale, extSignal);
@@ -148,7 +160,7 @@ getHash(const std::string& s)
 unsigned long
 getHashUlong(const std::string& s)
 {
-  return (unsigned long)getHash(s);
+  return static_cast<unsigned long>(getHash(s));
 }
 
 
@@ -278,6 +290,7 @@ getPrecisions(std::map<std::string, unsigned int>& precision,
     switch (cit->second.getScaleType())
     {
       case DeltaPrecision:
+      case OvRmDeltaPrecision:
       case MassPrecision:
       case MassPtPrecision:
       case MathPrecision:
@@ -311,6 +324,7 @@ getPrecisionsPy(std::map<std::string, unsigned int>& precision,
     switch (cit->second->getScaleType())
     {
       case DeltaPrecision:
+      case OvRmDeltaPrecision:
       case MassPrecision:
       case MassPtPrecision:
       case MathPrecision:

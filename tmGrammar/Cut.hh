@@ -5,8 +5,8 @@
 
 /** @todo nope */
 
-#ifndef Cut_hh
-#define Cut_hh
+#ifndef tmGrammar_Cut_hh
+#define tmGrammar_Cut_hh
 
 /*====================================================================*
  * declarations
@@ -65,13 +65,15 @@ const char ETMHF_PHI[] = "ETMHF-PHI"; /**< ETM phi */
 
 
 // cuts for functions
-const char MASS[] = "MASS";     /**< mass */
-const char DETA[] = "DETA";     /**< delta eta */
-const char DPHI[] = "DPHI";     /**< delta phi */
-const char DR[] = "DR";         /**< delta R */
-const char CHGCOR[] = "CHGCOR"; /**< charge correlation  */
-const char TBPT[] = "TBPT";     /**< two body Pt  */
-
+const char MASS[] = "MASS";       /**< mass */
+const char DETA[] = "DETA";       /**< delta eta */
+const char DPHI[] = "DPHI";       /**< delta phi */
+const char DR[] = "DR";           /**< delta R */
+const char CHGCOR[] = "CHGCOR";   /**< charge correlation  */
+const char TBPT[] = "TBPT";       /**< two body Pt  */
+const char ORMDETA[] = "ORMDETA"; /**< delta eta overlap removal */
+const char ORMDPHI[] = "ORMDPHI"; /**< delta phi overlap removal */
+const char ORMDR[] = "ORMDR";     /**< delta R overlap removal */
 
 // character set for cuts
 const char CHARSET_CUT[] = "a-zA-Z0-9_-";
@@ -90,7 +92,7 @@ struct Item
   Item() : name(), message() {}
 
   /** print name of the cuts */
-  void print();
+  std::ostream& print(std::ostream& os = std::cout) const;
 
 }; // struct Item
 
@@ -111,5 +113,5 @@ extern const reserved cutName;  /**< list of allowed cut names */
 
 } // namespace Cut
 
-#endif // Cut_hh
+#endif // tmGrammar_Cut_hh
 /* eof */

@@ -46,6 +46,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (type == Cut::PHI) type_ = PhiScale;
   else if (type == COUNT) type_ = CountScale;
   else if (type.find(PRECISION_DELTA) != std::string::npos) type_ = DeltaPrecision;
+  else if (type.find(PRECISION_OVRM_DELTA) != std::string::npos) type_ = OvRmDeltaPrecision;
   else if (type.find(PRECISION_MASSPT) != std::string::npos) type_ = MassPtPrecision;
   else if (type.find(PRECISION_MASS) != std::string::npos) type_ = MassPrecision;
   else if (type.find(PRECISION_MATH) != std::string::npos) type_ = MathPrecision;

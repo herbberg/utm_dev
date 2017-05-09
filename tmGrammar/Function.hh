@@ -5,8 +5,8 @@
 
 /** @todo */
 
-#ifndef Function_hh
-#define Function_hh
+#ifndef tmGrammar_Function_hh
+#define tmGrammar_Function_hh
 
 /*====================================================================*
  * declarations
@@ -30,19 +30,30 @@
 namespace Function {
 
 // functions
-const char comb[] = "comb"; /**< combination */
-const char dist[] = "dist"; /**< distance */
-const char mass[] = "mass"; /**< invariant mass (alias) */
-const char mass_inv[] = "mass_inv"; /**< invariant mass */
-const char mass_trv[] = "mass_trv"; /**< transverse mass */
+const std::string comb = "comb"; /**< combination */
+const std::string dist = "dist"; /**< distance */
+const std::string mass = "mass"; /**< invariant mass (alias) */
+const std::string mass_inv = "mass_inv"; /**< invariant mass */
+const std::string mass_trv = "mass_trv"; /**< transverse mass */
+
+// overlap removal functions
+const std::string comb_orm = "comb_orm"; /**< overlap removal for object combinations */
+const std::string dist_orm = "dist_orm"; /**< distance with overlap removal */
+const std::string mass_inv_orm = "mass_inv_orm"; /**< invariant mass with overlap removal */
+const std::string mass_trv_orm = "mass_trv_orm"; /**< transverse mass with overlap removal */
+
 
 /** type of functions */
 enum {
   Unknown = 0,
   Combination,
+  Distance,
   InvariantMass,
   TransverseMass,
-  Distance
+  CombinationOvRm,
+  DistanceOvRm,
+  InvariantMassOvRm,
+  TransverseMassOvRm,
 };
 
 /** type of metric for Distance */
@@ -68,7 +79,7 @@ struct Item
   Item() : name(), objects(), cuts(), type(Unknown), metric(Unknown), message() {}
 
   /** prints Item attributes */
-  void print();
+  std::ostream& print(std::ostream& os = std::cout) const;
 
   /** checks if the object expression is valid or not */
   bool isValidObject(const std::string& object, std::string& message);
@@ -77,7 +88,10 @@ struct Item
   bool isValidCut(const std::string& cut, std::string& message);
 
   /** get type of function */
-  int getType();
+  int getType() const;
+
+  /** append to item message */
+  void appendMessage(const std::string& message);
 };
 
 
@@ -116,5 +130,5 @@ extern const reserved functionName; /**< list of allowed function names */
 
 } // namespace Function
 
-#endif // Function_hh
+#endif // tmGrammar_Function_hh
 /* eof */

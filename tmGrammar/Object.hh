@@ -5,8 +5,8 @@
 
 /** @todo rewrite with regex possible */
 
-#ifndef Object_hh
-#define Object_hh
+#ifndef tmGrammar_Object_hh
+#define tmGrammar_Object_hh
 
 /*====================================================================*
  * declarations
@@ -88,10 +88,10 @@ struct Item
   Item() : name(), comparison(GE), threshold(), bx_offset("+0"), cuts(), type(Unknown), message() {}
 
   /** prints Item attributes */
-  void print();
+  std::ostream& print(std::ostream& os = std::cout) const;
 
   /** returns object type */
-  int getType();
+  int getType() const;
 
   /** checks if the cut expression is valid or not */
   bool isValidCut(const std::string& cut);
@@ -127,5 +127,5 @@ extern const reserved comparisonName; /**< list of allowed comparison operator *
 
 } // namespace Object
 
-#endif // Object_hh
+#endif // tmGrammar_Object_hh
 /* eof */

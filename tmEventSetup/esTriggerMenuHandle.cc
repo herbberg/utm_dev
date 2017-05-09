@@ -30,12 +30,19 @@
 namespace tmeventsetup
 {
 
-// Strings
-static const std::string kUnit("Unit");
-static const std::string kSingle("Single");
-static const std::string kDouble("Double");
-static const std::string kTriple("Triple");
-static const std::string kQuad("Quad");
+// String keys
+const std::string kUnit("Unit");
+const std::string kSingle("Single");
+const std::string kDouble("Double");
+const std::string kTriple("Triple");
+const std::string kQuad("Quad");
+
+// suffix
+const std::string kOvRm("OvRm");
+
+// keys for tables
+const std::string kName("name");
+const std::string kChannel("channel");
 
 // Tuple names
 const std::string esTriggerMenuHandle::TupleName[] =
@@ -46,6 +53,17 @@ const std::string esTriggerMenuHandle::TupleName[] =
   kTriple,
   kQuad,
 };
+
+
+
+esTriggerMenuHandle::esTriggerMenuHandle() : esTriggerMenu()
+{
+}
+
+
+esTriggerMenuHandle::~esTriggerMenuHandle()
+{
+}
 
 
 std::vector<std::string>
@@ -61,7 +79,7 @@ esTriggerMenuHandle::parse(const std::string& algorithm)
 }
 
 
-const char*
+const std::string
 esTriggerMenuHandle::getObjectName(const int type)
 {
   switch (type)
@@ -87,28 +105,31 @@ esTriggerMenuHandle::getObjectName(const int type)
       break;
   }
 
-  return 0;
+  return "";
 }
 
 
-const char*
+const std::string
 esTriggerMenuHandle::getConditionName(const int type)
 {
   switch (type)
   {
-    case MuonMuonCorrelation: return "MuonMuonCorrelation";
-    case MuonEsumCorrelation: return "MuonEsumCorrelation";
-    case CaloMuonCorrelation: return "CaloMuonCorrelation";
-    case CaloCaloCorrelation: return "CaloCaloCorrelation";
-    case CaloEsumCorrelation: return "CaloEsumCorrelation";
-    case InvariantMass:       return "InvariantMass";
-    case TransverseMass:       return "TransverseMass";
+    case MuonMuonCorrelation:     return "MuonMuonCorrelation";
+    case MuonEsumCorrelation:     return "MuonEsumCorrelation";
+    case CaloMuonCorrelation:     return "CaloMuonCorrelation";
+    case CaloCaloCorrelation:     return "CaloCaloCorrelation";
+    case CaloCaloCorrelationOvRm: return "CaloCaloCorrelationOvRm";
+    case CaloEsumCorrelation:     return "CaloEsumCorrelation";
+    case InvariantMass:           return "InvariantMass";
+    case TransverseMass:          return "TransverseMass";
+    case InvariantMassOvRm:       return "InvariantMassOvRm";
+    case TransverseMassOvRm:      return "TransverseMassOvRm";
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getConditionName: unknown condition type '" << type << "'");
       break;
   }
 
-  return 0;
+  return "";
 }
 
 
@@ -172,24 +193,40 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
   {
     condition = getCombCondition(item, cuts_in_algo);
   }
+  else if (item.type == Function::CombinationOvRm)
+  {
+    condition = getOverlapRemovalCondition(item, cuts_in_algo);
+  }
   else if (item.type == Function::Distance)
   {
     condition = getDistCondition(item, cuts_in_algo);
+  }
+  else if (item.type == Function::DistanceOvRm)
+  {
+    condition = getDistOverlapRemovalCondition(item, cuts_in_algo);
   }
   else if (item.type == Function::InvariantMass)
   {
     condition = getMassCondition(item, cuts_in_algo);
   }
+  else if (item.type == Function::InvariantMassOvRm)
+  {
+    condition = getMassOverlapRemovalCondition(item, cuts_in_algo);
+  }
   else if (item.type == Function::TransverseMass)
   {
     condition = getMassCondition(item, cuts_in_algo);
+  }
+  else if (item.type == Function::TransverseMassOvRm)
+  {
+    condition = getMassOverlapRemovalCondition(item, cuts_in_algo);
   }
   else
   {
     TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getFunctionCondition: unknown token: '" << token << "'");
   }
 
-  // Set condition name
+  // Update condition name, add hash
   std::ostringstream name;
   name << condition.getName() << "_" << getHashUlong(token);
   condition.setName(name.str());
@@ -206,6 +243,8 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
 
   // multi-object condition
   esConditionHandle conditionHandle;
+
+  // populate condition with objects
   for (size_t ii = 0; ii < item.objects.size(); ii++)
   {
     esObjectHandle objectHandle(item.objects.at(ii), cuts_in_algo);
@@ -213,12 +252,13 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
     conditionHandle.addObject(object);
   }
 
+  // populate condition with cuts
   for (size_t ii = 0; ii < item.cuts.size(); ii++)
   {
     for (size_t jj = 0; jj < cuts_in_algo.size(); jj++)
     {
       tmtable::Row& row = const_cast<tmtable::Row&>(cuts_in_algo.at(jj));
-      if (item.cuts.at(ii) != row["name"]) continue;
+      if (item.cuts.at(ii) != row[kName]) continue;
       esCutHandle cutHandle(row);
       esCut& cut = cutHandle;
       conditionHandle.addCut(cut);
@@ -226,10 +266,14 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
   }
 
   const esObjectType type = static_cast<esObjectType>(conditionHandle.getObjects().at(0).getType());
-  const size_t size = conditionHandle.getObjects().size();
-  switch (size)
+
+  // count of objects
+  const size_t count = conditionHandle.getObjects().size();
+
+  // distinguish number of objects
+  switch (count)
   {
-    case 2:
+    case 2: // double condition
       switch (type)
       {
         case Muon: conditionHandle.setType(DoubleMuon); break;
@@ -242,7 +286,7 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
       }
       break;
 
-    case 3:
+    case 3: // triple condition
       switch (type)
       {
         case Muon: conditionHandle.setType(TripleMuon); break;
@@ -255,7 +299,7 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
       }
       break;
 
-    case 4:
+    case 4: // quad condition
       switch (type)
       {
         case Muon: conditionHandle.setType(QuadMuon); break;
@@ -269,13 +313,122 @@ esTriggerMenuHandle::getCombCondition(const Function::Item& item,
       break;
 
     default:
-      TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: unsupported # of objects '" << size << "'");
+      TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getCombCondition: unsupported # of objects '" << count << "'");
       break;
   }
 
   // Set condition name
   std::ostringstream name;
-  name << TupleName[size] << getObjectName(type);
+  name << TupleName[count] << getObjectName(type); // TODO: segfault possible
+  conditionHandle.setName(name.str());
+
+  esCondition& condition = conditionHandle;
+  return condition;
+}
+
+
+esCondition
+esTriggerMenuHandle::getOverlapRemovalCondition(const Function::Item& item,
+                                                const tmtable::Table& cuts_in_algo)
+{
+  TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getOverlapRemovalCondition: -");
+
+  esConditionHandle conditionHandle;
+
+  // populate condition with objects
+  for (size_t ii = 0; ii < item.objects.size(); ii++)
+  {
+    esObjectHandle objectHandle(item.objects.at(ii), cuts_in_algo);
+    esObject& object = objectHandle;
+    conditionHandle.addObject(object);
+  }
+
+  // populate condition with cuts
+  for (size_t ii = 0; ii < item.cuts.size(); ii++)
+  {
+    for (size_t jj = 0; jj < cuts_in_algo.size(); jj++)
+    {
+      tmtable::Row& row = const_cast<tmtable::Row&>(cuts_in_algo.at(jj));
+      if (item.cuts.at(ii) != row[kName]) continue;
+      esCutHandle cutHandle(row);
+      esCut& cut = cutHandle;
+      conditionHandle.addCut(cut);
+    }
+  }
+
+  // get list of objects to process
+  const std::vector<esObject>& objects = conditionHandle.getObjects();
+
+  // get type of first object
+  const esObjectType type = static_cast<esObjectType>(objects.front().getType());
+
+  // get type of possible different object (always last one)
+  const esObjectType typeReference = static_cast<esObjectType>(objects.back().getType());
+
+  // check for appended reference object of different type
+  const bool hasReference = (type != typeReference);
+
+  // count of objects (without possible reference)
+  const size_t count = (hasReference ? objects.size() - 1 : objects.size());
+
+  // distinguish number of left side objects
+  switch (count)
+  {
+    case 1: // SingleOverlapRemoval
+      switch (type)
+      {
+        case Egamma: conditionHandle.setType(SingleEgammaOvRm); break;
+        case Tau: conditionHandle.setType(SingleTauOvRm); break;
+        case Jet: conditionHandle.setType(SingleJetOvRm); break;
+        default:
+          TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getOverlapRemovalCondition: not implemented '" << type << "'");
+          break;
+      }
+      break;
+    case 2: // DoubleOverlapRemoval
+      switch (type)
+      {
+        case Egamma: conditionHandle.setType(DoubleEgammaOvRm); break;
+        case Tau: conditionHandle.setType(DoubleTauOvRm); break;
+        case Jet: conditionHandle.setType(DoubleJetOvRm); break;
+        default:
+          TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getOvRmCondition: not implemented '" << type << "'");
+          break;
+      }
+      break;
+
+    case 3: // TripleOverlapRemoval
+      switch (type)
+      {
+        case Egamma: conditionHandle.setType(TripleEgammaOvRm); break;
+        case Tau: conditionHandle.setType(TripleTauOvRm); break;
+        case Jet: conditionHandle.setType(TripleJetOvRm); break;
+        default:
+          TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getOvRmCondition: not implemented '" << type << "'");
+          break;
+      }
+      break;
+
+    case 4: // QuadOverlapRemoval
+      switch (type)
+      {
+        case Egamma: conditionHandle.setType(QuadEgammaOvRm); break;
+        case Tau: conditionHandle.setType(QuadTauOvRm); break;
+        case Jet: conditionHandle.setType(QuadJetOvRm); break;
+        default:
+          TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getOverlapRemovalCondition: not implemented '" << type << "'");
+          break;
+      }
+      break;
+
+    default:
+      TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getOverlapRemovalCondition: unsupported # of objects '" << count << "'");
+      break;
+  }
+
+  // Set condition name
+  std::ostringstream name;
+  name << TupleName[count] << getObjectName(type) << kOvRm;  // TODO: segfault possible
   conditionHandle.setName(name.str());
 
   esCondition& condition = conditionHandle;
@@ -292,7 +445,7 @@ esTriggerMenuHandle::getDistCondition(const Function::Item& item,
   // distance (correlation) condition
   if (item.objects.size() != 2)
   {
-    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistCondition: # of conditions != 2 '" << item.objects.size() << "'");
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistCondition: # of objects != 2 '" << item.objects.size() << "'");
   }
 
   esConditionHandle conditionHandle;
@@ -316,7 +469,7 @@ esTriggerMenuHandle::getDistCondition(const Function::Item& item,
     for (size_t jj = 0; jj < item.cuts.size(); jj++)
     {
       TM_LOG_DBG(item.cuts.at(jj));
-      if (item.cuts.at(jj) != cut["name"]) continue;
+      if (item.cuts.at(jj) != cut[kName]) continue;
       esCutHandle cutHandle(cut);
       esCut& ref = cutHandle;
       switch (ref.getCutType())
@@ -381,6 +534,98 @@ esTriggerMenuHandle::getDistCondition(const Function::Item& item,
 
 
 esCondition
+esTriggerMenuHandle::getDistOverlapRemovalCondition(const Function::Item& item,
+                                                    const tmtable::Table& cuts_in_algo)
+{
+  TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: -");
+
+  // distance (correlation) condition with overlap removal
+  if (item.objects.size() < 2 or
+      item.objects.size() > 3)
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: # of objects != 2 or 2+1 '" << item.objects.size() << "'");
+  }
+
+  esConditionHandle conditionHandle;
+  for (size_t ii = 0; ii < item.objects.size(); ii++)
+  {
+    esObjectHandle objectHandle(item.objects.at(ii), cuts_in_algo);
+    esObject& object = objectHandle;
+    conditionHandle.addObject(object);
+  }
+
+  size_t nCut = item.cuts.size();
+  if (nCut == 0 or nCut > 6)  // deta/dphi/chgcor/ormdeta/ormdphi/ormdr combination possible
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: # of cuts not in [1,6] '" << nCut << "'");
+  }
+
+  bool hasDistCut = false;
+  bool hasOvRmCut = false;
+  for (size_t ii = 0; ii < cuts_in_algo.size(); ii++)
+  {
+    tmtable::Row& cut = const_cast<tmtable::Row&>(cuts_in_algo.at(ii));
+    for (size_t jj = 0; jj < item.cuts.size(); jj++)
+    {
+      TM_LOG_DBG(item.cuts.at(jj));
+      if (item.cuts.at(jj) != cut[kName]) continue;
+      esCutHandle cutHandle(cut);
+      esCut& ref = cutHandle;
+      switch (ref.getCutType())
+      {
+        case DeltaEta:
+        case DeltaPhi:
+        case DeltaR:
+          hasDistCut = true;
+          break;
+        case OvRmDeltaEta:
+        case OvRmDeltaPhi:
+        case OvRmDeltaR:
+          hasOvRmCut = true;
+          break;
+        case ChargeCorrelation:
+          break;
+        default:
+          TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: unknown cut type = '" << ref.getCutType() << "'");
+      }
+      conditionHandle.addCut(ref);
+    }
+  }
+
+  if (not hasDistCut)
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: missing dist cut (mandatory)");
+  }
+
+  if (not hasOvRmCut)
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: missing overlap removal cut (mandatory)");
+  }
+
+  const esObjectType type1 = static_cast<esObjectType>(conditionHandle.getObjects().at(0).getType());
+  const esObjectType type2 = static_cast<esObjectType>(conditionHandle.getObjects().at(1).getType());
+  const esCombinationType combination = getObjectCombination(type1, type2);
+
+  switch (combination)
+  {
+    case CaloCaloCombination: // NOTE !
+      conditionHandle.setType(CaloCaloCorrelationOvRm); // NOTE !
+      break;
+
+    default:
+      TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: unknown combination type = '" << combination << "'");
+  }
+
+  // Set condition name
+  std::string name = getConditionName(conditionHandle.getType());
+  conditionHandle.setName(name);
+
+  esCondition& condition = conditionHandle;
+  return condition;
+}
+
+
+esCondition
 esTriggerMenuHandle::getMassCondition(const Function::Item& item,
                                       const tmtable::Table& cuts_in_algo)
 {
@@ -389,7 +634,7 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
   // invariant-mass condition
   if (item.objects.size() != 2)
   {
-    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassCondition: # of conditions != 2 '" << item.objects.size() << "'");
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassCondition: # of objects != 2 '" << item.objects.size() << "'");
   }
 
   esConditionHandle conditionHandle;
@@ -412,7 +657,7 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
     tmtable::Row& cut = const_cast<tmtable::Row&>(cuts_in_algo.at(ii));
     for (size_t jj = 0; jj < nCut; jj++)
     {
-      if (item.cuts.at(jj) != cut["name"]) continue;
+      if (item.cuts.at(jj) != cut[kName]) continue;
       esCutHandle cutHandle(cut);
       esCut& ref = cutHandle;
       if (ref.getCutType() == Mass) hasMassCut = true;
@@ -439,6 +684,75 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
   return condition;
 }
 
+
+esCondition
+esTriggerMenuHandle::getMassOverlapRemovalCondition(const Function::Item& item,
+                                                    const tmtable::Table& cuts_in_algo)
+{
+  TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::getMassOverlapRemovalCondition: -");
+
+  // invariant-mass condition
+  if (item.objects.size() < 2 or
+      item.objects.size() > 3)
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassOverlapRemovalCondition: # of objects != 2 or 2+1 '" << item.objects.size() << "'");
+  }
+
+  esConditionHandle conditionHandle;
+  for (size_t ii = 0; ii < item.objects.size(); ii++)
+  {
+    esObjectHandle objectHandle(item.objects.at(ii), cuts_in_algo);
+    esObject& object = objectHandle;
+    conditionHandle.addObject(object);
+  }
+
+  size_t nCut = item.cuts.size();
+  if (nCut == 0 or nCut > 7)  // mass/dR|(dEta/dPhi)/tbpt
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassOverlapRemovalCondition: # of cuts not in [1,7] '" << nCut << "'");
+  }
+
+  bool hasMassCut = false;
+  bool hasOvRmCut = false;
+  for (size_t ii = 0; ii < cuts_in_algo.size(); ii++)
+  {
+    tmtable::Row& cut = const_cast<tmtable::Row&>(cuts_in_algo.at(ii));
+    for (size_t jj = 0; jj < nCut; jj++)
+    {
+      if (item.cuts.at(jj) != cut[kName]) continue;
+      esCutHandle cutHandle(cut);
+      esCut& ref = cutHandle;
+      if (ref.getCutType() == Mass) hasMassCut = true;
+      if (ref.getCutType() == OvRmDeltaEta) hasOvRmCut = true;
+      if (ref.getCutType() == OvRmDeltaPhi) hasOvRmCut = true;
+      if (ref.getCutType() == OvRmDeltaR) hasOvRmCut = true;
+      conditionHandle.addCut(ref);
+    }
+  }
+
+  if (not hasMassCut)
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassOverlapRemovalCondition: missing mass cut (mandatory)");
+  }
+
+  if (not hasOvRmCut)
+  {
+    TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getMassOverlapRemovalCondition: missing overlap removal cut (mandatory)");
+  }
+
+  if (item.type == Function::InvariantMassOvRm)
+    conditionHandle.setType(InvariantMassOvRm);
+  else if (item.type == Function::TransverseMassOvRm)
+    conditionHandle.setType(TransverseMassOvRm);
+
+  // Set condition name
+  std::string name = getConditionName(conditionHandle.getType());
+  conditionHandle.setName(name);
+
+  esCondition& condition = conditionHandle;
+
+  return condition;
+}
 
 
 void
@@ -535,8 +849,8 @@ esTriggerMenuHandle::setExternalMap(const tmtable::ExtSignal& map)
   const tmtable::Table& externals = map.extSignals;
   for (size_t ii = 0; ii < externals.size(); ii++)
   {
-    std::string name = externals.at(ii).find("name")->second;
-    std::string value = externals.at(ii).find("channel")->second;
+    std::string name = externals.at(ii).find(kName)->second;
+    std::string value = externals.at(ii).find(kChannel)->second;
     external_map_[name] = boost::lexical_cast<unsigned int>(value);
     TM_LOG_DBG("esTriggerMenuHandle::setExternalMap: " << name << " " << value);
   }
@@ -609,7 +923,8 @@ void
 esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
                                          std::string& prefix)
 {
-  if (objects.size() != 2) TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects != 2");
+  // TODO disabled for overlap removal compatibility
+  // if (objects.size() != 2) TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects != 2");
   const esObject& o1 = objects.at(0);
   const esObject& o2 = objects.at(1);
 
@@ -640,7 +955,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-EG-ETMHF-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -669,7 +984,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-TAU-ETMHF-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -698,7 +1013,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-JET-ETMHF-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -727,7 +1042,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-MU-ETMHF-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -747,7 +1062,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-MU-ETM-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -767,7 +1082,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-MU-HTM-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -787,7 +1102,7 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
           prefix = "PRECISION-MU-ETMHF-";
           break;
         default:
-          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o1.getType());
+          TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: unsupported type = " << o2.getType());
       }
       break;
 
@@ -810,6 +1125,7 @@ esTriggerMenuHandle::setFunctionCuts()
       case DeltaPrecision:
       case MassPrecision:
       case TwoBodyPtPrecision:
+      case OvRmDeltaPrecision:
         break;
 
       default:
@@ -843,6 +1159,9 @@ esTriggerMenuHandle::setFunctionCuts()
         case DeltaR:
         case Mass:
         case TwoBodyPt:
+        case OvRmDeltaEta:
+        case OvRmDeltaPhi:
+        case OvRmDeltaR:
           break;
         default:
           continue;
@@ -854,11 +1173,15 @@ esTriggerMenuHandle::setFunctionCuts()
 
       double minimum = cut.getMinimumValue();
       double maximum = cut.getMaximumValue();
-
       unsigned int precision = 0;
+
       if (type == Mass)
       {
         key += "Mass";
+        if (not dictionary.count(key))
+        {
+          TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: missing precision scale set '" << key << "'");
+        }
         precision = dictionary.find(key)->second;
         // Note: calculate M^2/2 for mass
         const double scale = tmutil::pow10(precision);
@@ -868,6 +1191,23 @@ esTriggerMenuHandle::setFunctionCuts()
       else if (type == DeltaR)
       {
         key += "Delta";
+        if (not dictionary.count(key))
+        {
+          TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: missing precision scale set '" << key << "'");
+        }
+        precision = dictionary.find(key)->second;
+        // Note: calculate dR^2 for dR
+        const double scale = tmutil::pow10(precision);
+        minimum = std::floor(minimum * minimum * scale) / scale;
+        maximum = std::ceil(maximum * maximum * scale) / scale;
+      }
+      else if (type == OvRmDeltaR)
+      {
+        key += "DeltaOverlapRemoval";
+        if (not dictionary.count(key))
+        {
+          TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: missing precision scale set '" << key << "'");
+        }
         precision = dictionary.find(key)->second;
         // Note: calculate dR^2 for dR
         const double scale = tmutil::pow10(precision);
@@ -877,19 +1217,43 @@ esTriggerMenuHandle::setFunctionCuts()
       else if (type == TwoBodyPt)
       {
         key += "TwoBodyPt";
+        if (not dictionary.count(key))
+        {
+          TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: missing precision scale set '" << key << "'");
+        }
         precision = dictionary.find(key)->second;
         const double scale = tmutil::pow10(precision);
         minimum = std::floor(minimum * minimum * scale) / scale;
         // TODO: actually this is not used for two body pt threshold
         maximum = std::ceil(maximum * maximum * scale) / scale;
       }
-      else
+      else if (type == DeltaEta or type == DeltaPhi)
       {
         key += "Delta";
+        if (not dictionary.count(key))
+        {
+          TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: missing precision scale set '" << key << "'");
+        }
         precision = dictionary.find(key)->second;
         const double scale = tmutil::pow10(precision);
         minimum = std::floor(minimum * scale) / scale;
         maximum = std::ceil(maximum * scale) / scale;
+      }
+      else if (type == OvRmDeltaEta or type == OvRmDeltaPhi)
+      {
+        key += "DeltaOverlapRemoval";
+        if (not dictionary.count(key))
+        {
+          TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: missing precision scale set '" << key << "'");
+        }
+        precision = dictionary.find(key)->second;
+        const double scale = tmutil::pow10(precision);
+        minimum = std::floor(minimum * scale) / scale;
+        maximum = std::ceil(maximum * scale) / scale;
+      }
+      else
+      {
+        TM_FATAL_ERROR("esTriggerMenuHandle::setFunctionCuts: unsupported cut '" << cut.getName() << "' of type: " << type);
       }
 
       cut.setMinimumValue(minimum);

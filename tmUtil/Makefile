@@ -8,7 +8,7 @@
 -include $(XDAQ_ROOT)/config/mfDefs.$(XDAQ_OS)
 # XDAQ stuff
 
-VERSION = 0.5.1
+VERSION = 0.6.0
 LIBRARY = libtmutil.so
 PROGRAMS =
 
