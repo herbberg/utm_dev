@@ -481,6 +481,8 @@ esTriggerMenuHandle::getDistCondition(const Function::Item& item,
           break;
         case ChargeCorrelation:
           break;
+        case TwoBodyPt:
+          break;
         default:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistCondition: unknown cut type = '" << ref.getCutType() << "'");
       }
@@ -584,6 +586,8 @@ esTriggerMenuHandle::getDistOverlapRemovalCondition(const Function::Item& item,
           hasOvRmCut = true;
           break;
         case ChargeCorrelation:
+          break;
+        case TwoBodyPt:
           break;
         default:
           TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getDistOverlapRemovalCondition: unknown cut type = '" << ref.getCutType() << "'");
@@ -925,8 +929,8 @@ esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
 {
   // TODO disabled for overlap removal compatibility
   // if (objects.size() != 2) TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects != 2");
-  const esObject& o1 = objects.at(0);
-  const esObject& o2 = objects.at(1);
+  const esObject& o1 = objects.front(); // first type
+  const esObject& o2 = objects.back(); // last type (for overlap removal functions)
 
   switch (o1.getType())
   {
