@@ -179,6 +179,9 @@ tmtable::xml2menu(std::istream& is,
 
   boost::filesystem::path cwd = boost::filesystem::current_path();
 
+  // Change to XML file location UTM_XSD_DIR
+  boost::filesystem::current_path(xsd);
+
   std::string message;
   tmxsd::menu data = tmxsd::xml2menu(is, message, debug);
 
