@@ -50,8 +50,8 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (type.find(PRECISION_MASSPT) != std::string::npos) type_ = MassPtPrecision;
   else if (type.find(PRECISION_MASS) != std::string::npos) type_ = MassPrecision;
   else if (type.find(PRECISION_MATH) != std::string::npos) type_ = MathPrecision;
-  else if (type.find(PRECISION_TBPT) != std::string::npos) type_ = TwoBodyPtPrecision;
   else if (type.find(PRECISION_TBPT_MATH) != std::string::npos) type_ = TwoBodyPtMathPrecision;
+  else if (type.find(PRECISION_TBPT) != std::string::npos) type_ = TwoBodyPtPrecision;
   else
   {
     TM_FATAL_ERROR("tmeventsetup::esScaleHandle::ctor: unknown type '" << type << "'");
