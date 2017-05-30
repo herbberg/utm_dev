@@ -49,8 +49,8 @@ TOUCH = touch
 #
 CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
-INCDIR = -I. -I..
-LIBDIR = -L../tmUtil -L../tmTable -L../tmGrammar
+INCDIR = -I. -I.. -I$(BOOST_ROOT)/include
+LIBDIR = -L../tmUtil -L../tmTable -L../tmGrammar -I$(BOOST_ROOT)/include -L$(BOOST_ROOT)/lib
 LIBS = -ltmutil -ltmtable -ltmgrammar
 
 #
