@@ -9,8 +9,9 @@ Building the external utm library
 
 ```{r, engine='bash', count_lines}
 cmsrel CMSSW_9_0_0
-cd CMSSW_9_0_0
+cd CMSSW_9_0_0/src
 cmsenv
+cd ..
 git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
 cd utm
 git checkout <UTM tag/branch>
