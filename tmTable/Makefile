@@ -40,7 +40,7 @@ TOUCH = touch
 CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I. -I.. -I$(XERCES_ROOT)/include -I$(BOOST_ROOT)/include
-LIBDIR = -L../tmUtil -L../tmXsd -L$(XERCES_ROOT)/lib -L/usr/lib/x86_64-linux-gnu/ -L$(BOOST_BASE)/lib
+LIBDIR = -L../tmUtil -L../tmXsd -L$(XERCES_ROOT)/lib -L/usr/lib/x86_64-linux-gnu/ -L$(BOOST_ROOT)/lib
 LIBS = -ltmutil -ltmxsd -lxerces-c -lboost_system -lboost_filesystem
 
 #
