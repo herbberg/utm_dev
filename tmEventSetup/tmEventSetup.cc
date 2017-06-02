@@ -27,6 +27,11 @@ const std::string kUUIDFirmware("uuid_firmware");
 const std::string kNModules("n_modules");
 const std::string kExpression("expression");
 
+// Functors for C math functions (workaround for gcc 6xx/7xx together with boost).
+struct math_sin { double operator()(const double d){ return std::sin(d); } };
+struct math_cos { double operator()(const double d){ return std::cos(d); } };
+struct math_cosh { double operator()(const double d){ return std::cosh(d); } };
+
 const esTriggerMenu*
 _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
 {
@@ -534,7 +539,7 @@ void
 applySin(std::vector<double>& array, const size_t n)
 {
   const size_t offset = std::min(n, array.size());
-  std::transform(array.begin(), array.begin() + offset, array.begin(), ::sin);
+  std::transform(array.begin(), array.begin() + offset, array.begin(), math_sin());
 }
 
 
@@ -542,7 +547,7 @@ void
 applyCos(std::vector<double>& array, const size_t n)
 {
   const size_t offset = std::min(n, array.size());
-  std::transform(array.begin(), array.begin() + offset, array.begin(), ::cos);
+  std::transform(array.begin(), array.begin() + offset, array.begin(), math_cos());
 }
 
 
@@ -550,7 +555,7 @@ void
 applyCosh(std::vector<double>& array, const size_t n)
 {
   const size_t offset = std::min(n, array.size());
-  std::transform(array.begin(), array.begin() + offset, array.begin(), ::cosh);
+  std::transform(array.begin(), array.begin() + offset, array.begin(), math_cosh());
 }
 
 } // namespace tmeventsetup
