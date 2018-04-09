@@ -171,7 +171,7 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
 
   // Set unique condition name
   std::ostringstream name;
-  name << TupleName[1] << getObjectName(object.getType()) << "_" << getHashUlong(token);
+  name << TupleName[1] << getObjectName(object.getType()) << "_" << std::hex << getMmHashN(token);
   conditionHandle.setName(name.str());
 
   esCondition& condition = conditionHandle;
@@ -228,7 +228,7 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
 
   // Update condition name, add hash
   std::ostringstream name;
-  name << condition.getName() << "_" << getHashUlong(token);
+  name << condition.getName() << "_" << std::hex << getMmHashN(token);
   condition.setName(name.str());
 
   return condition;
