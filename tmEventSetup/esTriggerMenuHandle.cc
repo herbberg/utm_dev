@@ -169,10 +169,17 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
       break;
   }
 
-  // Set unique condition name
-  std::ostringstream name;
-  name << TupleName[1] << getObjectName(object.getType()) << "_" << std::hex << getMmHashN(token);
-  conditionHandle.setName(name.str());
+  // If token already occurred set instance name, else create new instance name.
+  if (token_to_condition_.count(token))
+  {
+    conditionHandle.setName(token_to_condition_.at(token));
+  }
+  else
+  {
+    std::ostringstream name;
+    name << TupleName[1] << getObjectName(object.getType()) << "_i" << token_to_condition_.size(); // enumerate
+    conditionHandle.setName(name.str());
+  }
 
   esCondition& condition = conditionHandle;
   return condition;
@@ -226,10 +233,17 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
     TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getFunctionCondition: unknown token: '" << token << "'");
   }
 
-  // Update condition name, add hash
-  std::ostringstream name;
-  name << condition.getName() << "_" << std::hex << getMmHashN(token);
-  condition.setName(name.str());
+  // If token already occurred set instance name, else create new instance name.
+  if (token_to_condition_.count(token))
+  {
+    condition.setName(token_to_condition_.at(token));
+  }
+  else
+  {
+    std::ostringstream name;
+    name << condition.getName() << "_i" << token_to_condition_.size(); // enumerate
+    condition.setName(name.str());
+  }
 
   return condition;
 }
