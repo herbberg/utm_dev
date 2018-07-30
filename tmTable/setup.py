@@ -24,7 +24,7 @@ tmTable_module = Extension('_tmTable',
                         )
 
 setup (name = 'tmTable',
-       version = '0.6.5',
+       version = '0.7.0',
        author = "Takashi MATSUSHITA",
        description = """xml interface""",
        ext_modules = [tmTable_module],
