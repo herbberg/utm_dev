@@ -44,6 +44,10 @@ const char MBT1HFM[] = "MBT1HFM"; /**< Minimum Bias Threshold 1 HF- */
 const char ETTEM[] = "ETTEM"; /**< ECAL only total ET */
 const char ETMHF[] = "ETMHF"; /**< missing ET with HF */
 const char TOWERCOUNT[] = "TOWERCOUNT"; /**< calo tower count */
+const char ASYM0X[] = "ASYM0X"; /**< asymmetry 0 */
+const char ASYM1X[] = "ASYM1X"; /**< asymmetry 1 */
+const char ASYM2X[] = "ASYM2X"; /**< asymmetry 2 */
+const char ASYM3X[] = "ASYM3X"; /**< asymmetry 3 */
 
 // comparisons
 const char EQ[] = ".eq."; /**< equal */
@@ -55,8 +59,6 @@ const char LE[] = ".le."; /**< less than or equal to */
 
 // character set for object
 const char CHARSET_OBJECT[] = "a-zA-Z0-9+-.";
-
-
 
 /** type of objects */
 enum {

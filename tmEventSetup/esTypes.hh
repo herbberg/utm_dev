@@ -83,7 +83,11 @@ enum esObjectType
   ETTEM     = 17, /**< total Et with ECAL only */
   ETMHF     = 18, /**< missing Et with HF */
   TOWERCOUNT = 19, /**< missing Et with HF */
-  nObjectType = 17
+  ASYM0X = 26, /**< asymmetry 0 */
+  ASYM1X = 27, /**< asymmetry 1 */
+  ASYM2X = 28, /**< asymmetry 2 */
+  ASYM3X = 29, /**< asymmetry 3 */
+  nObjectType = 21
 };
 
 /** type of Function */
@@ -173,7 +177,11 @@ enum esConditionType
   CaloCaloCorrelationOvRm = 47, /**< Calo-Calo correlation condition with overlap removal */
   InvariantMassOvRm = 48, /**< Invariant mass condition with overlap removal */
   TransverseMassOvRm = 49, /**< Transverse mass condition with overlap removal */
-  nConditionType = 50
+  Asymmetry0 = 50, /**< asymmetry 0 */
+  Asymmetry1 = 51, /**< asymmetry 1 */
+  Asymmetry2 = 52, /**< asymmetry 2 */
+  Asymmetry3 = 53, /**< asymmetry 3 */
+  nConditionType = 54
 };
 
 /** type of scales */

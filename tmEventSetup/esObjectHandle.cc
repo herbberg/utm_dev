@@ -81,6 +81,26 @@ esObjectHandle::init(const Object::Item& item)
     type_ = TOWERCOUNT;
     isThreshold = false;
   }
+  else if (item.name == Object::ASYM0X)
+  {
+    type_ = ASYM0X;
+    isThreshold = false;
+  }
+  else if (item.name == Object::ASYM1X)
+  {
+    type_ = ASYM1X;
+    isThreshold = false;
+  }
+  else if (item.name == Object::ASYM2X)
+  {
+    type_ = ASYM2X;
+    isThreshold = false;
+  }
+  else if (item.name == Object::ASYM3X)
+  {
+    type_ = ASYM3X;
+    isThreshold = false;
+  }
   else if (item.name == Object::ETTEM) type_ = ETTEM;
   else if (item.name == Object::ETMHF) type_ = ETMHF;
   else if (item.name.rfind(Object::EXT, 0) == 0) type_ = EXT;

@@ -100,6 +100,10 @@ esTriggerMenuHandle::getObjectName(const int type)
     case ETTEM: return Object::ETTEM;
     case ETMHF: return Object::ETMHF;
     case TOWERCOUNT: return Object::TOWERCOUNT;
+    case ASYM0X: return Object::ASYM0X;
+    case ASYM1X: return Object::ASYM1X;
+    case ASYM2X: return Object::ASYM2X;
+    case ASYM3X: return Object::ASYM3X;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectName: unknown object type '" << type << "'");
       break;
@@ -164,6 +168,10 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
     case ETTEM: conditionHandle.setType(TotalEtEM); break;
     case ETMHF: conditionHandle.setType(MissingEtHF); break;
     case TOWERCOUNT: conditionHandle.setType(TowerCount); break;
+    case ASYM0X: conditionHandle.setType(Asymmetry0); break;
+    case ASYM1X: conditionHandle.setType(Asymmetry1); break;
+    case ASYM2X: conditionHandle.setType(Asymmetry2); break;
+    case ASYM3X: conditionHandle.setType(Asymmetry3); break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectCondition: not implemented '" << object.getType() << "'");
       break;
@@ -886,8 +894,10 @@ esTriggerMenuHandle::getIndex(const esCutValue& cut, const std::string& range, c
   unsigned int index = std::numeric_limits<unsigned int>::max();
   for (size_t ii = 0; ii < bins.size(); ii++)
   {
+    // TODO: segfaults if key 'range' not found
     if (bins.at(ii).find(range)->second == real)
     {
+      // TODO: segfaults if key 'number' not found
       std::istringstream ss(bins.at(ii).find("number")->second);
       if (not (ss >> index)) index = std::numeric_limits<unsigned int>::max();
       break;

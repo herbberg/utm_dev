@@ -112,6 +112,10 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(MBT0HFM)
       | string(MBT1HFM)
       | string(TOWERCOUNT)
+      | string(ASYM0X)
+      | string(ASYM1X)
+      | string(ASYM2X)
+      | string(ASYM3X)
     ;
 
     comparison
