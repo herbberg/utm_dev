@@ -27,11 +27,13 @@ https://twiki.cern.ch/twiki/bin/view/CMS/GlobalTriggerUpgradeL1T-uTme#uGT_Trigge
 
 CC7:
 
-    $ sudo yum install python-devel boost-system boost-filesystem boost-devel xsd swig xerces-c
+    $ sudo yum install python-devel boost-system boost-filesystem boost-devel \
+      xsd swig xerces-c
 
 Debian/Ubuntu:
 
-    $ sudo apt-get install python-devel libboost-dev libboost-system-dev libboost-filesystem-dev xsdcxx swig libxerces-c-dev
+    $ sudo apt-get install python-devel libboost-dev libboost-system-dev \
+      libboost-filesystem-dev xsdcxx swig libxerces-c-dev
 
 
 ## Compilation
@@ -46,7 +48,8 @@ Building python bindings (if required)
 
 To use the library in the XDAQ environment (note the underline in front of \_all):
 
-    $ make _all
+    $ make -f Makefile.xdaq _all
+
 
 Build for CMSSW
 ===============
