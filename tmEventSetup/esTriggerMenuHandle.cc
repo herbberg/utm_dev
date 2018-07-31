@@ -54,6 +54,20 @@ const std::string esTriggerMenuHandle::TupleName[] =
   kQuad,
 };
 
+/** Returns const refrence to scale table or throws a std::runtime_error if
+ * the required scale does not exist.
+ */
+const tmtable::Table& getScaleTable(const tmtable::StringTableMap& bins, const std::string& key)
+{
+    tmtable::StringTableMap::const_iterator result = bins.find(key);
+
+    if (result == bins.end())
+    {
+      TM_FATAL_ERROR("tmeventsetup::getScaleTable: missing scale set '" << key << "'");
+    }
+
+    return result->second;
+}
 
 
 esTriggerMenuHandle::esTriggerMenuHandle() : esTriggerMenu()
@@ -863,7 +877,7 @@ esTriggerMenuHandle::setScaleMap(const tmtable::Scale& scale)
     esScaleHandle scaleHandle(scales.at(ii));
     if (scaleHandle.getObjectType() != Precision)
     {
-      const tmtable::Table& bins = scale.bins.find(scaleHandle.getName())->second;
+      const tmtable::Table& bins = getScaleTable(scale.bins, scaleHandle.getName());
       for (size_t jj = 0; jj < bins.size(); jj++)
       {
         const int id =
@@ -942,16 +956,17 @@ esTriggerMenuHandle::setHwIndex(const tmtable::StringTableMap& bins)
         if (cut.getObjectType() == static_cast<esObjectType>(Undef)) continue;
         const std::string key = cut.getKey();
         TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::setHwIndex: key = " << key);
-        const tmtable::Table& table = bins.find(key)->second;
 
         const esCutType type = static_cast<esCutType>(cut.getCutType());
         if ((type == Threshold) or (type == Count))
         {
+          const tmtable::Table& table = getScaleTable(bins, key);
           const esCutValue& cutValue = cut.getMinimum();
           cut.setMinimumIndex(getIndex(cutValue, "minimum", table));
         }
         else if ((type == Eta) or (type == Phi))
         {
+          const tmtable::Table& table = getScaleTable(bins, key);
           const esCutValue& minimum = cut.getMinimum();
           cut.setMinimumIndex(getIndex(minimum, "minimum", table));
           const esCutValue& maximum = cut.getMaximum();
@@ -1321,7 +1336,14 @@ esTriggerMenuHandle::print() const
     {
       const std::string& token = rpn.at(ii);
       if (Algorithm::isGate(token)) continue;
-      const esCondition& condition = condition_map_.find(token)->second;
+
+      std::map<std::string, esCondition>::const_iterator cit = condition_map_.find(token);
+      if (cit == condition_map_.end())
+      {
+        TM_FATAL_ERROR("esTriggerMenuHandle::print: missing condition '" << token << "'");
+      }
+
+      const esCondition& condition = cit->second;
       esConditionHandle::print(condition);
     }
   }
