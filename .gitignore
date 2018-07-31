@@ -31,3 +31,10 @@
 *.out
 *.app
 
+# SWIG wrappers
+/tmEventSetup/tmEventSetup_wrap.cxx
+/tmEventSetup/tmEventSetup.py
+/tmGrammar/tmGrammar_wrap.cxx
+/tmGrammar/tmGrammar.py
+/tmTable/tmTable_wrap.cxx
+/tmTable/tmTable.py
