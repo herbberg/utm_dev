@@ -104,6 +104,14 @@ esTriggerMenuHandle::getObjectName(const int type)
     case ASYM1X: return Object::ASYM1X;
     case ASYM2X: return Object::ASYM2X;
     case ASYM3X: return Object::ASYM3X;
+    case CENT0: return Object::CENT0;
+    case CENT1: return Object::CENT1;
+    case CENT2: return Object::CENT2;
+    case CENT3: return Object::CENT3;
+    case CENT4: return Object::CENT4;
+    case CENT5: return Object::CENT5;
+    case CENT6: return Object::CENT6;
+    case CENT7: return Object::CENT7;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectName: unknown object type '" << type << "'");
       break;
@@ -172,6 +180,14 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
     case ASYM1X: conditionHandle.setType(Asymmetry1); break;
     case ASYM2X: conditionHandle.setType(Asymmetry2); break;
     case ASYM3X: conditionHandle.setType(Asymmetry3); break;
+    case CENT0: conditionHandle.setType(Centrality0); break;
+    case CENT1: conditionHandle.setType(Centrality1); break;
+    case CENT2: conditionHandle.setType(Centrality2); break;
+    case CENT3: conditionHandle.setType(Centrality3); break;
+    case CENT4: conditionHandle.setType(Centrality4); break;
+    case CENT5: conditionHandle.setType(Centrality5); break;
+    case CENT6: conditionHandle.setType(Centrality6); break;
+    case CENT7: conditionHandle.setType(Centrality7); break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectCondition: not implemented '" << object.getType() << "'");
       break;

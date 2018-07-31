@@ -101,12 +101,59 @@ esObjectHandle::init(const Object::Item& item)
     type_ = ASYM3X;
     isThreshold = false;
   }
+  else if (item.name == Object::CENT0)
+  {
+    type_ = CENT0;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT1)
+  {
+    type_ = CENT1;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT2)
+  {
+    type_ = CENT2;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT3)
+  {
+    type_ = CENT3;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT4)
+  {
+    type_ = CENT4;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT5)
+  {
+    type_ = CENT5;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT6)
+  {
+    type_ = CENT6;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT7)
+  {
+    type_ = CENT7;
+    isThreshold = false;
+  }
   else if (item.name == Object::ETTEM) type_ = ETTEM;
   else if (item.name == Object::ETMHF) type_ = ETMHF;
   else if (item.name.rfind(Object::EXT, 0) == 0) type_ = EXT;
   else
   {
     TM_FATAL_ERROR("tmeventsetup::esObjectHandle::init: unknown type '" << item.name << "'");
+  }
+
+  // If object is a signal
+  if (Object::signalName.count(item.name))
+  {
+    bx_offset_ = boost::lexical_cast<int>(item.bx_offset);
+    return;
   }
 
   if (type_ == EXT)
