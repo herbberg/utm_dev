@@ -982,10 +982,13 @@ void
 esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
                                          std::string& prefix)
 {
-  // TODO disabled for overlap removal compatibility
-  // if (objects.size() != 2) TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects != 2");
-  const esObject& o1 = objects.front(); // first type
-  const esObject& o2 = objects.back(); // last type (for overlap removal functions)
+  // Allow more than two objects to accept overlap removal conditions (third object).
+  if (objects.size() < 2)
+  {
+    TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects < 2");
+  }
+  const esObject& o1 = objects.at(0); // first type
+  const esObject& o2 = objects.at(1); // second type
 
   switch (o1.getType())
   {
