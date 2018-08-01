@@ -46,9 +46,27 @@ Building python bindings (if required)
 
     $ make all python
 
+
+Build for XDAQ
+==============
+
 To use the library in the XDAQ environment (note the underline in front of \_all):
 
+    $ git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git cactusprojects/utm
+    $ cd cactusprojects/utm
+    $ git checkout <tag/branch>
+
+## Compile
+
     $ make -f Makefile.xdaq _all
+
+## Build RPMs
+
+    $ make -f Makefile.xdaq rpm
+
+## Install RPMs
+
+    $ sudo yum install $(find tm* -name '*.x86_64.rpm')
 
 
 Build for CMSSW
@@ -93,4 +111,4 @@ API documentation
 
 To generate API documentation for tmEventSetup, run
 
-    doxygen config/doxygen.config
+    doxygen doxygen.config
