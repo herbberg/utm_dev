@@ -38,3 +38,6 @@
 /tmGrammar/tmGrammar.py
 /tmTable/tmTable_wrap.cxx
 /tmTable/tmTable.py
+
+# Sphinx
+/doc/sphinx/_build

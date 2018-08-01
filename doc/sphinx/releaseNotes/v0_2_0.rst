@@ -1,0 +1,39 @@
+..
+
+Version 0.2.0
+=============
+
+**Main new features:**
+
+* Introduced grammar revision v0.2
+
+  * new counter types:
+
+    * minimum bias HF+ threshold 0: ``MBT0HFP``
+    * minimum bias HF+ threshold 1: ``MBT1HFP``
+    * minimum bias HF- threshold 0: ``MBT0HFM``
+    * minimum bias HF- threshold 1: ``MBT1HFM``
+
+* Introduced new event setup conditions:
+
+      * minimum bias HF+ threshold 0: ``esConditionType::MinBiasHFP0``
+      * minimum bias HF+ threshold 1: ``esConditionType::MinBiasHFP1``
+      * minimum bias HF- threshold 0: ``esConditionType::MinBiasHFM0``
+      * minimum bias HF- threshold 1: ``esConditionType::MinBiasHFM1``
+
+**Bugfixes:**
+
+**Backward incompatibility changes:**
+
+Migration guide: v0.1.0 to 0.2.0
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.5.0 requires the following prerequisites to be installed:
+
+  * xerces-c >= 3.1
+
+**Source code:**
+
+* some repository archeology required as changelog is missing.

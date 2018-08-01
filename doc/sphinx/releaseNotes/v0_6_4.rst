@@ -1,0 +1,24 @@
+..
+
+Version 0.6.4
+=============
+
+**Main new features:**
+
+**Bugfixes:**
+
+* fixed occasional hash collisions by replacing hash algorithm.
+
+**Backward incompatibility changes:**
+
+
+Migration guide: v0.6.3 to 0.6.4
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.6.4 requires the following prerequisites to be installed:
+
+  * boost_system >= v1.41
+  * boost_filesystem >= v1.41
+  * xerces-c >= 3.1
