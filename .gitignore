@@ -1,0 +1,43 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# SWIG wrappers
+/tmEventSetup/tmEventSetup_wrap.cxx
+/tmEventSetup/tmEventSetup.py
+/tmGrammar/tmGrammar_wrap.cxx
+/tmGrammar/tmGrammar.py
+/tmTable/tmTable_wrap.cxx
+/tmTable/tmTable.py
+
+# Sphinx
+/doc/sphinx/_build

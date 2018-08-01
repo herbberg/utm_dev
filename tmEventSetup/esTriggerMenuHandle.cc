@@ -54,6 +54,20 @@ const std::string esTriggerMenuHandle::TupleName[] =
   kQuad,
 };
 
+/** Returns const refrence to scale table or throws a std::runtime_error if
+ * the required scale does not exist.
+ */
+const tmtable::Table& getScaleTable(const tmtable::StringTableMap& bins, const std::string& key)
+{
+    tmtable::StringTableMap::const_iterator result = bins.find(key);
+
+    if (result == bins.end())
+    {
+      TM_FATAL_ERROR("tmeventsetup::getScaleTable: missing scale set '" << key << "'");
+    }
+
+    return result->second;
+}
 
 
 esTriggerMenuHandle::esTriggerMenuHandle() : esTriggerMenu()
@@ -100,6 +114,18 @@ esTriggerMenuHandle::getObjectName(const int type)
     case ETTEM: return Object::ETTEM;
     case ETMHF: return Object::ETMHF;
     case TOWERCOUNT: return Object::TOWERCOUNT;
+    case ASYM0X: return Object::ASYM0X;
+    case ASYM1X: return Object::ASYM1X;
+    case ASYM2X: return Object::ASYM2X;
+    case ASYM3X: return Object::ASYM3X;
+    case CENT0: return Object::CENT0;
+    case CENT1: return Object::CENT1;
+    case CENT2: return Object::CENT2;
+    case CENT3: return Object::CENT3;
+    case CENT4: return Object::CENT4;
+    case CENT5: return Object::CENT5;
+    case CENT6: return Object::CENT6;
+    case CENT7: return Object::CENT7;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectName: unknown object type '" << type << "'");
       break;
@@ -164,6 +190,18 @@ esTriggerMenuHandle::getObjectCondition(const std::string& token,
     case ETTEM: conditionHandle.setType(TotalEtEM); break;
     case ETMHF: conditionHandle.setType(MissingEtHF); break;
     case TOWERCOUNT: conditionHandle.setType(TowerCount); break;
+    case ASYM0X: conditionHandle.setType(Asymmetry0); break;
+    case ASYM1X: conditionHandle.setType(Asymmetry1); break;
+    case ASYM2X: conditionHandle.setType(Asymmetry2); break;
+    case ASYM3X: conditionHandle.setType(Asymmetry3); break;
+    case CENT0: conditionHandle.setType(Centrality0); break;
+    case CENT1: conditionHandle.setType(Centrality1); break;
+    case CENT2: conditionHandle.setType(Centrality2); break;
+    case CENT3: conditionHandle.setType(Centrality3); break;
+    case CENT4: conditionHandle.setType(Centrality4); break;
+    case CENT5: conditionHandle.setType(Centrality5); break;
+    case CENT6: conditionHandle.setType(Centrality6); break;
+    case CENT7: conditionHandle.setType(Centrality7); break;
     default:
       TM_FATAL_ERROR("tmeventsetup::esTriggerMenuHandle::getObjectCondition: not implemented '" << object.getType() << "'");
       break;
@@ -839,7 +877,7 @@ esTriggerMenuHandle::setScaleMap(const tmtable::Scale& scale)
     esScaleHandle scaleHandle(scales.at(ii));
     if (scaleHandle.getObjectType() != Precision)
     {
-      const tmtable::Table& bins = scale.bins.find(scaleHandle.getName())->second;
+      const tmtable::Table& bins = getScaleTable(scale.bins, scaleHandle.getName());
       for (size_t jj = 0; jj < bins.size(); jj++)
       {
         const int id =
@@ -886,8 +924,10 @@ esTriggerMenuHandle::getIndex(const esCutValue& cut, const std::string& range, c
   unsigned int index = std::numeric_limits<unsigned int>::max();
   for (size_t ii = 0; ii < bins.size(); ii++)
   {
+    // TODO: segfaults if key 'range' not found
     if (bins.at(ii).find(range)->second == real)
     {
+      // TODO: segfaults if key 'number' not found
       std::istringstream ss(bins.at(ii).find("number")->second);
       if (not (ss >> index)) index = std::numeric_limits<unsigned int>::max();
       break;
@@ -916,16 +956,17 @@ esTriggerMenuHandle::setHwIndex(const tmtable::StringTableMap& bins)
         if (cut.getObjectType() == static_cast<esObjectType>(Undef)) continue;
         const std::string key = cut.getKey();
         TM_LOG_DBG("tmeventsetup::esTriggerMenuHandle::setHwIndex: key = " << key);
-        const tmtable::Table& table = bins.find(key)->second;
 
         const esCutType type = static_cast<esCutType>(cut.getCutType());
         if ((type == Threshold) or (type == Count))
         {
+          const tmtable::Table& table = getScaleTable(bins, key);
           const esCutValue& cutValue = cut.getMinimum();
           cut.setMinimumIndex(getIndex(cutValue, "minimum", table));
         }
         else if ((type == Eta) or (type == Phi))
         {
+          const tmtable::Table& table = getScaleTable(bins, key);
           const esCutValue& minimum = cut.getMinimum();
           cut.setMinimumIndex(getIndex(minimum, "minimum", table));
           const esCutValue& maximum = cut.getMaximum();
@@ -941,10 +982,13 @@ void
 esTriggerMenuHandle::setPrefix4Precision(const std::vector<esObject>& objects,
                                          std::string& prefix)
 {
-  // TODO disabled for overlap removal compatibility
-  // if (objects.size() != 2) TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects != 2");
-  const esObject& o1 = objects.front(); // first type
-  const esObject& o2 = objects.back(); // last type (for overlap removal functions)
+  // Allow more than two objects to accept overlap removal conditions (third object).
+  if (objects.size() < 2)
+  {
+    TM_FATAL_ERROR("esTriggerMenuHandle::setPrefix4Precision: # of objects < 2");
+  }
+  const esObject& o1 = objects.at(0); // first type
+  const esObject& o2 = objects.at(1); // second type
 
   switch (o1.getType())
   {
@@ -1295,7 +1339,14 @@ esTriggerMenuHandle::print() const
     {
       const std::string& token = rpn.at(ii);
       if (Algorithm::isGate(token)) continue;
-      const esCondition& condition = condition_map_.find(token)->second;
+
+      std::map<std::string, esCondition>::const_iterator cit = condition_map_.find(token);
+      if (cit == condition_map_.end())
+      {
+        TM_FATAL_ERROR("esTriggerMenuHandle::print: missing condition '" << token << "'");
+      }
+
+      const esCondition& condition = cit->second;
       esConditionHandle::print(condition);
     }
   }

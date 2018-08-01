@@ -26,7 +26,6 @@ namespace tmeventsetup
 const int Undef = -9999; /**< undefined value for enums -- seriously? */
 
 const char ET_THR[] = "ET"; /**< text for Et threshold */
-
 const char COUNT[] = "COUNT";     /**< text for Minimum Bias HF type  */
 
 const char PRECISION[] = "PRECISION";     /**< text for precision type */
@@ -83,7 +82,19 @@ enum esObjectType
   ETTEM     = 17, /**< total Et with ECAL only */
   ETMHF     = 18, /**< missing Et with HF */
   TOWERCOUNT = 19, /**< missing Et with HF */
-  nObjectType = 17
+  ASYM0X = 26, /**< asymmetry 0 */
+  ASYM1X = 27, /**< asymmetry 1 */
+  ASYM2X = 28, /**< asymmetry 2 */
+  ASYM3X = 29, /**< asymmetry 3 */
+  CENT0 = 30,
+  CENT1 = 31,
+  CENT2 = 32,
+  CENT3 = 33,
+  CENT4 = 34,
+  CENT5 = 35,
+  CENT6 = 36,
+  CENT7 = 37,
+  nObjectType = 29
 };
 
 /** type of Function */
@@ -173,7 +184,19 @@ enum esConditionType
   CaloCaloCorrelationOvRm = 47, /**< Calo-Calo correlation condition with overlap removal */
   InvariantMassOvRm = 48, /**< Invariant mass condition with overlap removal */
   TransverseMassOvRm = 49, /**< Transverse mass condition with overlap removal */
-  nConditionType = 50
+  Asymmetry0 = 50, /**< asymmetry 0 */
+  Asymmetry1 = 51, /**< asymmetry 1 */
+  Asymmetry2 = 52, /**< asymmetry 2 */
+  Asymmetry3 = 53, /**< asymmetry 3 */
+  Centrality0 = 54,
+  Centrality1 = 55,
+  Centrality2 = 56,
+  Centrality3 = 57,
+  Centrality4 = 58,
+  Centrality5 = 59,
+  Centrality6 = 60,
+  Centrality7 = 61,
+  nConditionType = 62
 };
 
 /** type of scales */
@@ -190,7 +213,7 @@ enum esScaleType
   TwoBodyPtPrecision = 8, /**< precision for two body pt */
   TwoBodyPtMathPrecision = 9, /**< precision for two body math */
   OvRmDeltaPrecision = 10, /**< precision for overlap removal delta */
-  nScaleType      = 11
+  nScaleType = 11
 };
 
 } // namespace tmeventsetup

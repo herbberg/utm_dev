@@ -44,6 +44,18 @@ const char MBT1HFM[] = "MBT1HFM"; /**< Minimum Bias Threshold 1 HF- */
 const char ETTEM[] = "ETTEM"; /**< ECAL only total ET */
 const char ETMHF[] = "ETMHF"; /**< missing ET with HF */
 const char TOWERCOUNT[] = "TOWERCOUNT"; /**< calo tower count */
+const char ASYM0X[] = "ASYM0X"; /**< asymmetry 0 */
+const char ASYM1X[] = "ASYM1X"; /**< asymmetry 1 */
+const char ASYM2X[] = "ASYM2X"; /**< asymmetry 2 */
+const char ASYM3X[] = "ASYM3X"; /**< asymmetry 3 */
+const char CENT0[] = "CENT0"; /**< centrality 0 */
+const char CENT1[] = "CENT1"; /**< centrality 1 */
+const char CENT2[] = "CENT2"; /**< centrality 2 */
+const char CENT3[] = "CENT3"; /**< centrality 3 */
+const char CENT4[] = "CENT4"; /**< centrality 4 */
+const char CENT5[] = "CENT5"; /**< centrality 5 */
+const char CENT6[] = "CENT6"; /**< centrality 6 */
+const char CENT7[] = "CENT7"; /**< centrality 7 */
 
 // comparisons
 const char EQ[] = ".eq."; /**< equal */
@@ -56,8 +68,6 @@ const char LE[] = ".le."; /**< less than or equal to */
 // character set for object
 const char CHARSET_OBJECT[] = "a-zA-Z0-9+-.";
 
-
-
 /** type of objects */
 enum {
   Muon,
@@ -68,7 +78,8 @@ enum {
   Vector,
   External,
   Count,
-  Unknown
+  Unknown,
+  Signal
 };
 
 
@@ -122,8 +133,9 @@ bool isObject(const std::string& element);
 
 /** list of names */
 typedef std::map<std::string, int> reserved;
-extern const reserved objectName;     /**< list of allowed object name */
+extern const reserved objectName;     /**< list of allowed object names */
 extern const reserved comparisonName; /**< list of allowed comparison operator */
+extern const reserved signalName;     /**< list of allowed signal names */
 
 } // namespace Object
 

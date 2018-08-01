@@ -1,0 +1,30 @@
+..
+
+Version 0.3.0
+=============
+
+**Main new features:**
+
+* Introduced grammar revision v0.3
+
+  * new energy sums types:
+
+    * total Et with ECAL only: ``ETTEM``
+    * missing Et with HF: ``ETMHF``
+
+**Bugfixes:**
+
+**Backward incompatibility changes:**
+
+Migration guide: v0.2.0 to 0.3.0
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.5.0 requires the following prerequisites to be installed:
+
+  * xerces-c >= 3.1
+
+**Source code:**
+
+* some repository archeology required as changelog is missing.

@@ -9,7 +9,7 @@
 # XDAQ stuff
 
 
-VERSION = 0.6.5
+VERSION = 0.7.0
 LIBRARY = libtmxsd.so
 PROGRAMS =
 
@@ -67,8 +67,8 @@ TOUCH = touch
 #
 CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
-INCDIR = -I. -I.. -I./gen-xsd-type -I$(XERCES_ROOT)/include -I$(BOOST_BASE)/include
-LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib -L$(BOOST_BASE)/lib
+INCDIR = -I. -I.. -I./gen-xsd-type -I$(XERCES_ROOT)/include -I$(BOOST_ROOT)/include
+LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib -L$(BOOST_ROOT)/lib
 LIBS = -ltmutil -lxerces-c
 
 #

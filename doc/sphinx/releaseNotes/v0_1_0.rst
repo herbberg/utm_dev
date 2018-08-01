@@ -1,0 +1,28 @@
+..
+
+Version 0.1.0
+=============
+
+* Introduced grammar revision v0.1
+
+  * object requirement types:
+
+    * muon: ``MU``
+    * electron/gamma: ``EG``
+    * tau: ``TAU``
+    * jet: ``JET``
+
+  * energy sum types:
+
+    * total Et: ``ETT``
+    * total hadronic Et: ``HTT``
+    * missing Et: ``ETM``
+    * missing hadronic Et: ``HTM``
+
+  * function types:
+
+    * combination: ``comb``
+    * distance: ``dist``
+    * invariant mass: ``mass``
+
+  * external signals: ``EXT_*``

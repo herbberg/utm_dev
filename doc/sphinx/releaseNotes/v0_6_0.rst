@@ -1,0 +1,146 @@
+..
+
+Version 0.6.0
+=============
+
+**Main new features:**
+
+* Introduced grammar revision v0.6
+
+  * new function types:
+
+    * object combination with overlap removal function: ``comb_orm``
+    * topological correlation with overlap removal function: ``dist_orm``
+    * invariant mass with overlap removal function: ``mass_inv_orm``
+    * transverse mass with overlap removal function: ``mass_trv_orm``
+
+  * new cut types for overlap removal functions:
+
+    * overlap removal cuts: ``ORMDETA``, ``ORMDPHI``, ``ORMDR``
+
+* Introduced new event setup conditions:
+
+  * transverse mass: ``esConditionType::TransverseMass``
+
+**Bugfixes:**
+
+**Backward incompatibility changes:**
+
+
+Migration guide: v0.5.1 to 0.6.0
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.6.0 requires the following prerequisites to be installed:
+
+  * boost_system >= v1.41
+  * boost_filesystem >= v1.41
+  * xerces-c >= 3.1
+
+**Source code:**
+
+* Updates in ``tmEventSetup``:
+
+  * New cut types:
+
+    * new enum ``esCutType::OvRmDeltaEta`` overlap removal with delta eta.
+    * new enum ``esCutType::OvRmDeltaPhi`` overlap removal with delta phi.
+    * new enum ``esCutType::OvRmDeltaR`` overlap removal with delta R.
+
+  * New function types:
+
+    * new enum ``esFunctionType::CombOvRmFunction`` object combinations with overlap removal
+    * new enum ``esFunctionType::DistOvRmFunction`` distance with overlap removal
+    * new enum ``esFunctionType::InvariantMassOvRmFunction`` invariant mass with overlap removal
+    * new enum ``esFunctionType::TransverseMassOvRmFunction`` transverse mass with overlap removal
+
+  * New condition types:
+
+    * new enum ``esConditionType::SingleEgammaOvRm`` single e/gamma condition with tau/jet overlap removal
+    * new enum ``esConditionType::DoubleEgammaOvRm`` double e/gamma condition with tau/jet overlap removal
+    * new enum ``esConditionType::TripleEgammaOvRm`` triple e/gamma condition with tau/jet overlap removal
+    * new enum ``esConditionType::QuadEgammaOvRm`` quad e/gamma condition with tau/jet overlap removal
+    * new enum ``esConditionType::SingleTauOvRm`` single tau condition with e/gamma/jet overlap removal
+    * new enum ``esConditionType::DoubleTauOvRm`` double tau condition with e/gamma/jet overlap removal
+    * new enum ``esConditionType::TripleTauOvRm`` triple tau condition with e/gamma/jet overlap removal
+    * new enum ``esConditionType::QuadTauOvRm`` quad tau condition with e/gamma/jet overlap removal
+    * new enum ``esConditionType::SingleJetOvRm`` single jet condition with e/gamma/tau overlap removal
+    * new enum ``esConditionType::DoubleJetOvRm`` double jet condition with e/gamma/tau overlap removal
+    * new enum ``esConditionType::TripleJetOvRm`` triple jet condition with e/gamma/tau overlap removal
+    * new enum ``esConditionType::QuadJetOvRm`` quad jet condition with e/gamma/tau overlap removal
+    * new enum ``esConditionType::CaloCaloCorrelationOvRm`` Calo-Calo correlation condition with overlap removal
+    * new enum ``esConditionType::InvariantMassOvRm`` Invariant mass condition with overlap removal
+    * new enum ``esConditionType::TransverseMassOvRm`` Transverse mass condition with overlap removal
+
+  * Overlap removal conditions:
+
+     * ``esCondition`` can be of type ``esConditionType::<CONDITION>OvRm`` for
+       single objects or object combinations, distance and mass calculations.
+
+       .. sourcecode:: cpp
+
+           if (condition.getType() == esConditionType::SingleEgammaOvRm)
+           {
+             // apply overlap removal on single Egamma object.
+             // ...
+           }
+           // ...
+           else if (condition.getType() == esConditionType::CaloCaloCorrelationOvRm)
+           {
+             // calculate CALO object correlation with additional overlap removal.
+             // ...
+           }
+           else if (condition.getType() == esConditionType::InvariantMassOvRm)
+           {
+             // calculate invariant mass with additional overlap removal.
+             // ...
+           }
+           else if (condition.getType() == esConditionType::TransverseMassOvRm)
+           {
+             // calculate transverse mass with additional overlap removal.
+             // ...
+           }
+
+  * Overlap removal cuts:
+
+     * ``esCondition`` of type ``esConditionType::OvRmDeltaEta``,
+      `esConditionType::OvRmDeltaPhi``and ``esConditionType::OvRmDeltaR``
+      contain toplological limits for applying overlap removal.
+
+       .. sourcecode:: cpp
+
+           if (cut.getCutType() == esCutType::OvRmDeltaEta)
+           {
+             const double minimum = cut.minimumValue();
+             const double maximum = cut.maximumValue();
+             // apply overlap removal using delta eta limits.
+             // ...
+           }
+           else if (cut.getCutType() == esCutType::OvRmDeltaPhi)
+           {
+             const double minimum = cut.minimumValue();
+             const double maximum = cut.maximumValue();
+             // apply overlap removal using delta phi limits.
+             // ...
+           }
+           else if (cut.getCutType() == esCutType::OvRmDeltaR)
+           {
+             const double minimum = cut.minimumValue();
+             const double maximum = cut.maximumValue();
+             // apply overlap removal using delta-R limits.
+             // ...
+           }
+
+* Updates in ``tmGrammar``:
+
+  * New cut types in ``Cut.hh``:
+
+    * new constants for cut types: ``ORMDETA``, ``ORMDPHI`` and ``ORMDR``.
+
+  * New function types in ``Function.hh``
+
+    * new enum ``Function::CombinationOvRm``
+    * new enum ``Function::DistanceOvRm``
+    * new enum ``Function::InvariantMassOvRm``
+    * new enum ``Function::TransverseMassOvRm``
