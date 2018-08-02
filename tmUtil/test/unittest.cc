@@ -70,4 +70,34 @@ BOOST_AUTO_TEST_CASE(regex_match)
   regfree(&regex);
 }
 
+BOOST_AUTO_TEST_CASE(Version)
+{
+  using tmutil::Version;
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") < Version("1.2.4"), true);
+  BOOST_CHECK_EQUAL(Version("1.2.4") < Version("1.2.3"), false);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") < Version("1.3.3"), true);
+  BOOST_CHECK_EQUAL(Version("1.3.3") < Version("1.2.3"), false);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") < Version("2.2.3"), true);
+  BOOST_CHECK_EQUAL(Version("2.2.3") < Version("1.2.3"), false);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") > Version("1.2.4"), false);
+  BOOST_CHECK_EQUAL(Version("1.2.4") > Version("1.2.3"), true);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") > Version("1.3.3"), false);
+  BOOST_CHECK_EQUAL(Version("1.3.3") > Version("1.2.3"), true);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") > Version("2.2.3"), false);
+  BOOST_CHECK_EQUAL(Version("2.2.3") > Version("1.2.3"), true);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3") == Version("1.2.3"), true);
+  BOOST_CHECK_EQUAL(Version("1.2.3") != Version("1.2.4"), true);
+  BOOST_CHECK_EQUAL(Version("1.2.4") != Version("1.2.3"), true);
+
+  BOOST_CHECK_EQUAL(Version("1.2.3").str() == "1.2.3", true);
+  BOOST_CHECK_EQUAL(Version("2.0.1").str() != "2.0.0", true);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

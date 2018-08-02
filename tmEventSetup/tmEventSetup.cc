@@ -45,11 +45,9 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
   // verify grammar version
   const std::string version = getValue(menu.menu, kGrammarVersion);
 
-  if (version > GRAMMAR_VERSION) // TODO: weak comparison
+  if (tmutil::Version(version) > tmutil::Version(GRAMMAR_VERSION))
   {
-    std::stringstream message;
-    message << "utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION;
-    throw std::runtime_error(message.str());
+    TM_FATAL_ERROR("utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION);
   }
 
   // set menu information

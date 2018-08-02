@@ -21,6 +21,7 @@ Version 0.7.0
 
 * fixed precision scale prefix for overlap removal functions
 * fixed segmentation faults on loading missing scales (now throws an exception)
+* fixed version number comparison bug
 
 **Backward incompatibility changes:**
 

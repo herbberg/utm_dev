@@ -101,6 +101,29 @@ int regex_match(regex_t* regex,
                 const std::string& text,
                 std::vector<std::string>& tokens);
 
+/** Version number container.
+  *
+  * Version v("1.2.3");
+  * Version("2.4") < Version("2.12"); // true
+  */
+struct Version
+{
+  Version(const std::string& version);
+
+  void str(const std::string& version);
+  std::string str() const;
+
+  typedef std::vector<unsigned> data_t;
+  data_t data;
+};
+
+/* Version number comparision. */
+bool operator==(const Version& lhs, const Version& rhs);
+bool operator!=(const Version& lhs, const Version& rhs);
+bool operator<(const Version& lhs, const Version& rhs);
+bool operator>(const Version& lhs, const Version& rhs);
+bool operator<=(const Version& lhs, const Version& rhs);
+bool operator>=(const Version& lhs, const Version& rhs);
 
 } // namespace tmutil
 

@@ -13,6 +13,8 @@ Contents:
    :maxdepth: 2
 
    v0_7_0
+   v0_6_5
+   v0_6_4
    v0_6_3
    v0_6_2
    v0_6_1

@@ -5,6 +5,10 @@
 
 #include "tmUtil/tmUtil.hh"
 
+#include <boost/algorithm/string/join.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
+
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -170,6 +174,42 @@ regex_match(regex_t* regex,
 
   return EXIT_SUCCESS;
 }
+
+Version::Version(const std::string& version)
+{
+  str(version);
+}
+
+void Version::str(const std::string& version)
+{
+  typedef boost::char_separator<char> separator_t;
+  typedef boost::tokenizer<separator_t> tokenize_t;
+
+  separator_t sep(".", "", boost::drop_empty_tokens);
+  tokenize_t tokens(version, sep);
+
+  data.resize(std::distance(tokens.begin(), tokens.end()));
+
+  std::transform(tokens.begin(), tokens.end(), data.begin(),
+    boost::lexical_cast<data_t::value_type, tokenize_t::value_type>);
+}
+
+std::string Version::str() const
+{
+  std::ostringstream oss;
+  for (data_t::const_iterator it = data.begin(); it != data.end(); ++it)
+  {
+    oss << (it != data.begin() ? "." : "") << *it;
+  }
+  return oss.str();
+}
+
+bool operator==(const Version& lhs, const Version& rhs) { return lhs.data == rhs.data; }
+bool operator!=(const Version& lhs, const Version& rhs) { return lhs.data != rhs.data; }
+bool operator<(const Version& lhs, const Version& rhs) { return lhs.data < rhs.data; }
+bool operator>(const Version& lhs, const Version& rhs) { return lhs.data > rhs.data; }
+bool operator<=(const Version& lhs, const Version& rhs) { return lhs.data <= rhs.data; }
+bool operator>=(const Version& lhs, const Version& rhs) { return lhs.data >= rhs.data; }
 
 } // namespace tmutil
 
