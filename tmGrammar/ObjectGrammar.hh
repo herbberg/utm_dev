@@ -159,9 +159,9 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       = '[' >> +char_(Cut::CHARSET_CUTS) >> ']'
     ;
 
-    BOOST_SPIRIT_DEBUG_NODE(object_type);
-    BOOST_SPIRIT_DEBUG_NODE(signal_type);
-    BOOST_SPIRIT_DEBUG_NODE(ext_signal_type);
+    BOOST_SPIRIT_DEBUG_NODE(object_id);
+    BOOST_SPIRIT_DEBUG_NODE(signal_id);
+    BOOST_SPIRIT_DEBUG_NODE(ext_signal_id);
     BOOST_SPIRIT_DEBUG_NODE(comparison);
     BOOST_SPIRIT_DEBUG_NODE(threshold);
     BOOST_SPIRIT_DEBUG_NODE(bx_offset);
