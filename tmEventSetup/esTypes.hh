@@ -81,11 +81,11 @@ enum esObjectType
   MBT1HFM   = 16, /**< Minimum Bias HF- threshold 1 */
   ETTEM     = 17, /**< total Et with ECAL only */
   ETMHF     = 18, /**< missing Et with HF */
-  TOWERCOUNT = 19, /**< missing Et with HF */
-  ASYM0X = 26, /**< asymmetry 0 */
-  ASYM1X = 27, /**< asymmetry 1 */
-  ASYM2X = 28, /**< asymmetry 2 */
-  ASYM3X = 29, /**< asymmetry 3 */
+  TOWERCOUNT = 19, /**< calo tower count */
+  ASYMET = 26, /**< asymmetry ET */
+  ASYMHT = 27, /**< asymmetry HT */
+  ASYMETHF = 28, /**< asymmetry ET with HF */
+  ASYMHTHF = 29, /**< asymmetry HT with HF */
   CENT0 = 30,
   CENT1 = 31,
   CENT2 = 32,
@@ -184,18 +184,18 @@ enum esConditionType
   CaloCaloCorrelationOvRm = 47, /**< Calo-Calo correlation condition with overlap removal */
   InvariantMassOvRm = 48, /**< Invariant mass condition with overlap removal */
   TransverseMassOvRm = 49, /**< Transverse mass condition with overlap removal */
-  Asymmetry0 = 50, /**< asymmetry 0 */
-  Asymmetry1 = 51, /**< asymmetry 1 */
-  Asymmetry2 = 52, /**< asymmetry 2 */
-  Asymmetry3 = 53, /**< asymmetry 3 */
-  Centrality0 = 54,
-  Centrality1 = 55,
-  Centrality2 = 56,
-  Centrality3 = 57,
-  Centrality4 = 58,
-  Centrality5 = 59,
-  Centrality6 = 60,
-  Centrality7 = 61,
+  AsymmetryEt = 50, /**< asymmetry Et */
+  AsymmetryHt = 51, /**< asymmetry Ht */
+  AsymmetryEtHF = 52, /**< asymmetry Et with HF */
+  AsymmetryHtHF = 53, /**< asymmetry Ht with HF */
+  Centrality0 = 54, /**< centrality 0 signal */
+  Centrality1 = 55, /**< centrality 1 signal */
+  Centrality2 = 56, /**< centrality 2 signal */
+  Centrality3 = 57, /**< centrality 3 signal */
+  Centrality4 = 58, /**< centrality 4 signal */
+  Centrality5 = 59, /**< centrality 5 signal */
+  Centrality6 = 60, /**< centrality 6 signal */
+  Centrality7 = 61, /**< centrality 7 signal */
   nConditionType = 62
 };
 

@@ -81,24 +81,24 @@ esObjectHandle::init(const Object::Item& item)
     type_ = TOWERCOUNT;
     isThreshold = false;
   }
-  else if (item.name == Object::ASYM0X)
+  else if (item.name == Object::ASYMET)
   {
-    type_ = ASYM0X;
+    type_ = ASYMET;
     isThreshold = false;
   }
-  else if (item.name == Object::ASYM1X)
+  else if (item.name == Object::ASYMHT)
   {
-    type_ = ASYM1X;
+    type_ = ASYMHT;
     isThreshold = false;
   }
-  else if (item.name == Object::ASYM2X)
+  else if (item.name == Object::ASYMETHF)
   {
-    type_ = ASYM2X;
+    type_ = ASYMETHF;
     isThreshold = false;
   }
-  else if (item.name == Object::ASYM3X)
+  else if (item.name == Object::ASYMHTHF)
   {
-    type_ = ASYM3X;
+    type_ = ASYMHTHF;
     isThreshold = false;
   }
   else if (item.name == Object::CENT0)

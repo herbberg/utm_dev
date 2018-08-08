@@ -46,10 +46,10 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       else if (token == Object::ETTEM) object_type_ = ETTEM;
       else if (token == Object::ETMHF) object_type_ = ETMHF;
       else if (token == Object::TOWERCOUNT) object_type_ = TOWERCOUNT;
-      else if (token == Object::ASYM0X) object_type_ = ASYM0X;
-      else if (token == Object::ASYM1X) object_type_ = ASYM1X;
-      else if (token == Object::ASYM2X) object_type_ = ASYM2X;
-      else if (token == Object::ASYM3X) object_type_ = ASYM3X;
+      else if (token == Object::ASYMET) object_type_ = ASYMET;
+      else if (token == Object::ASYMHT) object_type_ = ASYMHT;
+      else if (token == Object::ASYMETHF) object_type_ = ASYMETHF;
+      else if (token == Object::ASYMHTHF) object_type_ = ASYMHTHF;
       else
       {
         TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown object_type '" << token << "'");
@@ -224,10 +224,10 @@ esCutHandle::setKey()
     case ETTEM: key_ = Object::ETTEM; break;
     case ETMHF: key_ = Object::ETMHF; break;
     case TOWERCOUNT: key_ = Object::TOWERCOUNT; break;
-    case ASYM0X: key_ = Object::ASYM0X; break;
-    case ASYM1X: key_ = Object::ASYM1X; break;
-    case ASYM2X: key_ = Object::ASYM2X; break;
-    case ASYM3X: key_ = Object::ASYM3X; break;
+    case ASYMET: key_ = Object::ASYMET; break;
+    case ASYMHT: key_ = Object::ASYMHT; break;
+    case ASYMETHF: key_ = Object::ASYMETHF; break;
+    case ASYMHTHF: key_ = Object::ASYMHTHF; break;
     case CombFunction: break;
     case DistFunction: break;
     case MassFunction: break; // alias for invariant mass

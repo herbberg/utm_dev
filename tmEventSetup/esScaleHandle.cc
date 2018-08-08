@@ -32,10 +32,10 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (obj == Object::ETTEM) object_ = ETTEM;
   else if (obj == Object::ETMHF) object_ = ETMHF;
   else if (obj == Object::TOWERCOUNT) object_ = TOWERCOUNT;
-  else if (obj == Object::ASYM0X) object_ = ASYM0X;
-  else if (obj == Object::ASYM1X) object_ = ASYM1X;
-  else if (obj == Object::ASYM2X) object_ = ASYM2X;
-  else if (obj == Object::ASYM3X) object_ = ASYM3X;
+  else if (obj == Object::ASYMET) object_ = ASYMET;
+  else if (obj == Object::ASYMHT) object_ = ASYMHT;
+  else if (obj == Object::ASYMETHF) object_ = ASYMETHF;
+  else if (obj == Object::ASYMHTHF) object_ = ASYMHTHF;
   else if (obj == PRECISION) object_ = Precision;
   else
   {
