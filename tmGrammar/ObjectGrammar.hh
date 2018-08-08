@@ -169,7 +169,7 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
   }
 
   qi::rule<Iterator, Item_(), ascii::space_type> object;
-  qi::rule<Iterator, std::string(), ascii::space_type> object_id, signal_id, ext_signal_type;
+  qi::rule<Iterator, std::string(), ascii::space_type> object_id, signal_id, ext_signal_id;
   qi::rule<Iterator, std::string(), ascii::space_type> comparison, threshold, bx_offset, cuts;
 };
 
