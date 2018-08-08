@@ -116,10 +116,10 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(MBT0HFM)
       | string(MBT1HFM)
       | string(TOWERCOUNT)
-      | string(ASYMET)
-      | string(ASYMHT)
       | string(ASYMETHF)
       | string(ASYMHTHF)
+      | string(ASYMET)
+      | string(ASYMHT)
     ;
 
     signal
