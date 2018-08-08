@@ -10,19 +10,23 @@ Version 0.7.0
   * new object types for HI runs:
 
     * asymmetry:
-      * ``ASYMET``
-      * ``ASYMHT``
-      * ``ASYMETHF``
-      * ``ASYMHTHF``
+
+      * ``ASYMET`` asymmetry Et
+      * ``ASYMHT`` asymmetry Ht
+      * ``ASYMETHF`` asymmetry Et with HF
+      * ``ASYMHTHF`` asymmetry Ht with HF
+
     * centrality (signals without threshold): ``CENT0`` ... ``CENT7``
 
 * Introduced new event setup conditions:
 
   * asymmetry:
+
     * ``esConditionType::AsymmetryEt``
     * ``esConditionType::AsymmetryHt``
     * ``esConditionType::AsymmetryEtHF``
     * ``esConditionType::AsymmetryHtHF``
+
   * centrality: ``esConditionType::Centrality0`` ... ``esConditionType::Centrality7``
 
 **Bugfixes:**
