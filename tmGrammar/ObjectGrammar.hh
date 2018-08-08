@@ -85,22 +85,22 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
     using qi::raw;
 
     object
-      = id
+      = object_id
         >> -comparison
         >> threshold
         >> -bx_offset
         >> -cuts
-      | raw[string(EXT) >> +char_("a-zA-Z0-9_.")]
-        >> -comparison // NOTE: not used but will
-        >> -threshold // break parser if omitted
+      | signal_id
+        >> !comparison
+        >> !threshold
         >> -bx_offset
-      | signal
-        >> -comparison // NOTE: not used but will
-        >> -threshold // break parser if omitted
+      | ext_signal_id
+        >> !comparison
+        >> !threshold
         >> -bx_offset
     ;
 
-    id
+    object_id
       = string(MU)
       | string(EG)
       | string(TAU)
@@ -122,7 +122,7 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(ASYMHT)
     ;
 
-    signal
+    signal_id
       = string(CENT0)
       | string(CENT1)
       | string(CENT2)
@@ -131,6 +131,10 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(CENT5)
       | string(CENT6)
       | string(CENT7)
+    ;
+
+    ext_signal_id
+      = raw[string(EXT) >> raw['_'] >> +char_("a-zA-Z0-9_.")]
     ;
 
     comparison
@@ -155,8 +159,9 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       = '[' >> +char_(Cut::CHARSET_CUTS) >> ']'
     ;
 
-    BOOST_SPIRIT_DEBUG_NODE(id);
-    BOOST_SPIRIT_DEBUG_NODE(signal);
+    BOOST_SPIRIT_DEBUG_NODE(object_type);
+    BOOST_SPIRIT_DEBUG_NODE(signal_type);
+    BOOST_SPIRIT_DEBUG_NODE(ext_signal_type);
     BOOST_SPIRIT_DEBUG_NODE(comparison);
     BOOST_SPIRIT_DEBUG_NODE(threshold);
     BOOST_SPIRIT_DEBUG_NODE(bx_offset);
@@ -164,7 +169,8 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
   }
 
   qi::rule<Iterator, Item_(), ascii::space_type> object;
-  qi::rule<Iterator, std::string(), ascii::space_type> id, signal, comparison, threshold, bx_offset, cuts;
+  qi::rule<Iterator, std::string(), ascii::space_type> object_id, signal_id, ext_signal_type;
+  qi::rule<Iterator, std::string(), ascii::space_type> comparison, threshold, bx_offset, cuts;
 };
 
 } // namespace Object
