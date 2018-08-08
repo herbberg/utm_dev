@@ -45,10 +45,10 @@ TAU         ET
 TAU         ETA
 TAU         PHI
 TOWERCOUNT  COUNT
-ASYMET     COUNT
-ASYMHT     COUNT
-ASYMETHF   COUNT
-ASYMHTHF   COUNT
+ASYMET      COUNT
+ASYMHT      COUNT
+ASYMETHF    COUNT
+ASYMHTHF    COUNT
 ==========  ===========================
 
 Required precision scales for 0.7.x (with example values from scale set
