@@ -35,7 +35,7 @@ struct math_cosh { double operator()(const double d){ return std::cosh(d); } };
 const esTriggerMenu*
 _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tmtable::ExtSignal& extSignal)
 {
-  TM_LOG_DBG("tmeventsetup::_getTriggerMenu: ");
+  TM_LOG_DBG("");
 
   esTriggerMenuHandle* estm = new esTriggerMenuHandle();
 
@@ -47,7 +47,7 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
 
   if (tmutil::Version(version) > tmutil::Version(GRAMMAR_VERSION))
   {
-    TM_FATAL_ERROR("utm: grammar version mismatch: " << version << " > " << GRAMMAR_VERSION);
+    TM_FATAL_ERROR("grammar version mismatch: " << version << " (menu) > " << GRAMMAR_VERSION << " (utm)");
   }
 
   // set menu information
@@ -93,7 +93,7 @@ _getTriggerMenu(const tmtable::Menu& menu, const tmtable::Scale& scale, const tm
 const esTriggerMenu*
 getTriggerMenu(const std::string& path)
 {
-  TM_LOG_DBG("tmeventsetup::getTriggerMenu: " << path);
+  TM_LOG_DBG(TM_VALUE_DBG(path));
 
   // read menu
   tmtable::Menu menu;
@@ -104,8 +104,8 @@ getTriggerMenu(const std::string& path)
   message = tmtable::xml2menu(path.c_str(), menu, scale, extSignal);
   if (message.length())
   {
-    TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
-    TM_FATAL_ERROR("couldn't open input file: '" << path << "'");
+    TM_LOG_ERR(message);
+    TM_FATAL_ERROR("failed to load from file: " << TM_QUOTE(path));
   }
 
   return _getTriggerMenu(menu, scale, extSignal);
@@ -115,7 +115,7 @@ getTriggerMenu(const std::string& path)
 const esTriggerMenu*
 getTriggerMenu(std::istringstream& iss)
 {
-  TM_LOG_DBG("tmeventsetup::getTriggerMenu: ");
+  TM_LOG_DBG("");
 
   // read menu
   tmtable::Menu menu;
@@ -126,8 +126,8 @@ getTriggerMenu(std::istringstream& iss)
   message = tmtable::xml2menu(iss, menu, scale, extSignal);
   if (message.length())
   {
-    TM_LOG_ERR("tmeventsetup::getTriggerMenu: " << message);
-    TM_FATAL_ERROR("couldn't open input stream");
+    TM_LOG_ERR(message);
+    TM_FATAL_ERROR("failed to load from input stream");
   }
 
   return _getTriggerMenu(menu, scale, extSignal);
@@ -230,7 +230,7 @@ getObjectCombination(esObjectType type1,
           combination = MuonEsumCombination;
           break;
         default:
-          TM_FATAL_ERROR("tmeventsetup::getObjectCombination: unknown object type = '" << type2 << "'");
+          TM_FATAL_ERROR("unknown object type: " << type2);
       }
       break;
 
@@ -253,7 +253,7 @@ getObjectCombination(esObjectType type1,
           combination = CaloEsumCombination;
           break;
         default:
-          TM_FATAL_ERROR("tmeventsetup::getObjectCombination: unknown object type = '" << type2 << "'");
+          TM_FATAL_ERROR("unknown object type: " << type2);
       }
       break;
 
@@ -271,12 +271,12 @@ getObjectCombination(esObjectType type1,
           combination = CaloEsumCombination;
           break;
         default:
-          TM_FATAL_ERROR("tmeventsetup::getObjectCombination: unknown object type = '" << type2 << "'");
+          TM_FATAL_ERROR("unknown object type: " << type2);
       }
       break;
 
     default:
-      TM_FATAL_ERROR("tmeventsetup::getObjectCombination: unknown object type = '" << type2 << "'");
+      TM_FATAL_ERROR("unknown object type: " << type2);
   }
 
   return combination;
@@ -310,7 +310,7 @@ getPrecisions(std::map<std::string, unsigned int>& precision,
     rc = precision.insert(std::make_pair(cit->first, cit->second.getNbits()));
     if (not rc.second)
     {
-      TM_FATAL_ERROR("tmeventsetup::getPrecisions: insertion failed");
+      TM_FATAL_ERROR("insertion failed: " << TM_QUOTE(cit->first));
     }
   }
 }
@@ -343,7 +343,7 @@ getPrecisionsPy(std::map<std::string, unsigned int>& precision,
     rc = precision.insert(std::make_pair(cit->first, cit->second->getNbits()));
     if (not rc.second)
     {
-      TM_FATAL_ERROR("tmeventsetup::getPrecisionsPy: insertion failed");
+      TM_FATAL_ERROR("insertion failed: " << TM_QUOTE(cit->first));
     }
   }
 }
@@ -415,8 +415,8 @@ isCaloMuonScale(const esScale* scale1,
 
   if (scale1->getScaleType() != scale2->getScaleType())
   {
-    TM_FATAL_ERROR("tmeventsetup::isCaloMuonScale: different scale type given: "
-                    << scale1->getScaleType() << " != " << scale2->getScaleType());
+    TM_FATAL_ERROR("different scale type given: "
+      << scale1->getScaleType() << " != " << scale2->getScaleType());
   }
 
   switch (scale1->getObjectType())
@@ -430,11 +430,13 @@ isCaloMuonScale(const esScale* scale1,
       break;
 
     default:
-      TM_FATAL_ERROR("tmeventsetup::isCaloMuonScale: scale1 not for calo: "
-                     << scale1->getObjectType());
+      TM_FATAL_ERROR("scale1 not of calo type: " << scale1->getObjectType());
   }
 
-  if (scale2->getObjectType() != Muon) TM_FATAL_ERROR("tmeventsetup::isCaloMuonScale: scale2 not for muon: " << scale2->getObjectType());
+  if (scale2->getObjectType() != Muon)
+  {
+    TM_FATAL_ERROR("scale2 not of muon type: " << scale2->getObjectType());
+  }
 
   return rc;
 }
@@ -446,15 +448,27 @@ getCaloMuonEtaConversionLut(std::vector<long long>& lut,
                             const esScale* scale2)
 {
   const esScaleType type = static_cast<esScaleType>(scale1->getScaleType());
-  if (type != EtaScale) TM_FATAL_ERROR("tmeventsetup::getCaloMuonEtaConversionLut: not EtaScale : " << type);
+  if (type != EtaScale)
+  {
+    TM_FATAL_ERROR("not EtaScale: " << type);
+  }
 
-  if (not isCaloMuonScale(scale1, scale2)) TM_FATAL_ERROR("tmeventsetup::getCaloMuonEtaConversionLut: not a calo muon scale pair");
+  if (not isCaloMuonScale(scale1, scale2))
+  {
+    TM_FATAL_ERROR("not a calo muon scale pair");
+  }
 
   const double step1 = scale1->getStep();
   const double step2 = scale2->getStep();
-  if (step1 == 0.0 or step2 == 0.0) TM_FATAL_ERROR("tmeventsetup::getCaloMuonEtaConversionLut: step size is 0.0");
+  if (step1 == 0.0 or step2 == 0.0)
+  {
+    TM_FATAL_ERROR("step size is 0.0");
+  }
 
-  if (step1 <= step2) TM_FATAL_ERROR("tmeventsetup::getCaloMuonEtaConversionLut: step size of scale2 should be smaller");
+  if (step1 <= step2)
+  {
+    TM_FATAL_ERROR("step size of scale2 should be smaller");
+  }
 
 
   lut.clear();
@@ -482,15 +496,27 @@ getCaloMuonPhiConversionLut(std::vector<long long>& lut,
                             const esScale* scale2)
 {
   const esScaleType type = static_cast<esScaleType>(scale1->getScaleType());
-  if (type != PhiScale) TM_FATAL_ERROR("tmeventsetup::getCaloMuonPhiConversionLut: not PhiScale : " << type);
+  if (type != PhiScale)
+  {
+    TM_FATAL_ERROR("not PhiScale: " << type);
+  }
 
-  if (not isCaloMuonScale(scale1, scale2)) TM_FATAL_ERROR("tmeventsetup::getCaloMuonPhiConversionLut: not a calo muon scale pair");
+  if (not isCaloMuonScale(scale1, scale2))
+  {
+    TM_FATAL_ERROR("not a calo muon scale pair");
+  }
 
   const double step1 = scale1->getStep();
   const double step2 = scale2->getStep();
-  if (step1 == 0.0 or step2 == 0.0) TM_FATAL_ERROR("tmeventsetup::getCaloMuonPhiConversionLut: step size is 0.0");
+  if (step1 == 0.0 or step2 == 0.0)
+  {
+    TM_FATAL_ERROR("step size is 0.0");
+  }
 
-  if (step1 <= step2) TM_FATAL_ERROR("tmeventsetup::getCaloMuonPhiConversionLut: step size of scale2 should be smaller");
+  if (step1 <= step2)
+  {
+    TM_FATAL_ERROR("step size of scale2 should be smaller");
+  }
 
   // Resize and clear
   lut.resize(std::pow(2, scale1->getNbits()));

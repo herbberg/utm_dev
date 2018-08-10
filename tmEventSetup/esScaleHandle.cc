@@ -39,7 +39,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (obj == PRECISION) object_ = Precision;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esScaleHandle::ctor: unknown object '" << obj << "'");
+    TM_FATAL_ERROR("unknown object: " << TM_QUOTE(obj));
   }
 
 
@@ -58,7 +58,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (type.find(PRECISION_TBPT) != std::string::npos) type_ = TwoBodyPtPrecision;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esScaleHandle::ctor: unknown type '" << type << "'");
+    TM_FATAL_ERROR("unknown type " << TM_QUOTE(type));
   }
 
   name_ =  obj + "-" + type;
@@ -72,7 +72,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
 void
 esScaleHandle::print() const
 {
-  TM_LOG_INF("tmeventsetup::esScaleHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  object = " << object_ << "\n";
   std::cout << "  type = " << type_ << "\n";

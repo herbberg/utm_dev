@@ -123,7 +123,7 @@ parser(const std::string& algorithm)
 
   if (not (r and begin == end))
   {
-    TM_LOG_ERR("Algorithm::parser: '" << algorithm << "'");
+    TM_LOG_ERR("parser error: " << TM_QUOTE(algorithm));
     return false;
   }
   return true;

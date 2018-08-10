@@ -329,7 +329,7 @@ Item::isValidObject(const std::string& object,
       if (not objects)
       {
         std::ostringstream oss;
-        oss << "Function::isValidObject: no metric specified for " << Function::dist;
+        oss << "no metric specified for " << TM_QUOTE(Function::dist);
         if (message.length())
           message.append(", ");
         message.append(oss.str());
@@ -344,7 +344,7 @@ Item::isValidObject(const std::string& object,
       if (not objects)
       {
         std::ostringstream oss;
-        oss << "Function::isValidObject: no metric specified for " << Function::dist_orm;
+        oss << "no metric specified for " << TM_QUOTE(Function::dist_orm);
         if (message.length())
           message.append(", ");
         message.append(oss.str());
@@ -438,10 +438,11 @@ Item::isValidCut(const std::string& cut,
   if (not cuts)
   {
     std::ostringstream oss;
-    oss << " Function::Item::isValidCut: unkown cut type: " << type;
+    oss << "unkown cut type: " << type;
     if (message.length())
       message.append(", ");
     message.append(oss.str());
+    TM_LOG_ERR(oss.str());
     return false;
   }
 
@@ -482,11 +483,11 @@ Item::isValidCut(const std::string& cut,
   }
 
   std::ostringstream oss;
-  oss << " Function::Item::isValidCut: unkown cut: '" << cut << "'";
+  oss << "unkown cut: " << TM_QUOTE(cut);
   if (message.length())
     message.append(", ");
   message.append(oss.str());
-
+  TM_LOG_ERR(oss.str());
   return false;
 }
 
@@ -548,7 +549,7 @@ getObjects(const std::string& token,
            std::vector<std::string>& objects,
            std::string& message)
 {
-  TM_LOG_DBG("getObjects: " << token);
+  TM_LOG_DBG(TM_VALUE_DBG(token));
 
   std::string text(token);
   while (text.length())
@@ -566,14 +567,14 @@ getObjects(const std::string& token,
     size_t end = (cut_start < comma and comma < cut_stop) ? cut_stop : comma;
     end = (end > length) ? length: end;
 
-    TM_LOG_DBG("len = " << length << " end = " << end
-              << " [ = " << cut_start << " ] = " << cut_stop << " , " << comma);
+    TM_LOG_DBG(TM_VALUE_DBG(length) << ", " << TM_VALUE_DBG(end)
+      << " [ = " << cut_start << " ] = " << cut_stop << " , " << comma);
 
     // include ']' in an object
     if (end == cut_stop) end += 1;
 
     std::string object = text.substr(0, end);
-    TM_LOG_DBG("end = " << end << " " << object);
+    TM_LOG_DBG(TM_VALUE_DBG(end) << ", " << TM_VALUE_DBG(object));
     objects.push_back(object);
     text = text.substr(end, length-end);
   }
@@ -581,7 +582,7 @@ getObjects(const std::string& token,
   if (objects.size() < 2)
   {
     std::ostringstream oss;
-    oss << "Function::getObjects: # of object < 2 '" << text << "'";
+    oss << "# of object < 2 " << TM_QUOTE(text);
     if (message.length())
       message.append(", ");
     message.append(oss.str());
@@ -599,8 +600,7 @@ validateObjectCount(Function::Item& item, const size_t min, const size_t max)
   if (count < min or count > max)
   {
     std::ostringstream message;
-    message << "Function::validateObjectCount:"
-            << " invalid object count for function '" << item.name << "': "
+    message << "invalid object count for function " << TM_QUOTE(item.name) << ": "
             << count << " (" << min << " <= objects <= " << max << ")";
     item.appendMessage(message.str());
     TM_LOG_ERR(message.str());
@@ -624,9 +624,8 @@ validateCombinationFunction(Function::Item& item)
   if (count != equalCount)
   {
     std::ostringstream message;
-    message << "Function::validateCombinationFunction:"
-            << " invalid object combination for function '"
-            << item.name << "': all objects must be of same type";
+    message << "invalid object combination for function "
+            << TM_QUOTE(item.name) << ": all objects must be of same type";
     item.appendMessage(message.str());
     TM_LOG_ERR(message.str());
     return false;
@@ -649,9 +648,8 @@ validateOvRmObjects(Function::Item& item)
   if (firstType == lastType)
   {
     std::ostringstream message;
-    message << "Function::validateOvRmObjects:"
-            << " invalid object combination for overlap removal function '"
-            << item.name << "': right object must be of different type, eg. (tautau + jet)";
+    message << "invalid object combination for overlap removal function "
+            << TM_QUOTE(item.name) << ": right object must be of different type, eg. (tautau + jet)";
     item.appendMessage(message.str());
     TM_LOG_ERR(message.str());
     return false;
@@ -662,9 +660,8 @@ validateOvRmObjects(Function::Item& item)
   if (countLeft != equalCount)
   {
     std::ostringstream message;
-    message << "Function::validateOvRmObjects:"
-            << " invalid object combination for overlap removal function '"
-            << item.name << "': left objects must be of same type, eg. (tautau + jet)";
+    message << "invalid object combination for overlap removal function "
+            << TM_QUOTE(item.name) << ": left objects must be of same type, eg. (tautau + jet)";
     item.appendMessage(message.str());
     TM_LOG_ERR(message.str());
     return false;
@@ -686,8 +683,7 @@ validateOvRmCuts(Function::Item& item)
   }
 
   std::ostringstream message;
-  message << "Function::validateOvRmCuts:"
-          << " missing overlap removal cut for function '" << item.name << "'";
+  message << "missing overlap removal cut for function " << TM_QUOTE(item.name);
   item.appendMessage(message.str());
   TM_LOG_ERR(message.str());
 
@@ -707,8 +703,7 @@ validateDistanceCuts(Function::Item& item)
   }
 
   std::ostringstream message;
-  message << "Function::validateDistanceCuts:"
-          << " missing distance cut for function '" << item.name << "'";
+  message << " missing distance cut for function " << TM_QUOTE(item.name);
   item.appendMessage(message.str());
   TM_LOG_ERR(message.str());
 
@@ -728,8 +723,7 @@ validateMassCuts(Function::Item& item)
   }
 
   std::ostringstream message;
-  message << "Function::validateMassCuts:"
-          << " missing mass cut for function '" << item.name << "'";
+  message << "missing mass cut for function " << TM_QUOTE(item.name);
   item.appendMessage(message.str());
   TM_LOG_ERR(message.str());
 
@@ -929,7 +923,7 @@ parser(const std::string& function,
   if ((item.type != Combination) and item_.cuts.empty())
   {
     std::ostringstream message;
-    message << "Function::parser: no cut specified for '" << item.name << "'";
+    message << "no cut specified for " << TM_QUOTE(item.name);
     item.appendMessage(message.str());
     TM_LOG_ERR(message.str());
     return false;
@@ -951,8 +945,8 @@ parser(const std::string& function,
       if (not item.isValidCut(cut.name.at(ii), item.message))
       {
         std::ostringstream message;
-        message << "Function::parser: cut '" << cut.name.at(ii)
-                << "' is not valid for function '" << item.name << "'";
+        message << "cut " << TM_QUOTE(cut.name.at(ii))
+                << " is not valid for function " << TM_QUOTE(item.name);
         item.appendMessage(message.str());
         TM_LOG_ERR(message.str());
         return false;
@@ -982,8 +976,8 @@ parser(const std::string& function,
     if (not item.isValidObject(item_.objects.at(ii), item.message))
     {
       std::ostringstream message;
-      message << "Function::parser: object '" << item_.objects.at(ii)
-              << "' is not valid for function '" << item.name << "'"
+      message << "object " << TM_QUOTE(item_.objects.at(ii))
+              << " is not valid for function " << TM_QUOTE(item.name)
               << ((item.type == Distance) ? " with the given metric" : "");
       item.appendMessage(message.str());
       TM_LOG_ERR(message.str());

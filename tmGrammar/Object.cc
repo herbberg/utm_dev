@@ -255,7 +255,7 @@ parser(const std::string& token,
 
   if (not (r and begin == end))
   {
-    TM_LOG_ERR("Object::parser: '" << token << "'");
+    TM_LOG_ERR("parser error: " << TM_QUOTE(token));
     item.message += " Object::parser: '" + token + "'";
     return false;
   }
@@ -294,8 +294,8 @@ parser(const std::string& token,
   for (size_t ii = 0; ii < cut.name.size(); ii++)
   {
     if (not item.isValidCut(cut.name.at(ii))) {
-      TM_LOG_ERR("Object::parser: '" << cut.name.at(ii)
-                 << "' is not valid for '" << item.name << "'");
+      TM_LOG_ERR(TM_QUOTE(cut.name.at(ii))
+                 << " is not valid for " << TM_QUOTE(item.name));
       item.message += " Object::parser: '" + cut.name.at(ii) +
                       "' is not valid for '" +  item.name + "'";
       return false;

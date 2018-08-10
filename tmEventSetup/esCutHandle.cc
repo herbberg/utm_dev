@@ -12,12 +12,12 @@ namespace tmeventsetup
 
 esCutHandle::esCutHandle(const tmtable::Row& cut)
 {
-  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey");
+  TM_LOG_DBG("");
 
   name_ = cut.find("name")->second;
   std::string type = cut.find("type")->second;
-  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: name_ = " << name_);
-  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: type = " << type);
+  TM_LOG_DBG(TM_VALUE_DBG(name_));
+  TM_LOG_DBG(TM_VALUE_DBG(type));
 
   // Split cut type into tokens, eg. "MU-ISO" -> ["MU", "ISO"].
   boost::char_separator<char> sep("-");
@@ -52,7 +52,7 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       else if (token == Object::ASYMHTHF) object_type_ = ASYMHTHF;
       else
       {
-        TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown object_type '" << token << "'");
+        TM_FATAL_ERROR("unknown object_type: " << TM_QUOTE(token));
       }
       // fall through
 
@@ -113,12 +113,12 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       }
       else
       {
-        TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown cut_type '" << token << "'");
+        TM_FATAL_ERROR("unknown cut type: " << TM_QUOTE(token));
       }
       break;
 
     default:
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: unknown case '" << type << "'");
+      TM_FATAL_ERROR("invalid # of tokens: " << tokens.size());
       break;
   }
 
@@ -141,7 +141,7 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
     }
     catch (boost::bad_lexical_cast& e)
     {
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: invalid minimum value '" << minimum << "' for cut '" << name_ << "'");
+      TM_FATAL_ERROR("invalid minimum value " << TM_QUOTE(minimum) << " for cut " << TM_QUOTE(name_));
     }
   }
 
@@ -154,7 +154,7 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
     }
     catch (boost::bad_lexical_cast& e)
     {
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::ctor: invalid maximum value '" << maximum << "' for cut '" << name_ << "'");
+      TM_FATAL_ERROR("invalid maximum value '" << TM_QUOTE(maximum) << " for cut " << TM_QUOTE(name_));
     }
   }
 
@@ -191,7 +191,7 @@ esCutHandle::setData(const std::string& data)
         }
         catch(boost::bad_lexical_cast& e)
         {
-          TM_FATAL_ERROR("tmeventsetup::esCutHandle::setData: invalid LUT data for quality/isolation: '" << data << "'");
+          TM_FATAL_ERROR("invalid LUT data for quality/isolation: " << TM_QUOTE(data));
         }
       }
       data_ = boost::lexical_cast<std::string>(value);
@@ -206,7 +206,7 @@ esCutHandle::setData(const std::string& data)
 void
 esCutHandle::setKey()
 {
-  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey");
+  TM_LOG_DBG("");
   switch (object_type_)
   {
     case Muon: key_ = Object::MU; break;
@@ -234,7 +234,7 @@ esCutHandle::setKey()
     case InvariantMassFunction: break;
     case TransverseMassFunction: break;
     default:
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << object_type_ << "'");
+      TM_FATAL_ERROR("invalid object type: " << object_type_);
       break;
   }
 
@@ -260,10 +260,10 @@ esCutHandle::setKey()
     case OvRmDeltaPhi: key_ += Cut::ORMDPHI; break;
     case OvRmDeltaR: key_ += Cut::ORMDR; break;
     default:
-      TM_FATAL_ERROR("tmeventsetup::esCutHandle::setKey: error '" << cut_type_ << "'");
+      TM_FATAL_ERROR("invalid cut type: " << cut_type_);
       break;
   }
-  TM_LOG_DBG("tmeventsetup::esCutHandle::setKey: " << key_);
+  TM_LOG_DBG(TM_VALUE_DBG(key_));
 }
 
 

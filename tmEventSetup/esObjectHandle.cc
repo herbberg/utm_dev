@@ -146,7 +146,7 @@ esObjectHandle::init(const Object::Item& item)
   else if (item.name.rfind(Object::EXT, 0) == 0) type_ = EXT;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esObjectHandle::init: unknown type '" << item.name << "'");
+    TM_FATAL_ERROR("unknown type: " << TM_QUOTE(item.name));
   }
 
   // If object is a signal
@@ -169,7 +169,7 @@ esObjectHandle::init(const Object::Item& item)
   else if (item.comparison == Object::EQ) comparison_operator_ = EQ;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esObjectHandle::init: unknown comparison operator '" << item.comparison << "'");
+    TM_FATAL_ERROR("unknown comparison operator " << TM_QUOTE(item.comparison));
   }
 
   bx_offset_ = boost::lexical_cast<int>(item.bx_offset);
@@ -209,7 +209,7 @@ esObjectHandle::setExternalChannelId(const std::map<std::string, unsigned int>& 
 void
 esObjectHandle::print() const
 {
-  TM_LOG_INF("tmeventsetup::esObjectHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  type = " << type_ << "\n";
   std::cout << "  op = " << comparison_operator_ << "\n";
@@ -223,7 +223,7 @@ esObjectHandle::print() const
 void
 esObjectHandle::print(const esObject& object)
 {
-  TM_LOG_INF("tmeventsetup::esObjectHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << object.getName() << "\n";
   std::cout << "  type = " << object.getType() << "\n";
   std::cout << "  op = " << object.getComparisonOperator() << "\n";

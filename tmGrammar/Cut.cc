@@ -96,8 +96,12 @@ parser(const std::string& token,
 
   if (not (r and begin == end))
   {
-    TM_LOG_ERR("Cut::parser '" << token << "'");
-    item.message += " Cut::parser '" + token + "'";
+    std::ostringstream oss;
+    oss << "parser error: " << TM_QUOTE(token);
+    TM_LOG_ERR(oss.str());
+    if (item.message.length())
+      item.message += ", ";
+    item.message += oss.str();
     return false;
   }
 
