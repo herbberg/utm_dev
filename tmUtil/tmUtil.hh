@@ -1,65 +1,14 @@
-/**
- * @author Bernhard Arnold
- * @author Takashi Matsushita
- * @date: 14 Feb 2005
- */
+#ifndef tmutil_tmUtil_hh
+#define tmutil_tmUtil_hh
 
-#ifndef tmUtil_hh
-#define tmUtil_hh
-/*====================================================================*
- * declarations
- *====================================================================*/
-/*--------------------------------------------------------------------*
- * headers
- *--------------------------------------------------------------------*/
-#include <iostream>
-#include <stdexcept>
-#include <string>
-#include <sstream>
-#include <vector>
+#include "tmUtil/macros.hh"
+
 #include <regex.h>
 
+#include <sstream>
+#include <string>
+#include <vector>
 
-/*--------------------------------------------------------------------*
- * macros
- *--------------------------------------------------------------------*/
-/** @file tmUtil.hh
-    collection of macros */
-
-/** a macro that displays message then exits a program */
-#define TM_FATAL_ERROR(x) (std::cerr << "fat> " << x << " [" \
-                                     << __FILE__ << ":" \
-                                     << std::dec << __LINE__ << "]" \
-                                     << std::endl, \
-                           throw std::runtime_error(static_cast<std::ostringstream&>(std::ostringstream().flush() << "run time error: " << x).str()))
-
-/** a macro that displays run-time information message */
-#define TM_LOG_INF(x) (std::cout << "inf> " << x << " [" << __FILE__ << ":" << std::dec << __LINE__ << "]\n")
-
-/** a macro that displays run-time warning message */
-#define TM_LOG_WAR(x) (std::cerr << "war> " << x << " [" << __FILE__ << ":" << std::dec << __LINE__ << "]\n")
-
-/** a macro that displays run-time error message */
-#define TM_LOG_ERR(x) (std::cerr << "err> " << x << " [" << __FILE__ << ":" << std::dec << __LINE__ << "]" << std::endl)
-
-
-/** a macro that displays run-time debug message,
-    can be disabled by defining NDEBUG macro */
-#ifndef NDEBUG
-#define TM_LOG_DBG(x) (std::cout << "dbg> " << x  << " [" << __FILE__ \
-                                 << ":" << std::dec << __LINE__ << "]\n")
-#else
-#define TM_LOG_DBG(x) ;
-#endif
-
-/*--------------------------------------------------------------------*
- * constants
- *--------------------------------------------------------------------*/
-/* nope */
-
-/*--------------------------------------------------------------------*
- * function
- *--------------------------------------------------------------------*/
 namespace tmutil {
 
 /**
@@ -101,6 +50,57 @@ int regex_match(regex_t* regex,
                 const std::string& text,
                 std::vector<std::string>& tokens);
 
+/** Returns environment variable.
+  * Returns empty string if environment variable is not set.
+  */
+std::string getEnviron(const std::string& name);
+
+/** Returns environment variable.
+  * Returns fallback value if environment variable is not set.
+  */
+std::string getEnviron(const std::string& name, const std::string& fallback);
+
+// PROTOTYPE
+template<typename T>
+std::string quote(const T& literal)
+{
+  constexpr char quote = '\'';
+  std::ostringstream oss;
+  oss << quote << literal << quote;
+  return oss.str();
+}
+
+// PROTOTYPE
+template<typename T>
+std::string join(const T& iterable, const std::string& delim)
+{
+  std::ostringstream oss;
+  for (const auto& value : iterable)
+    oss << (oss.tellp() ? delim : std::string()) << value;
+  return oss.str();
+}
+
+// PROTOTYPE
+template<typename T>
+std::string join_quoted(const T& iterable, const std::string& delim)
+{
+  std::ostringstream oss;
+  for (const auto& value : iterable)
+    oss << (oss.tellp() ? delim : std::string()) << quote(value);
+  return oss.str();
+}
+
+// PROTOTYPE
+template<typename T>
+std::string format_parser_error(const T& begin, const T& end, const T& pos)
+{
+  std::ostringstream oss;
+  size_t n = std::distance(begin, pos);
+  oss << std::string(begin, end) << std::endl;
+  oss << std::string(n, ' ') << '^' << std::endl;
+  return oss.str();
+}
+
 /** Version number container.
   *
   * Version v("1.2.3");
@@ -113,8 +113,8 @@ struct Version
   void str(const std::string& version);
   std::string str() const;
 
-  typedef std::vector<unsigned> data_t;
-  data_t data;
+  typedef std::vector<unsigned> value_type;
+  value_type values;
 };
 
 /* Version number comparision. */
@@ -127,5 +127,4 @@ bool operator>=(const Version& lhs, const Version& rhs);
 
 } // namespace tmutil
 
-#endif // tmUtil_hh
-/* eof */
+#endif // tmutil_tmUtil_hh

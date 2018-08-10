@@ -1,8 +1,3 @@
-/**
- * @author      Takashi Matsushita
- * Created:     14 Feb 2005
- */
-
 #include "tmUtil/tmUtil.hh"
 
 #include <boost/algorithm/string/join.hpp>
@@ -11,23 +6,23 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
+#include <stdexcept>
+#include <vector>
 
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
-namespace tmutil
-{
+namespace tmutil {
 
 double
 pow10(unsigned int exponent)
 {
-  static double const base10[] =
-  {
+  static const std::vector<double> base10 = {
     1e0,   1e1,   1e2,   1e3,   1e4,   1e5,   1e6,   1e7,   1e8,   1e9,
     1e10,  1e11,  1e12,  1e13,  1e14,  1e15,  1e16,  1e17,  1e18,  1e19,
     1e20,  1e21,  1e22,  1e23,  1e24,  1e25,  1e26,  1e27,  1e28,  1e29,
@@ -61,10 +56,15 @@ pow10(unsigned int exponent)
     1e300, 1e301, 1e302, 1e303, 1e304, 1e305, 1e306, 1e307, 1e308,
   };
 
-  if (exponent >= sizeof(base10)/sizeof(double))
-    TM_FATAL_ERROR("tmutil::pow10(unsigned int): exponent of " << exponent << " exceeded range");
-
-  return base10[exponent];
+  try
+  {
+    return base10.at(exponent);
+  }
+  catch (const std::out_of_range& e)
+  {
+    TM_FATAL_ERROR("exponent of " << exponent
+      << " exceedes valid range [" << 0 << ", " << base10.size() << ")");
+  }
 }
 
 unsigned long
@@ -82,7 +82,7 @@ MurmurHashNeutral2(const void* key, int len, unsigned int seed)
 
   // Mix 4 bytes at a time into the hash
 
-  const unsigned char * data = (const unsigned char *)key;
+  const unsigned char* data = static_cast<const unsigned char*>(key);
 
   while(len >= 4)
   {
@@ -128,14 +128,14 @@ int
 regex_compile(regex_t* regex,
               const std::string& expression)
 {
-  TM_LOG_DBG("regex_compile: " << expression);
-  int rc = regcomp(regex, expression.c_str(), REG_EXTENDED|REG_NEWLINE);
+  TM_LOG_DBG(expression);
+  const int rc = regcomp(regex, expression.c_str(), REG_EXTENDED|REG_NEWLINE);
   if (rc)
   {
     char message[BUFSIZ];
     regerror(rc, regex, message, BUFSIZ);
-    std::cout << "Regex compilation error '" << expression << "'"
-              << message << std::endl;
+    TM_LOG_ERR("regex compilation error"
+      << " r" << TM_QUOTE(expression) << message);
     return EXIT_FAILURE;
   }
 
@@ -175,42 +175,62 @@ regex_match(regex_t* regex,
   return EXIT_SUCCESS;
 }
 
+std::string
+getEnviron(const std::string& name)
+{
+  const char* value = std::getenv(name.c_str());
+  if (nullptr == value) return "";
+  return value;
+}
+
+std::string
+getEnviron(const std::string& name,
+           const std::string& fallback)
+{
+  const char* value = std::getenv(name.c_str());
+  if (nullptr == value) return fallback;
+  return value;
+}
+
 Version::Version(const std::string& version)
 {
   str(version);
 }
 
-void Version::str(const std::string& version)
+void
+Version::str(const std::string& version)
 {
-  typedef boost::char_separator<char> separator_t;
-  typedef boost::tokenizer<separator_t> tokenize_t;
+  typedef boost::char_separator<char> separator_type;
+  typedef boost::tokenizer<separator_type> tokenizer_type;
 
-  separator_t sep(".", "", boost::drop_empty_tokens);
-  tokenize_t tokens(version, sep);
+  separator_type sep(".", "", boost::drop_empty_tokens);
+  tokenizer_type tokens(version, sep);
 
-  data.resize(std::distance(tokens.begin(), tokens.end()));
+  // resize with number of tokens
+  values.resize(std::distance(tokens.begin(), tokens.end()));
 
-  std::transform(tokens.begin(), tokens.end(), data.begin(),
-    boost::lexical_cast<data_t::value_type, tokenize_t::value_type>);
+  std::transform(tokens.begin(), tokens.end(), values.begin(),
+    boost::lexical_cast<value_type::value_type, tokenizer_type::value_type>);
 }
 
-std::string Version::str() const
+std::string
+Version::str() const
 {
   std::ostringstream oss;
-  for (data_t::const_iterator it = data.begin(); it != data.end(); ++it)
+  for (const auto& value : values)
   {
-    oss << (it != data.begin() ? "." : "") << *it;
+    if (oss.tellp()) oss << "."; // separator
+
+    oss << value;
   }
   return oss.str();
 }
 
-bool operator==(const Version& lhs, const Version& rhs) { return lhs.data == rhs.data; }
-bool operator!=(const Version& lhs, const Version& rhs) { return lhs.data != rhs.data; }
-bool operator<(const Version& lhs, const Version& rhs) { return lhs.data < rhs.data; }
-bool operator>(const Version& lhs, const Version& rhs) { return lhs.data > rhs.data; }
-bool operator<=(const Version& lhs, const Version& rhs) { return lhs.data <= rhs.data; }
-bool operator>=(const Version& lhs, const Version& rhs) { return lhs.data >= rhs.data; }
+bool operator==(const Version& lhs, const Version& rhs) { return lhs.values == rhs.values; }
+bool operator!=(const Version& lhs, const Version& rhs) { return lhs.values != rhs.values; }
+bool operator<(const Version& lhs, const Version& rhs) { return lhs.values < rhs.values; }
+bool operator>(const Version& lhs, const Version& rhs) { return lhs.values > rhs.values; }
+bool operator<=(const Version& lhs, const Version& rhs) { return lhs.values <= rhs.values; }
+bool operator>=(const Version& lhs, const Version& rhs) { return lhs.values >= rhs.values; }
 
 } // namespace tmutil
-
-/* eof */
