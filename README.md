@@ -87,14 +87,14 @@ Example of a manual installation as an external library of CMSSW and test of the
 cmsrel CMSSW_9_0_0
 cd CMSSW_9_0_0/src
 cmsenv
-cd ..
-git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
-cd utm
-git checkout <tag/branch>
 scram tool info xerces-c
 export XERCES_C_BASE=<XERCES_C_BASE directory printed by the above command>
 scram tool info boost
 export BOOST_BASE=<BOOST_BASE directory printed by the above command>
+cd ..
+git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
+cd utm
+git checkout <tag/branch>
 make all
 make install
 ```
