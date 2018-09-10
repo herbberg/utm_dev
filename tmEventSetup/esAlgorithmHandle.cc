@@ -37,7 +37,7 @@ esAlgorithmHandle::replace(const std::string& from,
 void
 esAlgorithmHandle::print() const
 {
-  TM_LOG_INF("tmeventsetup::esAlgorithmHandle::print");
+  TM_LOG_INF("");
   std::string rpn = boost::algorithm::join(rpn_vector_, ":");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  expression = " << expression_ << "\n";
@@ -52,7 +52,7 @@ esAlgorithmHandle::print() const
 void
 esAlgorithmHandle::print(const esAlgorithm& algo)
 {
-  TM_LOG_INF("tmeventsetup::esAlgorithmHandle::print");
+  TM_LOG_INF("");
   const std::vector<std::string>& rpn_vector = algo.getRpnVector();
   std::string rpn = boost::algorithm::join(rpn_vector, ":");
   std::cout << "  name = " << algo.getName() << "\n";
@@ -68,7 +68,7 @@ esAlgorithmHandle::print(const esAlgorithm& algo)
 void
 esAlgorithmHandle::init(const tmtable::Row& algorithm)
 {
-  TM_LOG_DBG("tmeventsetup::esAlgorithmHandle::init: " << algorithm.find("name")->second);
+  TM_LOG_DBG("algorithm.name=" <<TM_QUOTE(algorithm.find("name")->second));
 
   name_ = algorithm.find("name")->second;
   expression_ = algorithm.find("expression")->second;
@@ -82,12 +82,12 @@ esAlgorithmHandle::init(const tmtable::Row& algorithm)
 void
 esAlgorithmHandle::setExpressionInCondition(const std::map<std::string, std::string>& map)
 {
-  TM_LOG_DBG("tmeventsetup::esAlgorithmHandle::setExpressionInCondition: ");
+  TM_LOG_DBG("");
   expression_in_condition_ = expression_;
   for (std::map<std::string, std::string>::const_iterator cit = map.begin();
        cit != map.end(); ++cit)
   {
-    TM_LOG_DBG("tmeventsetup::esAlgorithmHandle::setExpressionInCondition: " << cit->first << " : " << cit->second);
+    TM_LOG_DBG(TM_QUOTE(cit->first) << " : " << TM_QUOTE(cit->second));
     replace(cit->first, cit->second);
   }
 }

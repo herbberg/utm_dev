@@ -1,0 +1,291 @@
+#
+# Authors: Takashi Matsushita
+#          Bernhard Arnold <bernhard.arnold@cern.ch>
+#
+
+LIBRARY =
+PROGRAMS =
+
+#
+# files
+#
+SRCS_TREE = \
+	simple-types.cc \
+	complex-bin.cc bin.cc \
+	complex-scale.cc scale.cc \
+	complex-scale_set.cc scale_set.cc \
+	complex-ext_signal.cc ext_signal.cc \
+	complex-ext_signal_set.cc ext_signal_set.cc \
+	complex-object_requirement.cc object_requirement.cc \
+	complex-external_requirement.cc external_requirement.cc \
+	complex-cut.cc cut.cc \
+	complex-algorithm.cc algorithm.cc \
+	complex-menu.cc menu.cc
+
+SRCS_PARSER = \
+	simple-types-pskel.cc simple-types-parser.cc \
+	complex-bin-pskel.cc complex-bin-parser.cc \
+	complex-scale-pskel.cc complex-scale-parser.cc \
+	complex-scale_set-pskel.cc complex-scale_set-parser.cc \
+	complex-ext_signal-pskel.cc complex-ext_signal-parser.cc \
+	complex-ext_signal_set-pskel.cc complex-ext_signal_set-parser.cc \
+	complex-object_requirement-pskel.cc complex-object_requirement-parser.cc \
+	complex-external_requirement-pskel.cc complex-external_requirement-parser.cc \
+	complex-cut-pskel.cc complex-cut-parser.cc \
+	complex-algorithm-pskel.cc complex-algorithm-parser.cc \
+	complex-menu-pskel.cc complex-menu-parser.cc
+
+SRCS = $(SRCS_TREE) $(SRCS_PARSER)
+HDRS = $(SRCS_TREE:.cc=.hxx) $(SRCS_PARSER:.cc=.hh)
+OBJS = $(SRCS:.cc=.o)
+
+DISTFILES = $(SRCS) $(HDRS) Makefile
+GARBAGE = core* *.o *~ *.d *.log *.pyc a.out gmon.out *-pskel.* *-pimpl.* *-driver.*
+
+#
+# commands
+#
+SHELL = /bin/bash
+
+CXX = c++
+CPP = c++ -E
+AR = c++ -shared -fPIC
+MKDEPEND = c++ -MMD -MP
+RM = rm -f
+TOUCH = touch
+
+# NOT_CMSSW_BEGIN
+XSDCXX := $(shell (which xsd || which xsdcxx) 2>/dev/null )
+ifndef XSDCXX
+  $(warning warning> failed to locate XSDC++ executable (`xsd' or `xsdcxx' required))
+endif
+# NOT_CMSSW_END
+
+XSD_TREE = $(XSDCXX) cxx-tree \
+	--namespace-map http://www.cern.ch/tmxsd/1.0.0=tmxsdtree \
+	--cxx-suffix .cc --hxx-suffix .hxx \
+	--generate-serialization --generate-doxygen
+
+XSD_PARSER = $(XSDCXX) cxx-parser \
+	--namespace-map http://www.cern.ch/tmxsd/1.0.0=tmxsd \
+	--cxx-suffix .cc --hxx-suffix .hh \
+	--generate-validation --generate-print-impl --force-overwrite \
+	--type-map utm.map
+
+#
+# command flags
+#
+CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CPPFLAGS = -DNDEBUG
+INCDIR = -I. -I.. -I../.. -I./gen-xsd-type -I$(XERCES_ROOT)/include
+LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib #-L/usr/lib64
+LIBS = -ltmutil -lxerces-c
+
+#
+# special built-in target
+#
+.SILENT:
+.SUFFIXES: .o
+.PHONY: all clean dist-clean setting objs
+
+#
+# suffix rules
+#
+%.o : %.cc
+	echo '//     compile $< ...'
+	$(CXX) -c $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) -MMD -MP $<
+
+#
+# local target
+#
+srcs: $(SRCS)
+objs: $(OBJS)
+
+# NOT_CMSSW_BEGIN
+## parser skelton
+simple-types-pskel.cc: ../xsd-type/simple-types.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-bin-pskel.cc: ../xsd-type/complex-bin.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-scale-pskel.cc: ../xsd-type/complex-scale.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-scale_set-pskel.cc: ../xsd-type/complex-scale_set.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-ext_signal-pskel.cc: ../xsd-type/complex-ext_signal.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-ext_signal_set-pskel.cc: ../xsd-type/complex-ext_signal_set.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-object_requirement-pskel.cc: ../xsd-type/complex-object_requirement.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-external_requirement-pskel.cc: ../xsd-type/complex-external_requirement.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-cut-pskel.cc: ../xsd-type/complex-cut.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-algorithm-pskel.cc: ../xsd-type/complex-algorithm.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+complex-menu-pskel.cc: ../xsd-type/complex-menu.xsd
+	echo '//     creating xml interface'
+	$(XSD_PARSER) $<
+
+## xsd types
+simple-types.cc: ../xsd-type/simple-types.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-bin.cc: ../xsd-type/complex-bin.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-scale.cc: ../xsd-type/complex-scale.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-scale_set.cc: ../xsd-type/complex-scale_set.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-ext_signal.cc: ../xsd-type/complex-ext_signal.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-ext_signal_set.cc: ../xsd-type/complex-ext_signal_set.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-object_requirement.cc: ../xsd-type/complex-object_requirement.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-external_requirement.cc: ../xsd-type/complex-external_requirement.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-cut.cc: ../xsd-type/complex-cut.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-algorithm.cc: ../xsd-type/complex-algorithm.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+complex-menu.cc: ../xsd-type/complex-menu.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) $<
+
+## serialiser
+bin.cc: ../bin.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+scale.cc: ../scale.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+scale_set.cc: ../scale_set.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+ext_signal.cc: ../ext_signal.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+ext_signal_set.cc: ../ext_signal_set.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+object_requirement.cc: ../object_requirement.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+external_requirement.cc: ../external_requirement.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+cut.cc: ../cut.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+algorithm.cc: ../algorithm.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+
+menu.cc: ../menu.xsd
+	echo '//     creating xml interface'
+	$(XSD_TREE) --include-prefix gen- $<
+	mv -i $*.hxx gen-$*.hxx
+# NOT_CMSSW_END
+
+## test code
+scale_set-parser: scale_set-parser.o $(LIBRARY)
+	echo '//     creating $@'
+	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
+
+ext_signal_set-parser: ext_signal_set-parser.o $(LIBRARY)
+	echo '//     creating $@'
+	$(CXX) -o $@ $(INCDIR) $(CXXFLAGS) $(CPPFLAGS) $< $(LIBRARY) $(LIBDIR) $(LIBS)
+
+#
+# common target
+#
+all: objs
+	echo '//     done ('`date`')'
+
+clean:
+	@$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
+
+dist-clean:
+	@$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
+	@$(RM) $(SRCS_TREE) $(SRCS_TREE:.cc=.hxx) gen-*.hxx
+
+xsdbind: $(SRCS_TREE) $(SRCS_PARSER)
+	cp -p $(SRCS_TREE) $(SRCS_PARSER) ..
+
+setting:
+	echo '// '
+	echo '// Target $(LIBRARY) ('`date`')'
+	echo '// '
+	echo '//     compiler:            $(CXX)'
+	echo '//     compiler flags:      $(CXXFLAGS)'
+	echo '//     cpp flags:           $(CPPFLAGS)'
+	echo '//     include directories: $(INCDIR)'
+	echo '//     library directories: $(LIBDIR)'
+	echo '//     libraries:           $(LIBS)'
+	echo '// '
+	echo '//     sources:             $(SRCS)'
+	echo '// '
+
+#
+# dependencies
+#
+-include $(SRCS:.cc=.d)
+
+# eof

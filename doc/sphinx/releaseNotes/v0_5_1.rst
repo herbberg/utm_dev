@@ -1,0 +1,36 @@
+..
+
+Version 0.5.1
+=============
+
+**Backward incompatibility changes:**
+
+* removed precision_ attribute from esCut.hh, but preserved set/get API (reflected in CMSSW CondFormat).
+* conditional uuid_menu_ attribute and set/get API in esTriggerMenu.hh (only for SWIG python interface).
+
+Migration guide: v0.5.0 to 0.5.1
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.5.1 requires the following prerequisites to be installed:
+
+  * boost_system >= v1.41
+  * boost_filesystem >= v1.41
+  * xerces-c >= 3.1
+
+**Source code:**
+
+* Updates in ``tmEventSetup/esCut.hh``:
+
+  * Updated methods:
+
+    * ``esCut::setPrecision`` stores precision to minimum/maximum scale bins.
+    * ``esCut::getPrecision`` get precision from minimum scale bin.
+
+* Updates in ``tmEventSetup/esTriggerMenu.hh``:
+
+  * SWIG only methods:
+
+    * ``esTriggerMenu::setMenuUuid`` (only for SWIG python bindings).
+    * ``esTriggerMenu::getMenuUuid`` (only for SWIG python bindings).

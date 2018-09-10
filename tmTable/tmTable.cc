@@ -50,7 +50,7 @@ tmtable::xml2scale(const char* fileName,
   // Check if file exists.
   if (not boost::filesystem::exists(abspath))
   {
-    TM_FATAL_ERROR("tmtable::xml2scale: file \"" << fileName << "\" does not exist.");
+    TM_FATAL_ERROR("no such file: " << TM_QUOTE(fileName));
   }
 
   std::string message;
@@ -75,7 +75,7 @@ tmtable::xml2extSignal(const char* fileName,
   // Check if file exists.
   if (not boost::filesystem::exists(abspath))
   {
-    TM_FATAL_ERROR("tmtable::xml2extSignal: file \"" << fileName << "\" does not exist.");
+    TM_FATAL_ERROR("no such file: " << TM_QUOTE(fileName));
   }
 
   std::string message;
@@ -102,7 +102,7 @@ tmtable::xml2menu(const char* fileName,
   // Check if file exists.
   if (not boost::filesystem::exists(abspath))
   {
-    TM_FATAL_ERROR("tmtable::xml2extSignal: file \"" << fileName << "\" does not exist.");
+    TM_FATAL_ERROR("no such file: " << TM_QUOTE(fileName));
   }
 
   boost::filesystem::path cwd = boost::filesystem::current_path();
@@ -130,7 +130,7 @@ tmtable::xml2menu(const char* fileName,
         }
         catch (boost::filesystem::filesystem_error& e)
         {
-          TM_FATAL_ERROR("tmtable::xml2menu: UTM_XSD_DIR: " << e.what());
+          TM_FATAL_ERROR("UTM_XSD_DIR: " << e.what());
         }
 
         data = tmxsd::xml2menu(abspath.string().c_str(), message, debug);
@@ -145,7 +145,7 @@ tmtable::xml2menu(const char* fileName,
   }
   catch (boost::filesystem::filesystem_error& e)
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: " << e.what());
+    TM_FATAL_ERROR(e.what());
   }
 
   if (message.empty())
@@ -169,12 +169,12 @@ tmtable::xml2menu(std::istream& is,
   char* xsd = getenv("UTM_XSD_DIR");
   if (NULL == xsd)
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: UTM_XSD_DIR environment variable not set.");
+    TM_FATAL_ERROR("UTM_XSD_DIR environment variable not set.");
   }
 
   if (not boost::filesystem::exists(xsd))
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: UTM_XSD_DIR does not exist: " << xsd);
+    TM_FATAL_ERROR("UTM_XSD_DIR does not exist: " << xsd);
   }
 
   boost::filesystem::path cwd = boost::filesystem::current_path();
@@ -192,7 +192,7 @@ tmtable::xml2menu(std::istream& is,
   }
   catch (boost::filesystem::filesystem_error& e)
   {
-    TM_FATAL_ERROR("tmtable::xml2menu: " << e.what());
+    TM_FATAL_ERROR(e.what());
   }
 
 

@@ -1,5 +1,5 @@
 /*====================================================================*
- * declarations  
+ * declarations
  *====================================================================*/
 /*--------------------------------------------------------------------*
  * headers
@@ -30,13 +30,13 @@ tmxsdtree::scale2tree(const tmtable::Scale& data,
                     const bool attribute)
 {
 
-  TM_LOG_DBG("tmxsdtree::scale2tree: scale_set");
+  TM_LOG_DBG("scale_set");
   // convert SCALE_SET
   tmxsd::Converter<tmxsdtree::scale_set> conv_scale_set;
   conv_scale_set.attribute(attribute);
   scale_set = conv_scale_set.convert(data.scaleSet);
 
-  TM_LOG_DBG("tmxsdtree::scale2tree: scale");
+  TM_LOG_DBG("scale");
   // convert SCALE
   tmxsdtree::scale_set::scale_sequence& scales(scale_set.scale());
   for (size_t ii = 0; ii < data.scales.size(); ii++)
@@ -57,7 +57,7 @@ tmxsdtree::scale2tree(const tmtable::Scale& data,
     }
     else
     {
-      TM_LOG_DBG("tmxsdtree::scale2tree: bin");
+      TM_LOG_DBG("bin");
       // convert BIN
       const tmtable::Table table = data.bins.find(key)->second;
       tmxsdtree::scale::bin_sequence& bins(scale.bin());
@@ -98,13 +98,13 @@ tmxsdtree::extSignal2tree(const tmtable::ExtSignal& data,
                           tmxsdtree::ext_signal_set& ext_signal_set,
                           const bool attribute)
 {
-  TM_LOG_DBG("tmxsdtree::extSignal2tree: EXT_SIGNAL_SET");
+  TM_LOG_DBG("EXT_SIGNAL_SET");
   // convert EXT_SIGNAL_SET
   tmxsd::Converter<tmxsdtree::ext_signal_set> conv_ext_signal_set;
   conv_ext_signal_set.attribute(attribute);
   ext_signal_set = conv_ext_signal_set.convert(data.extSignalSet);
 
-  TM_LOG_DBG("tmxsdtree::extSignal2tree: EXT_SIGNAL");
+  TM_LOG_DBG("EXT_SIGNAL");
   // convert EXT_SIGNAL
   tmxsdtree::ext_signal_set::ext_signal_sequence& extSignals(ext_signal_set.ext_signal());
   const tmtable::Table& table = data.extSignals;
@@ -143,19 +143,19 @@ tmxsdtree::menu2tree(const tmtable::Menu& data,
                      tmxsdtree::menu& menu,
                      const bool attribute)
 {
-  TM_LOG_DBG("tmxsdtree::menu2tree: MENU");
+  TM_LOG_DBG("MENU");
   // convert MENU
   tmxsd::Converter<tmxsdtree::menu> conv_menu;
   conv_menu.attribute(attribute);
   menu = conv_menu.convert(data.menu);
 
-  TM_LOG_DBG("tmxsdtree::menu2tree: SCALE_SET");
+  TM_LOG_DBG("SCALE_SET");
   // SCALE_SET
   tmxsdtree::scale_set scale_set("");
   tmxsdtree::scale2tree(scale, scale_set, attribute);
   menu.scale_set(scale_set);
 
-  TM_LOG_DBG("tmxsdtree::menu2tree: EXT_SIGNAL_SET");
+  TM_LOG_DBG("EXT_SIGNAL_SET");
   // EXT_SIGNAL_SET
   tmxsdtree::ext_signal_set ext_signal_set("");
   tmxsdtree::extSignal2tree(extSignal, ext_signal_set, attribute);
@@ -166,7 +166,7 @@ tmxsdtree::menu2tree(const tmtable::Menu& data,
   {
     bool hasComponent = false;
 
-    TM_LOG_DBG("tmxsdtree::menu2tree: ALGORITHM");
+    TM_LOG_DBG("ALGORITHM");
     // convert ALGORITHM
     const tmtable::Row& row_algorithm = data.algorithms.at(ii);
     const std::string& key = tmxsd::getValue(row_algorithm, "name");
@@ -175,7 +175,7 @@ tmxsdtree::menu2tree(const tmtable::Menu& data,
     tmxsdtree::algorithm algorithm = conv_algorithm.convert(row_algorithm);
 
 
-    TM_LOG_DBG("tmxsdtree::menu2tree: OBJECT_REQUIREMENT: " << key);
+    TM_LOG_DBG("OBJECT_REQUIREMENT: " << key);
     // convert OBJECT_REQUIREMENT
     tmtable::StringTableMap::const_iterator cit = data.objects.find(key);
     if (cit != data.objects.end())
@@ -194,7 +194,7 @@ tmxsdtree::menu2tree(const tmtable::Menu& data,
     }
 
 
-    TM_LOG_DBG("tmxsdtree::menu2tree: EXTERNAL_REQUIREMENT");
+    TM_LOG_DBG("EXTERNAL_REQUIREMENT");
     // convert EXTERNAL_REQUIREMENT
     cit = data.externals.find(key);
     if (cit != data.externals.end())
@@ -213,7 +213,7 @@ tmxsdtree::menu2tree(const tmtable::Menu& data,
     }
 
 
-    TM_LOG_DBG("tmxsdtree::menu2tree: CUT");
+    TM_LOG_DBG("CUT");
     // convert CUT
     cit = data.cuts.find(key);
     if (cit != data.cuts.end())

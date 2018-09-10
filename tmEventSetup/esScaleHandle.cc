@@ -32,10 +32,14 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (obj == Object::ETTEM) object_ = ETTEM;
   else if (obj == Object::ETMHF) object_ = ETMHF;
   else if (obj == Object::TOWERCOUNT) object_ = TOWERCOUNT;
+  else if (obj == Object::ASYMET) object_ = ASYMET;
+  else if (obj == Object::ASYMHT) object_ = ASYMHT;
+  else if (obj == Object::ASYMETHF) object_ = ASYMETHF;
+  else if (obj == Object::ASYMHTHF) object_ = ASYMHTHF;
   else if (obj == PRECISION) object_ = Precision;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esScaleHandle::ctor: unknown object '" << obj << "'");
+    TM_FATAL_ERROR("unknown object: " << TM_QUOTE(obj));
   }
 
 
@@ -54,7 +58,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
   else if (type.find(PRECISION_TBPT) != std::string::npos) type_ = TwoBodyPtPrecision;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esScaleHandle::ctor: unknown type '" << type << "'");
+    TM_FATAL_ERROR("unknown type " << TM_QUOTE(type));
   }
 
   name_ =  obj + "-" + type;
@@ -68,7 +72,7 @@ esScaleHandle::esScaleHandle(const tmtable::Row& scale)
 void
 esScaleHandle::print() const
 {
-  TM_LOG_INF("tmeventsetup::esScaleHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  object = " << object_ << "\n";
   std::cout << "  type = " << type_ << "\n";

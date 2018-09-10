@@ -1,0 +1,173 @@
+..
+
+Version 0.5.0
+=============
+
+**Main new features:**
+
+* Introduced grammar revision v0.5
+
+  * new function types:
+
+    * transverse mass function: ``mass_trv``
+    * invariant mass function: ``mass_inv`` (alias ``mass``)
+
+  * new cut types:
+
+    * object collection slice cuts: ``MU-SLICE``, ``EG-SLICE``, ``TAU-SLICE``, ``JET-SLICE``
+    * two body Pt cut for mass functions: ``TBPT``
+
+* Introduced new event setup conditions:
+
+  * transverse mass: ``esConditionType::TransverseMass``
+
+**Bugfixes:**
+
+* fixed grammar parser, did accept ``AND OR AND`` like expressions as valid.
+* replaced ``tmUtil::convert<T>`` by boost equivalents, returned non-initialized value on fail.
+
+**Backward incompatibility changes:**
+
+* replaced most of ``tmUtil`` by boost functions, see below.
+
+Migration guide: v0.4.0 to 0.5.0
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.5.0 requires the following prerequisites to be installed:
+
+  * boost_system >= v1.41
+  * boost_filesystem >= v1.41
+  * xerces-c >= 3.1
+
+**Source code:**
+
+* Updates in ``tmEventSetup``:
+
+  * New cut types:
+
+    * new enum ``esCutType::Slice`` for object collection slices cuts.
+    * new enum ``esCutType::TwoBodyPt`` for two body Pt mass functions.
+
+  * New function types:
+
+    * new enum ``esFunctionType::InvariantMassFunction`` (replaces ``esFunctionType::MassFunction``)
+    * new enum ``esFunctionType::TransverseMassFunction``
+
+  * New condition types:
+
+    * new enum ``esConditionType::TransverseMass`` for transverse mass.
+
+  * Interface changes to class ``esCut``:
+
+    * cut precision attribute:
+
+      * new method ``setPrecision(unsigned int)``
+      * new method ``getPrecision()``
+
+    * Disambiguate class methods for limits.
+
+      * method ``setMinimum(double)`` renamed to ``setMinimumValue(double)``
+      * method ``setMinimum(uint)`` renamed to ``setMinimumIndex(uint)``
+      * method ``setMaximum(double)`` renamed to ``setMaximumValue(double)``
+      * method ``setMaximum(uint)`` renamed to ``setMaximumIndex(uint)``
+
+  * Object collection slices:
+
+     * ``esObject`` for muon and calo objects (type MU, EG, TAU, JET) now can contain
+       an optional cut of type ``SLICE``. The cut's ``getData()`` method should
+       return a string containing two slice indices ``a,b``, eg. "0,0" for a leading
+       object or "0,3" for the first four best objects. It is required to create a
+       subset of the object collection if a ``SLICE`` cut is applied.
+
+       .. sourcecode:: cpp
+
+           if (cut.getCutType() == esCutType::Slice)
+           {
+             const std::string& slice = cut.getData();
+             // process "a,b" to create an object collection subset [a:b]
+             // ...
+           }
+
+  * Transverse mass condition:
+
+     * ``esCondition`` can be of type ``esConditionType::TransverseMass``, so the
+       transverse mass has to be calculated for this condition using the ``MASS``
+       type cut (using minimum/maximum, equivalent cut to invariant mass).
+
+       .. sourcecode:: cpp
+
+           if (condition.getType() == esConditionType::InvariantMass)
+           {
+             // calculate invariant mass and test if within MASS cut range.
+             // ...
+           }
+           else if (condition.getType() == esConditionType::TransverseMass)
+           {
+             // calculate transverse mass and test if within MASS cut range.
+             // ...
+           }
+
+  * Topological cuts for invariant/transverse mass conditions:
+
+    * Mass conditions can now contain an optional ``DR`` cut or ``DPHI`` and/or
+     ``DETA`` cuts.
+
+  * Two bodt Pt cuts for invariant/transverse mass calculation:
+
+     * ``esCondition`` of type ``esConditionType::InvariantMass`` and
+       ``esConditionType::TransverseMass`` can contain an optional cut of type
+       ``TBPT`` to be applied in the mass calculation (using minimum/maximum).
+
+       .. sourcecode:: cpp
+
+           if (cut.getCutType() == esCutType::TwoBodyPt)
+           {
+             const double minimumPt = cut.minimumValue();
+             const double maximumPt = cut.maximumValue();
+             // calculate Pt of origin particle and test if within the range.
+             // ...
+           }
+
+* Updates in ``tmGrammar``:
+
+  * New cut types in ``Cut.hh``:
+
+    * new constants for cut types: ``SLICE`` and ``TBPT``.
+
+  * New function types in ``Function.hh``
+
+    * new enum ``Function::TransverseMass``
+
+
+* Reoganization of ``tmUtil``:
+
+    * Removed obsolete pre-compiler macros (not used before):
+
+    * ``TM_STR_(x)``
+    * ``TM_STR(x)``
+    * ``TM_SYS_ERR(func)``
+    * ``TM_NOT_IMPLEMENTED_ERROR()``
+
+  * Removed obsolete functions (replaced by stl/boost functions):
+
+    * ``tmutil::trim`` was replaced by ``boost::algorithm::trim``
+    * ``tmutil::tokenise`` was replace by ``boost::tokenizer``
+    * ``tmutil::convert<T>`` was replaced by ``boost::lexical_cast<T>`` (``tmutil::convert<T>`` returned non-initialized value of type T on fail)
+    * ``tmutil::unquote``
+    * ``tmutil::join`` was replaced by ``boost::algorithm::join``
+    * ``tmutil::getHash``
+    * ``tmutil::replace`` was replaced by ``boost::algorithm::string``
+    * ``tmutil::toString`` was replaced by ``boost::lexical_cast<T>``
+    * ``tmutil::toLower`` was replaced by ``boost::algorithm::to_lower``
+    * ``tmutil::splitpath`` was replaced by ``boost::filesystem::path``
+    * ``tmutil::getcwd`` was replaced by ``boost::filesystem::current_path``
+    * ``tmutil::chdir`` was replaced by ``boost::filesystem::current_path``
+
+* Added boost unit tests for the following modules:
+
+  * ``tmUtil/test/unittest.cc``
+  * ``tmTable/test/unittest.cc``
+  * ``tmGrammar/test/unittest.cc``
+  * ``tmEventSetup/test/unittest.cc``

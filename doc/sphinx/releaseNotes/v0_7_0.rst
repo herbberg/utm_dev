@@ -1,0 +1,108 @@
+..
+
+Version 0.7.0
+=============
+
+**Main new features:**
+
+* Introduced grammar revision v0.7
+
+  * new object types for HI runs:
+
+    * asymmetry:
+
+      * ``ASYMET`` asymmetry Et
+      * ``ASYMHT`` asymmetry Ht
+      * ``ASYMETHF`` asymmetry Et with HF
+      * ``ASYMHTHF`` asymmetry Ht with HF
+
+    * centrality (signals without threshold): ``CENT0`` ... ``CENT7``
+
+* Introduced new event setup conditions:
+
+  * asymmetry:
+
+    * ``esConditionType::AsymmetryEt``
+    * ``esConditionType::AsymmetryHt``
+    * ``esConditionType::AsymmetryEtHF``
+    * ``esConditionType::AsymmetryHtHF``
+
+  * centrality: ``esConditionType::Centrality0`` ... ``esConditionType::Centrality7``
+
+**Bugfixes:**
+
+* fixed precision scale prefix for overlap removal functions
+* fixed segmentation faults on loading missing scales (now throws an exception)
+* fixed version number comparison bug
+
+**Backward incompatibility changes:**
+
+
+Migration guide: v0.6.5 to 0.7.0
+--------------------------------
+
+**Installation:**
+
+* **N.B.** UTM v0.7.0 requires the following prerequisites to be installed:
+
+  * boost_system >= v1.41
+  * boost_filesystem >= v1.41
+  * xerces-c >= 3.1
+
+**Source code:**
+
+* Updates in ``tmEventSetup``:
+
+  * New asymmetry condition types:
+
+    * new enum ``esConditionType::AsymmetryEt`` asymmetry Et
+    * new enum ``esConditionType::AsymmetryHt`` asymmetry Ht
+    * new enum ``esConditionType::AsymmetryEtHF`` asymmetry Et with HF
+    * new enum ``esConditionType::AsymmetryHtHF`` asymmetry Ht with HF
+
+  * New centrality condition types:
+
+    * new enum ``esConditionType::Centrality0`` centrality 0
+    * new enum ``esConditionType::Centrality1`` centrality 1
+    * new enum ``esConditionType::Centrality2`` centrality 2
+    * new enum ``esConditionType::Centrality3`` centrality 3
+    * new enum ``esConditionType::Centrality4`` centrality 4
+    * new enum ``esConditionType::Centrality5`` centrality 5
+    * new enum ``esConditionType::Centrality6`` centrality 6
+    * new enum ``esConditionType::Centrality7`` centrality 7
+
+  * Using centrality conditions (signal without threshold):
+
+     * ``esCondition`` can be of type ``esConditionType::Centrality<n>`` for
+       heavy ion centrality signals.
+
+       .. sourcecode:: cpp
+
+           // proposal for centrality signal mapping
+
+           // define mapping
+           const std::map<esConditionType, size_t> centralityMap = {
+             {esConditionType::Centrality0, 0},
+             {esConditionType::Centrality1, 1},
+             {esConditionType::Centrality2, 2},
+             {esConditionType::Centrality3, 3},
+             {esConditionType::Centrality4, 4},
+             {esConditionType::Centrality5, 5},
+             {esConditionType::Centrality6, 6},
+             {esConditionType::Centrality7, 7},
+           };
+
+           if (centralityMap.count(condition.getType()))
+           {
+             // test for centrality
+             size_t index = centralityMap.at(condition.getType());
+             // ...
+           }
+           // ...
+
+
+* Updates in ``tmGrammar``:
+
+  * New object types in ``Object.hh``:
+
+    * new enum ``Signal`` (signal type objects without threshold)

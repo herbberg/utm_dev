@@ -37,6 +37,18 @@ const reserved::value_type object_names[] = {
   reserved::value_type(ETTEM, 1),
   reserved::value_type(ETMHF, 1),
   reserved::value_type(TOWERCOUNT, 1),
+  reserved::value_type(ASYMET, 1),
+  reserved::value_type(ASYMHT, 1),
+  reserved::value_type(ASYMETHF, 1),
+  reserved::value_type(ASYMHTHF, 1),
+  reserved::value_type(CENT0, 1),
+  reserved::value_type(CENT1, 1),
+  reserved::value_type(CENT2, 1),
+  reserved::value_type(CENT3, 1),
+  reserved::value_type(CENT4, 1),
+  reserved::value_type(CENT5, 1),
+  reserved::value_type(CENT6, 1),
+  reserved::value_type(CENT7, 1),
 };
 const int n_object_names = sizeof(object_names) / sizeof(object_names[0]);
 const reserved objectName(object_names, object_names + n_object_names);
@@ -66,9 +78,28 @@ const reserved::value_type scalers[] = {
   reserved::value_type(MBT1HFM, 1),
   reserved::value_type(ETTEM, 1),
   reserved::value_type(TOWERCOUNT, 1),
+  reserved::value_type(ASYMET, 1),
+  reserved::value_type(ASYMHT, 1),
+  reserved::value_type(ASYMETHF, 1),
+  reserved::value_type(ASYMHTHF, 1),
 };
 const int n_scalers = sizeof(scalers) / sizeof(scalers[0]);
 const reserved scalerName(scalers, scalers + n_scalers);
+
+
+// states
+const reserved::value_type signals[] = {
+  reserved::value_type(CENT0, 1),
+  reserved::value_type(CENT1, 1),
+  reserved::value_type(CENT2, 1),
+  reserved::value_type(CENT3, 1),
+  reserved::value_type(CENT4, 1),
+  reserved::value_type(CENT5, 1),
+  reserved::value_type(CENT6, 1),
+  reserved::value_type(CENT7, 1),
+};
+const int n_signals = sizeof(signals) / sizeof(signals[0]);
+const reserved signalName(signals, signals + n_signals);
 
 
 // vectors
@@ -135,6 +166,12 @@ Item::getType() const
        cit != Object::scalerName.end(); cit++)
   {
     if (name.compare(0, cit->first.length(), cit->first) == 0) return Scaler;
+  }
+
+  for (Object::reserved::const_iterator cit = Object::signalName.begin();
+       cit != Object::signalName.end(); cit++)
+  {
+    if (name.compare(0, cit->first.length(), cit->first) == 0) return Signal;
   }
 
   for (Object::reserved::const_iterator cit = Object::vectorName.begin();
@@ -218,7 +255,7 @@ parser(const std::string& token,
 
   if (not (r and begin == end))
   {
-    TM_LOG_ERR("Object::parser: '" << token << "'");
+    TM_LOG_ERR("parser error: " << TM_QUOTE(token));
     item.message += " Object::parser: '" + token + "'";
     return false;
   }
@@ -257,8 +294,8 @@ parser(const std::string& token,
   for (size_t ii = 0; ii < cut.name.size(); ii++)
   {
     if (not item.isValidCut(cut.name.at(ii))) {
-      TM_LOG_ERR("Object::parser: '" << cut.name.at(ii)
-                 << "' is not valid for '" << item.name << "'");
+      TM_LOG_ERR(TM_QUOTE(cut.name.at(ii))
+                 << " is not valid for " << TM_QUOTE(item.name));
       item.message += " Object::parser: '" + cut.name.at(ii) +
                       "' is not valid for '" +  item.name + "'";
       return false;
@@ -273,21 +310,19 @@ parser(const std::string& token,
 bool
 isObject(const std::string& element)
 {
-  bool rc = false;
-
   for (reserved::const_iterator cit = objectName.begin();
        cit != objectName.end(); ++cit)
   {
     if (element.compare(0, cit->first.length(), cit->first) == 0)
     {
       Item object;
-      if (not parser(element, object)) continue;
-      rc = true;
-      break;
+      if (not parser(element, object))
+        continue;
+      return true;
     }
   }
 
-  return rc;
+  return false;
 }
 
 

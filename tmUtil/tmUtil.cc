@@ -5,15 +5,19 @@
 
 #include "tmUtil/tmUtil.hh"
 
-#include <algorithm>
-#include <cstdio>
-#include <cstring>
-#include <sstream>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <unistd.h>
 #include <libgen.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <sstream>
 
 
 namespace tmutil
@@ -58,7 +62,7 @@ pow10(unsigned int exponent)
   };
 
   if (exponent >= sizeof(base10)/sizeof(double))
-    TM_FATAL_ERROR("tmutil::pow10(unsigned int): exponent of " << exponent << " exceeded range");
+    TM_FATAL_ERROR("exponent of " << exponent << " exceeds valid range");
 
   return base10[exponent];
 }
@@ -124,7 +128,7 @@ int
 regex_compile(regex_t* regex,
               const std::string& expression)
 {
-  TM_LOG_DBG("regex_compile: " << expression);
+  TM_LOG_DBG(TM_VALUE_DBG(expression));
   int rc = regcomp(regex, expression.c_str(), REG_EXTENDED|REG_NEWLINE);
   if (rc)
   {
@@ -170,6 +174,42 @@ regex_match(regex_t* regex,
 
   return EXIT_SUCCESS;
 }
+
+Version::Version(const std::string& version)
+{
+  str(version);
+}
+
+void Version::str(const std::string& version)
+{
+  typedef boost::char_separator<char> separator_t;
+  typedef boost::tokenizer<separator_t> tokenize_t;
+
+  separator_t sep(".", "", boost::drop_empty_tokens);
+  tokenize_t tokens(version, sep);
+
+  data.resize(std::distance(tokens.begin(), tokens.end()));
+
+  std::transform(tokens.begin(), tokens.end(), data.begin(),
+    boost::lexical_cast<data_t::value_type, tokenize_t::value_type>);
+}
+
+std::string Version::str() const
+{
+  std::ostringstream oss;
+  for (data_t::const_iterator it = data.begin(); it != data.end(); ++it)
+  {
+    oss << (it != data.begin() ? "." : "") << *it;
+  }
+  return oss.str();
+}
+
+bool operator==(const Version& lhs, const Version& rhs) { return lhs.data == rhs.data; }
+bool operator!=(const Version& lhs, const Version& rhs) { return lhs.data != rhs.data; }
+bool operator<(const Version& lhs, const Version& rhs) { return lhs.data < rhs.data; }
+bool operator>(const Version& lhs, const Version& rhs) { return lhs.data > rhs.data; }
+bool operator<=(const Version& lhs, const Version& rhs) { return lhs.data <= rhs.data; }
+bool operator>=(const Version& lhs, const Version& rhs) { return lhs.data >= rhs.data; }
 
 } // namespace tmutil
 

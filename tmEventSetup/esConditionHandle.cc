@@ -9,7 +9,7 @@ namespace tmeventsetup
 void
 esConditionHandle::print() const
 {
-  TM_LOG_INF("tmeventsetup::esConditionHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  type = " << type_ << "\n";
   std::cout << "  # of objects = " << objects_.size() << "\n";
@@ -22,7 +22,7 @@ esConditionHandle::print() const
 void
 esConditionHandle::print(const esCondition& cond)
 {
-  TM_LOG_INF("tmeventsetup::esConditionHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << cond.getName() << "\n";
   std::cout << "  type = " << cond.getType() << "\n";
   const std::vector<esObject>& objects = cond.getObjects();

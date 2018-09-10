@@ -81,12 +81,79 @@ esObjectHandle::init(const Object::Item& item)
     type_ = TOWERCOUNT;
     isThreshold = false;
   }
+  else if (item.name == Object::ASYMET)
+  {
+    type_ = ASYMET;
+    isThreshold = false;
+  }
+  else if (item.name == Object::ASYMHT)
+  {
+    type_ = ASYMHT;
+    isThreshold = false;
+  }
+  else if (item.name == Object::ASYMETHF)
+  {
+    type_ = ASYMETHF;
+    isThreshold = false;
+  }
+  else if (item.name == Object::ASYMHTHF)
+  {
+    type_ = ASYMHTHF;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT0)
+  {
+    type_ = CENT0;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT1)
+  {
+    type_ = CENT1;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT2)
+  {
+    type_ = CENT2;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT3)
+  {
+    type_ = CENT3;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT4)
+  {
+    type_ = CENT4;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT5)
+  {
+    type_ = CENT5;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT6)
+  {
+    type_ = CENT6;
+    isThreshold = false;
+  }
+  else if (item.name == Object::CENT7)
+  {
+    type_ = CENT7;
+    isThreshold = false;
+  }
   else if (item.name == Object::ETTEM) type_ = ETTEM;
   else if (item.name == Object::ETMHF) type_ = ETMHF;
   else if (item.name.rfind(Object::EXT, 0) == 0) type_ = EXT;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esObjectHandle::init: unknown type '" << item.name << "'");
+    TM_FATAL_ERROR("unknown type: " << TM_QUOTE(item.name));
+  }
+
+  // If object is a signal
+  if (Object::signalName.count(item.name))
+  {
+    bx_offset_ = boost::lexical_cast<int>(item.bx_offset);
+    return;
   }
 
   if (type_ == EXT)
@@ -102,7 +169,7 @@ esObjectHandle::init(const Object::Item& item)
   else if (item.comparison == Object::EQ) comparison_operator_ = EQ;
   else
   {
-    TM_FATAL_ERROR("tmeventsetup::esObjectHandle::init: unknown comparison operator '" << item.comparison << "'");
+    TM_FATAL_ERROR("unknown comparison operator " << TM_QUOTE(item.comparison));
   }
 
   bx_offset_ = boost::lexical_cast<int>(item.bx_offset);
@@ -142,7 +209,7 @@ esObjectHandle::setExternalChannelId(const std::map<std::string, unsigned int>& 
 void
 esObjectHandle::print() const
 {
-  TM_LOG_INF("tmeventsetup::esObjectHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << name_ << "\n";
   std::cout << "  type = " << type_ << "\n";
   std::cout << "  op = " << comparison_operator_ << "\n";
@@ -156,7 +223,7 @@ esObjectHandle::print() const
 void
 esObjectHandle::print(const esObject& object)
 {
-  TM_LOG_INF("tmeventsetup::esObjectHandle::print");
+  TM_LOG_INF("");
   std::cout << "  name = " << object.getName() << "\n";
   std::cout << "  type = " << object.getType() << "\n";
   std::cout << "  op = " << object.getComparisonOperator() << "\n";
