@@ -39,7 +39,7 @@ TOUCH = touch
 #
 CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
-INCDIR = -I..
+INCDIR = -I.. -I $(BOOST_ROOT)/include
 LIBDIR = -L.
 LIBS =
 
