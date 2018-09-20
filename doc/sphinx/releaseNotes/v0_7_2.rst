@@ -1,0 +1,21 @@
+..
+
+Version 0.7.2
+=============
+
+**Bugfixes:**
+
+* fixed makefile issues:
+
+  * added missing ``PREFIX`` attribute for target ``install``
+  * target ``install`` does now depend on ``all``
+  * fixed broken targets ``clean`` and ``dist-clean``
+  * added target ``genxsd`` to regenerate XML bindings on demand (only required if using local XSDCXX)
+
+**Backward incompatibility changes:**
+
+
+Migration guide: v0.7.1 to 0.7.2
+--------------------------------
+
+Nothing to do.
