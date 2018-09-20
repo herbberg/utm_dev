@@ -6,10 +6,19 @@ SUBDIRS = tmUtil tmXsd tmTable tmGrammar tmEventSetup
 
 AR = c++ -shared -fPIC
 
-export XDAQ_ROOT=
-export XERCES_ROOT=${XERCES_C_BASE}
-export BOOST_ROOT=${BOOST_BASE}
+export XDAQ_ROOT =
+export XERCES_ROOT = ${XERCES_C_BASE}
+export BOOST_ROOT = ${BOOST_BASE}
 
+#
+# install prefix
+#
+PREFIX ?= $(shell pwd)
+
+#
+# absolute path of install prefix to pass on to sub projects
+#
+PREFIX_DIR := $(shell python -c "import sys,os; print(os.path.abspath(next(iter(sys.argv[1:]), os.getcwd())))" $(PREFIX))
 
 #
 # files
@@ -25,7 +34,7 @@ GARBAGE = core* *.o *.ln *.bak *~ $(DEPFILE)
 default: all
 .SILENT:
 .SUFFIXES: .o
-.PHONY: all clean python dist-clean message doxygen
+.PHONY: all genxsd test clean install python dist-clean setting doxygen
 
 
 #
@@ -46,6 +55,16 @@ all:
 		cd $$project; echo '//   in '`pwd`; \
 		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
 	done
+	echo '// '
+	echo '// done ('`date`')'
+	echo '// '
+
+genxsd:
+	echo '// '
+	echo '// $(MAKE) $@'
+	echo '// '
+	cd tmXsd/gen-xsd-type; echo '//   in '`pwd`; \
+	$(MAKE) -f Makefile.xsdcxx; if [ $$? != 0 ]; then exit 1; fi; cd ..;
 	echo '// '
 	echo '// done ('`date`')'
 	echo '// '
@@ -76,18 +95,19 @@ clean:
 	echo '// done ('`date`')'
 	echo '// '
 
-install:
-	mkdir -p lib
+install: all
+	mkdir -p $(PREFIX_DIR)/lib
 	echo '// '
-	echo '// $(MAKE) $@'
+	echo '// $(MAKE) $@ PREFIX=$(PREFIX_DIR)'
 	echo '// '
 	for project in $(SUBDIRS); do \
-		mkdir -p include/$$project; \
+		mkdir -p $(PREFIX_DIR)/include/$$project; \
 		cd $$project; echo '//   in '`pwd`; \
-		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+		$(MAKE) $@ PREFIX=$(PREFIX_DIR); if [ $$? != 0 ]; then exit 1; fi; cd ..; \
 	done
-	cp -pr tmXsd/xsd-type xsd-type
-	cp -p tmXsd/menu.xsd .
+	$(RM) -r $(PREFIX_DIR)/xsd-type
+	cp -pr tmXsd/xsd-type $(PREFIX_DIR)/xsd-type
+	cp -p tmXsd/menu.xsd $(PREFIX_DIR)/.
 	echo '// '
 	echo '// done ('`date`')'
 	echo '// '

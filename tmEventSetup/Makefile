@@ -12,6 +12,9 @@ VERSION = 0.7.1
 LIBRARY = libtmeventsetup.so
 PROGRAMS =
 
+# install prefix
+PREFIX ?= ..
+
 #
 # files
 #
@@ -82,8 +85,10 @@ all: $(LIBRARY)
 	echo '//     done ('`date`')'
 
 install: $(LIBRARY)
-	cp -p $(LIBRARY) ../lib
-	cp -p $(HDRS) ../include/tmEventSetup
+	mkdir -p $(PREFIX)/lib
+	cp -p $(LIBRARY) $(PREFIX)/lib
+	mkdir -p $(PREFIX)/include/tmEventSetup
+	cp -p $(HDRS) $(PREFIX)/include/tmEventSetup
 
 python: $(HDRS) $(SRCS) tmEventSetup.i
 	echo '//     creating python interface'

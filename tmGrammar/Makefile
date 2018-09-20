@@ -12,6 +12,9 @@ VERSION = 0.7.1
 LIBRARY = libtmgrammar.so
 PROGRAMS =
 
+# install prefix
+PREFIX ?= ..
+
 #
 # files
 #
@@ -76,8 +79,10 @@ all: $(LIBRARY) test
 	echo '//     done ('`date`')'
 
 install: $(LIBRARY)
-	cp -p $(LIBRARY) ../lib
-	cp -p $(HDRS) ../include/tmGrammar
+	mkdir -p $(PREFIX)/lib
+	cp -p $(LIBRARY) $(PREFIX)/lib
+	mkdir -p $(PREFIX)/include/tmGrammar
+	cp -p $(HDRS) $(PREFIX)/include/tmGrammar
 
 clean:
 	$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)

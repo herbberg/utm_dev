@@ -41,7 +41,8 @@ HDRS = $(SRCS_TREE:.cc=.hxx) $(SRCS_PARSER:.cc=.hh)
 OBJS = $(SRCS:.cc=.o)
 
 DISTFILES = $(SRCS) $(HDRS) Makefile
-GARBAGE = core* *.o *~ *.d *.log *.pyc a.out gmon.out *-pskel.* *-pimpl.* *-driver.*
+GARBAGE = core* *.o *~ *.d *.log *.pyc a.out gmon.out
+GENERATED = *-pskel.* *-pimpl.* *-driver.*
 
 #
 # commands
@@ -100,10 +101,10 @@ all: objs
 	echo '//     done ('`date`')'
 
 clean:
-	@$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
+	@$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS) $(OBJS)
 
 dist-clean:
-	@$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
+	@$(RM) $(GARBAGE) $(GENERATED) $(LIBRARY) $(PROGRAMS)
 	@$(RM) $(SRCS_TREE) $(SRCS_TREE:.cc=.hxx) gen-*.hxx
 
 xsdbind: $(SRCS_TREE) $(SRCS_PARSER)

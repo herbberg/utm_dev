@@ -13,6 +13,9 @@ VERSION = 0.7.1
 LIBRARY = libtmxsd.so
 PROGRAMS =
 
+# install prefix
+PREFIX ?= ..
+
 #
 # files
 #
@@ -71,6 +74,12 @@ INCDIR = -I. -I.. -I./gen-xsd-type -I$(XERCES_ROOT)/include -I$(BOOST_ROOT)/incl
 LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib -L$(BOOST_ROOT)/lib
 LIBS = -ltmutil -lxerces-c
 
+# workaround for XDAQ only target
+ifdef XDAQ_ROOT
+  _CLEANALL = _cleanall
+endif
+
+
 #
 # special built-in target
 #
@@ -116,12 +125,18 @@ all:
 	make $(LIBRARY)
 
 install: $(LIBRARY)
-	cp -p $(LIBRARY) ../lib
-	cp -p $(HDRS) ../include/tmXsd
+	mkdir -p $(PREFIX)/lib
+	cp -p $(LIBRARY) $(PREFIX)/lib
+	mkdir -p $(PREFIX)/include/tmXsd
+	cp -p $(HDRS) $(PREFIX)/include/tmXsd
 
-clean: _cleanall dist-clean
+clean: $(_CLEANALL)
+	for i in $(SUBDIRS); do \
+		cd $$i; echo '//   in '`pwd`; \
+		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \
+	done
 
-dist-clean:
+dist-clean: clean
 	for i in $(SUBDIRS); do \
 		cd $$i; echo '//   in '`pwd`; \
 		$(MAKE) $@; if [ $$? != 0 ]; then exit 1; fi; cd ..; \

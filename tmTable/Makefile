@@ -12,6 +12,9 @@ VERSION = 0.7.1
 LIBRARY = libtmtable.so
 PROGRAMS =
 
+# install prefix
+PREFIX ?= ..
+
 #
 # files
 #
@@ -72,8 +75,10 @@ all: $(LIBRARY)
 	echo '//     done ('`date`')'
 
 install: $(LIBRARY)
-	cp -p $(LIBRARY) ../lib
-	cp -p $(HDRS) ../include/tmTable
+	mkdir -p $(PREFIX)/lib
+	cp -p $(LIBRARY) $(PREFIX)/lib
+	mkdir -p $(PREFIX)/include/tmTable
+	cp -p $(HDRS) $(PREFIX)/include/tmTable
 
 python: $(HDRS) $(SRCS) tmTable.i
 	echo '//     creating python interface'

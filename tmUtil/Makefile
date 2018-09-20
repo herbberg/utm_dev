@@ -12,6 +12,9 @@ VERSION = 0.7.1
 LIBRARY = libtmutil.so
 PROGRAMS =
 
+# install prefix
+PREFIX ?= ..
+
 #
 # files
 #
@@ -71,8 +74,10 @@ all: $(LIBRARY)
 	echo '//     done ('`date`')'
 
 install: $(LIBRARY)
-	cp -p $(LIBRARY) ../lib
-	cp -p $(HDRS) ../include/tmUtil
+	mkdir -p $(PREFIX)/lib
+	cp -p $(LIBRARY) $(PREFIX)/lib
+	mkdir -p $(PREFIX)/include/tmUtil
+	cp -p $(HDRS) $(PREFIX)/include/tmUtil
 
 clean:
 	$(RM) $(GARBAGE) $(LIBRARY) $(PROGRAMS)
