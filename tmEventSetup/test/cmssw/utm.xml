@@ -1,0 +1,12 @@
+<tool name="utm" version="00.01">
+  <lib name="tmutil"/>
+  <lib name="tmxsd"/>
+  <lib name="tmtable"/>
+  <lib name="tmgrammar"/>
+  <lib name="tmeventsetup"/>
+  <client>
+    <environment name="UTM_BASE" default="/afs/cern.ch/user/CMSSW_10_3_0_pre4/utm"/>
+    <environment name="LIBDIR" default="$UTM_BASE/lib"/>
+    <environment name="INCLUDE" default="$UTM_BASE/include"/>
+  </client>
+</tool>

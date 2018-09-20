@@ -65,7 +65,7 @@ To use the library in the XDAQ environment (note the underline in front of \_all
 
 ## Compile
 
-    $ make -f Makefile.xdaq _all
+    $ make -f Makefile.xdaq _all  # note the underscore
 
 ## Build RPMs
 
@@ -84,33 +84,31 @@ Example of a manual installation as an external library of CMSSW and test of the
 ## Compilation
 
 ```{r, engine='bash', count_lines}
-cmsrel CMSSW_9_0_0
-cd CMSSW_9_0_0/src
+cmsrel CMSSW_10_3_0_pre4
+cd CMSSW_10_3_0_pre4/src
 cmsenv
-scram tool info xerces-c
-export XERCES_C_BASE=<XERCES_C_BASE directory printed by the above command>
-scram tool info boost
-export BOOST_BASE=<BOOST_BASE directory printed by the above command>
+export $(scram tool info xerces-c | grep XERCES_C_BASE=)
+echo "XERCES_C_BASE=$XERCES_C_BASE"
+export $(scram tool info boost | grep BOOST_BASE=)
+echo "BOOST_BASE=$BOOST_BASE"
 cd ..
 git clone https://gitlab.cern.ch/cms-l1t-utm/utm.git
 cd utm
 git checkout <tag/branch>
 make all
-make install
+make install PREFIX=<install/path>
 ```
 
 ## Testing
 
 ```{r, engine='bash', count_lines}
-cd ../src
-tar xvfz /afs/cern.ch/user/t/tmatsush/public/Demo.tgz
-# Note: edit Demo/tmEventSetup/test/utm.xml
-# change UTM_BASE according to your setup
-cp Demo/tmEventSetup/test/utm.xml ../config/toolbox/${SCRAM_ARCH}/tools/selected/
+# Note: edit tmEventSetup/test/cmssw/utm.xml
+# change UTM_BASE according to your local setup
+cp tmEventSetup/test/cmssw/utm.xml ../config/toolbox/${SCRAM_ARCH}/tools/selected/
 scram setup utm
-# compile and run the sample code for using utm: Demo/tmEventSetup/test/test.cc
+# compile and run the sample code for using utm: tmEventSetup/test/cmssw/test.cc
 scram b -j4
-../test/${SCRAM_ARCH}/test -f /afs/cern.ch/user/t/tmatsush/public/tmGui/test-menu.xml
+../test/${SCRAM_ARCH}/test -f L1Menu_sample.xml  # does not work anymore?
 ```
 
 API documentation

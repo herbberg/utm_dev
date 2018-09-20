@@ -1,0 +1,4 @@
+<bin name="test" file="test.cc">
+  <use name="utm"/>
+  <use name="xerces-c"/>
+</bin>
