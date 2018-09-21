@@ -27,7 +27,7 @@ Build
 * CodeSynthesis XSD (http://www.codesynthesis.com/products/xsd/)
 * BOOST (https://www.boost.org/)
 * SWIG if python binding is needed (http://www.swig.org/)
-* xerces library if not available (http://xerces.apache.org/xerces-c/)
+* Xerces library (http://xerces.apache.org/xerces-c/)
 
 Check the corresponding Web pages for the installation of the packages
 as well as the following twiki page;
@@ -47,7 +47,7 @@ Debian/Ubuntu:
 
 ### Generate XML bindings
 
-Pre-generated XML bindings and XSDC++ headers (`xsd/include`) are bundled with the projects source code.
+Pre-generated XML bindings and XSDC++ headers (`xsd/cxx/`) are bundled with the projects source code.
 
 The bindings can be manually generated use the following commands (eg. for c++11 compatibility or when using XSDC++ >= 4.0.0)
 
