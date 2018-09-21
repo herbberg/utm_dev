@@ -34,12 +34,12 @@ https://twiki.cern.ch/twiki/bin/view/CMS/GlobalTriggerUpgradeL1T-uTme#uGT_Trigge
 
 CC7:
 
-    $ sudo yum install python-devel boost-system boost-filesystem boost-devel \
+    $ sudo yum install make gcc-c++ python-devel boost-system boost-filesystem boost-devel \
       xsd swig xerces-c
 
 Debian/Ubuntu:
 
-    $ sudo apt-get install python-devel libboost-dev libboost-system-dev \
+    $ sudo apt-get install build-essential python-dev libboost-dev libboost-system-dev \
       libboost-filesystem-dev xsdcxx swig libxerces-c-dev
 
 
@@ -53,6 +53,11 @@ Building python bindings (if required)
 
     $ make all python
 
+## Install
+
+Install libraries, headers and XSD files, use `PREFIX` to assign a custom location.
+
+    $ make install PREFIX=/home/user/local
 
 Build for XDAQ
 ==============
