@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  ancestor_id (::std::auto_ptr< ancestor_id_type > x)
+  ancestor_id (::std::unique_ptr< ancestor_id_type > x)
   {
-    this->ancestor_id_.set (x);
+    this->ancestor_id_.set (std::move (x));
   }
 
   const menu::name_type& menu::
@@ -88,9 +88,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  name (::std::auto_ptr< name_type > x)
+  name (::std::unique_ptr< name_type > x)
   {
-    this->name_.set (x);
+    this->name_.set (std::move (x));
   }
 
   const menu::uuid_menu_type& menu::
@@ -112,9 +112,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  uuid_menu (::std::auto_ptr< uuid_menu_type > x)
+  uuid_menu (::std::unique_ptr< uuid_menu_type > x)
   {
-    this->uuid_menu_.set (x);
+    this->uuid_menu_.set (std::move (x));
   }
 
   const menu::uuid_firmware_type& menu::
@@ -136,9 +136,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  uuid_firmware (::std::auto_ptr< uuid_firmware_type > x)
+  uuid_firmware (::std::unique_ptr< uuid_firmware_type > x)
   {
-    this->uuid_firmware_.set (x);
+    this->uuid_firmware_.set (std::move (x));
   }
 
   const menu::global_tag_type& menu::
@@ -160,9 +160,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  global_tag (::std::auto_ptr< global_tag_type > x)
+  global_tag (::std::unique_ptr< global_tag_type > x)
   {
-    this->global_tag_.set (x);
+    this->global_tag_.set (std::move (x));
   }
 
   const menu::grammar_version_type& menu::
@@ -184,9 +184,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  grammar_version (::std::auto_ptr< grammar_version_type > x)
+  grammar_version (::std::unique_ptr< grammar_version_type > x)
   {
-    this->grammar_version_.set (x);
+    this->grammar_version_.set (std::move (x));
   }
 
   const menu::n_modules_type& menu::
@@ -280,9 +280,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  comment (::std::auto_ptr< comment_type > x)
+  comment (::std::unique_ptr< comment_type > x)
   {
-    this->comment_.set (x);
+    this->comment_.set (std::move (x));
   }
 
   const menu::algorithm_sequence& menu::
@@ -328,9 +328,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  scale_set (::std::auto_ptr< scale_set_type > x)
+  scale_set (::std::unique_ptr< scale_set_type > x)
   {
-    this->scale_set_.set (x);
+    this->scale_set_.set (std::move (x));
   }
 
   const menu::ext_signal_set_optional& menu::
@@ -358,9 +358,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  ext_signal_set (::std::auto_ptr< ext_signal_set_type > x)
+  ext_signal_set (::std::unique_ptr< ext_signal_set_type > x)
   {
-    this->ext_signal_set_.set (x);
+    this->ext_signal_set_.set (std::move (x));
   }
 
   const menu::menu_id_optional& menu::
@@ -388,9 +388,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  menu_id (::std::auto_ptr< menu_id_type > x)
+  menu_id (::std::unique_ptr< menu_id_type > x)
   {
-    this->menu_id_.set (x);
+    this->menu_id_.set (std::move (x));
   }
 
   const menu::datetime_optional& menu::
@@ -418,9 +418,9 @@ namespace tmxsdtree
   }
 
   void menu::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 }
 
@@ -523,12 +523,12 @@ namespace tmxsdtree
       //
       if (n.name () == "ancestor_id" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< ancestor_id_type > r (
+        ::std::unique_ptr< ancestor_id_type > r (
           ancestor_id_traits::create (i, f, this));
 
         if (!ancestor_id_.present ())
         {
-          this->ancestor_id_.set (r);
+          this->ancestor_id_.set (::std::move (r));
           continue;
         }
       }
@@ -537,12 +537,12 @@ namespace tmxsdtree
       //
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< name_type > r (
+        ::std::unique_ptr< name_type > r (
           name_traits::create (i, f, this));
 
         if (!name_.present ())
         {
-          this->name_.set (r);
+          this->name_.set (::std::move (r));
           continue;
         }
       }
@@ -551,12 +551,12 @@ namespace tmxsdtree
       //
       if (n.name () == "uuid_menu" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< uuid_menu_type > r (
+        ::std::unique_ptr< uuid_menu_type > r (
           uuid_menu_traits::create (i, f, this));
 
         if (!uuid_menu_.present ())
         {
-          this->uuid_menu_.set (r);
+          this->uuid_menu_.set (::std::move (r));
           continue;
         }
       }
@@ -565,12 +565,12 @@ namespace tmxsdtree
       //
       if (n.name () == "uuid_firmware" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< uuid_firmware_type > r (
+        ::std::unique_ptr< uuid_firmware_type > r (
           uuid_firmware_traits::create (i, f, this));
 
         if (!uuid_firmware_.present ())
         {
-          this->uuid_firmware_.set (r);
+          this->uuid_firmware_.set (::std::move (r));
           continue;
         }
       }
@@ -579,12 +579,12 @@ namespace tmxsdtree
       //
       if (n.name () == "global_tag" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< global_tag_type > r (
+        ::std::unique_ptr< global_tag_type > r (
           global_tag_traits::create (i, f, this));
 
         if (!global_tag_.present ())
         {
-          this->global_tag_.set (r);
+          this->global_tag_.set (::std::move (r));
           continue;
         }
       }
@@ -593,12 +593,12 @@ namespace tmxsdtree
       //
       if (n.name () == "grammar_version" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< grammar_version_type > r (
+        ::std::unique_ptr< grammar_version_type > r (
           grammar_version_traits::create (i, f, this));
 
         if (!grammar_version_.present ())
         {
-          this->grammar_version_.set (r);
+          this->grammar_version_.set (::std::move (r));
           continue;
         }
       }
@@ -640,12 +640,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comment" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comment_type > r (
+        ::std::unique_ptr< comment_type > r (
           comment_traits::create (i, f, this));
 
         if (!this->comment_)
         {
-          this->comment_.set (r);
+          this->comment_.set (::std::move (r));
           continue;
         }
       }
@@ -654,10 +654,10 @@ namespace tmxsdtree
       //
       if (n.name () == "algorithm" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< algorithm_type > r (
+        ::std::unique_ptr< algorithm_type > r (
           algorithm_traits::create (i, f, this));
 
-        this->algorithm_.push_back (r);
+        this->algorithm_.push_back (::std::move (r));
         continue;
       }
 
@@ -665,12 +665,12 @@ namespace tmxsdtree
       //
       if (n.name () == "scale_set" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< scale_set_type > r (
+        ::std::unique_ptr< scale_set_type > r (
           scale_set_traits::create (i, f, this));
 
         if (!this->scale_set_)
         {
-          this->scale_set_.set (r);
+          this->scale_set_.set (::std::move (r));
           continue;
         }
       }
@@ -679,12 +679,12 @@ namespace tmxsdtree
       //
       if (n.name () == "ext_signal_set" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< ext_signal_set_type > r (
+        ::std::unique_ptr< ext_signal_set_type > r (
           ext_signal_set_traits::create (i, f, this));
 
         if (!this->ext_signal_set_)
         {
-          this->ext_signal_set_.set (r);
+          this->ext_signal_set_.set (::std::move (r));
           continue;
         }
       }

@@ -32,7 +32,7 @@ TOUCH = touch
 #
 # command flags
 #
-CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CXXFLAGS = -std=c++11 -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I. -I.. -I../..
 LIBDIR = -L. -L.. -L../../tmUtil -L../../tmTable

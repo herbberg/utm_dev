@@ -9,7 +9,7 @@
 # XDAQ stuff
 
 
-VERSION = 0.7.2
+VERSION = 0.7.3
 LIBRARY = libtmxsd.so
 PROGRAMS =
 
@@ -68,7 +68,7 @@ TOUCH = touch
 #
 # command flags
 #
-CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CXXFLAGS = -std=c++11 -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I. -I.. -I./gen-xsd-type -I$(XERCES_ROOT)/include -I$(BOOST_ROOT)/include
 LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib -L$(BOOST_ROOT)/lib

@@ -39,6 +39,10 @@
 #ifndef CXX___XSD_TYPE_COMPLEX_MENU_HXX
 #define CXX___XSD_TYPE_COMPLEX_MENU_HXX
 
+#ifndef XSD_CXX11
+#define XSD_CXX11
+#endif
+
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
 #endif
@@ -598,7 +602,7 @@ namespace xml_schema
     /**
      * @brief Automatic pointer for DOMDocument.
      */
-    using ::xsd::cxx::xml::dom::auto_ptr;
+    using ::xsd::cxx::xml::dom::unique_ptr;
 
 #ifndef XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
 #define XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
@@ -618,9 +622,10 @@ namespace tmxsdtree
 }
 
 
-#include <memory>    // ::std::auto_ptr
+#include <memory>    // ::std::unique_ptr
 #include <limits>    // std::numeric_limits
 #include <algorithm> // std::binary_search
+#include <utility>   // std::move
 
 #include <xsd/cxx/xml/char-utf8.hxx>
 
@@ -710,7 +715,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    ancestor_id (::std::auto_ptr< ancestor_id_type > p);
+    ancestor_id (::std::unique_ptr< ancestor_id_type > p);
 
     //@}
 
@@ -768,7 +773,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    name (::std::auto_ptr< name_type > p);
+    name (::std::unique_ptr< name_type > p);
 
     //@}
 
@@ -826,7 +831,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    uuid_menu (::std::auto_ptr< uuid_menu_type > p);
+    uuid_menu (::std::unique_ptr< uuid_menu_type > p);
 
     //@}
 
@@ -884,7 +889,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    uuid_firmware (::std::auto_ptr< uuid_firmware_type > p);
+    uuid_firmware (::std::unique_ptr< uuid_firmware_type > p);
 
     //@}
 
@@ -942,7 +947,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    global_tag (::std::auto_ptr< global_tag_type > p);
+    global_tag (::std::unique_ptr< global_tag_type > p);
 
     //@}
 
@@ -1000,7 +1005,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    grammar_version (::std::auto_ptr< grammar_version_type > p);
+    grammar_version (::std::unique_ptr< grammar_version_type > p);
 
     //@}
 
@@ -1253,7 +1258,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    comment (::std::auto_ptr< comment_type > p);
+    comment (::std::unique_ptr< comment_type > p);
 
     //@}
 
@@ -1393,7 +1398,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    scale_set (::std::auto_ptr< scale_set_type > p);
+    scale_set (::std::unique_ptr< scale_set_type > p);
 
     //@}
 
@@ -1469,7 +1474,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    ext_signal_set (::std::auto_ptr< ext_signal_set_type > p);
+    ext_signal_set (::std::unique_ptr< ext_signal_set_type > p);
 
     //@}
 
@@ -1545,7 +1550,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    menu_id (::std::auto_ptr< menu_id_type > p);
+    menu_id (::std::unique_ptr< menu_id_type > p);
 
     //@}
 
@@ -1621,7 +1626,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    datetime (::std::auto_ptr< datetime_type > p);
+    datetime (::std::unique_ptr< datetime_type > p);
 
     //@}
 

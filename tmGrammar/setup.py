@@ -31,7 +31,7 @@ tmGrammar_module = Extension('_tmGrammar',
                             )
 
 setup (name = 'tmGrammar',
-       version = '0.7.2',
+       version = '0.7.3',
        author = "Takashi MATSUSHITA",
        description = """parser for level-1 trigger menu grammar""",
        ext_modules = [tmGrammar_module],

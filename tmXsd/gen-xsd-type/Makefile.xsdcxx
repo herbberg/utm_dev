@@ -61,12 +61,12 @@ ifndef XSDCXX
 endif
 # NOT_CMSSW_END
 
-XSD_TREE = $(XSDCXX) cxx-tree \
+XSD_TREE = $(XSDCXX) cxx-tree --std c++11 \
 	--namespace-map http://www.cern.ch/tmxsd/1.0.0=tmxsdtree \
 	--cxx-suffix .cc --hxx-suffix .hxx \
 	--generate-serialization --generate-doxygen
 
-XSD_PARSER = $(XSDCXX) cxx-parser \
+XSD_PARSER = $(XSDCXX) cxx-parser --std c++11 \
 	--namespace-map http://www.cern.ch/tmxsd/1.0.0=tmxsd \
 	--cxx-suffix .cc --hxx-suffix .hh \
 	--generate-validation --generate-print-impl --force-overwrite \
@@ -75,7 +75,7 @@ XSD_PARSER = $(XSDCXX) cxx-parser \
 #
 # command flags
 #
-CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CXXFLAGS = -std=c++11 -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I. -I.. -I../.. -I./gen-xsd-type -I$(XERCES_ROOT)/include
 LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib #-L/usr/lib64

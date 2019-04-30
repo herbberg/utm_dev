@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void algorithm::
-  name (::std::auto_ptr< name_type > x)
+  name (::std::unique_ptr< name_type > x)
   {
-    this->name_.set (x);
+    this->name_.set (std::move (x));
   }
 
   const algorithm::expression_type& algorithm::
@@ -88,9 +88,9 @@ namespace tmxsdtree
   }
 
   void algorithm::
-  expression (::std::auto_ptr< expression_type > x)
+  expression (::std::unique_ptr< expression_type > x)
   {
-    this->expression_.set (x);
+    this->expression_.set (std::move (x));
   }
 
   const algorithm::index_type& algorithm::
@@ -172,9 +172,9 @@ namespace tmxsdtree
   }
 
   void algorithm::
-  comment (::std::auto_ptr< comment_type > x)
+  comment (::std::unique_ptr< comment_type > x)
   {
-    this->comment_.set (x);
+    this->comment_.set (std::move (x));
   }
 
   const algorithm::cut_sequence& algorithm::
@@ -256,9 +256,9 @@ namespace tmxsdtree
   }
 
   void algorithm::
-  algorithm_id (::std::auto_ptr< algorithm_id_type > x)
+  algorithm_id (::std::unique_ptr< algorithm_id_type > x)
   {
-    this->algorithm_id_.set (x);
+    this->algorithm_id_.set (std::move (x));
   }
 
   const algorithm::datetime_optional& algorithm::
@@ -286,9 +286,9 @@ namespace tmxsdtree
   }
 
   void algorithm::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 }
 
@@ -377,12 +377,12 @@ namespace tmxsdtree
       //
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< name_type > r (
+        ::std::unique_ptr< name_type > r (
           name_traits::create (i, f, this));
 
         if (!name_.present ())
         {
-          this->name_.set (r);
+          this->name_.set (::std::move (r));
           continue;
         }
       }
@@ -391,12 +391,12 @@ namespace tmxsdtree
       //
       if (n.name () == "expression" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< expression_type > r (
+        ::std::unique_ptr< expression_type > r (
           expression_traits::create (i, f, this));
 
         if (!expression_.present ())
         {
-          this->expression_.set (r);
+          this->expression_.set (::std::move (r));
           continue;
         }
       }
@@ -438,12 +438,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comment" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comment_type > r (
+        ::std::unique_ptr< comment_type > r (
           comment_traits::create (i, f, this));
 
         if (!this->comment_)
         {
-          this->comment_.set (r);
+          this->comment_.set (::std::move (r));
           continue;
         }
       }
@@ -452,10 +452,10 @@ namespace tmxsdtree
       //
       if (n.name () == "cut" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< cut_type > r (
+        ::std::unique_ptr< cut_type > r (
           cut_traits::create (i, f, this));
 
-        this->cut_.push_back (r);
+        this->cut_.push_back (::std::move (r));
         continue;
       }
 
@@ -463,10 +463,10 @@ namespace tmxsdtree
       //
       if (n.name () == "object_requirement" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< object_requirement_type > r (
+        ::std::unique_ptr< object_requirement_type > r (
           object_requirement_traits::create (i, f, this));
 
-        this->object_requirement_.push_back (r);
+        this->object_requirement_.push_back (::std::move (r));
         continue;
       }
 
@@ -474,10 +474,10 @@ namespace tmxsdtree
       //
       if (n.name () == "external_requirement" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< external_requirement_type > r (
+        ::std::unique_ptr< external_requirement_type > r (
           external_requirement_traits::create (i, f, this));
 
-        this->external_requirement_.push_back (r);
+        this->external_requirement_.push_back (::std::move (r));
         continue;
       }
 
