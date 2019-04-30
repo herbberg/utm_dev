@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  object (::std::auto_ptr< object_type > x)
+  object (::std::unique_ptr< object_type > x)
   {
-    this->object_.set (x);
+    this->object_.set (std::move (x));
   }
 
   const scale::type_type& scale::
@@ -88,9 +88,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  type (::std::auto_ptr< type_type > x)
+  type (::std::unique_ptr< type_type > x)
   {
-    this->type_.set (x);
+    this->type_.set (std::move (x));
   }
 
   const scale::minimum_type& scale::
@@ -112,9 +112,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  minimum (::std::auto_ptr< minimum_type > x)
+  minimum (::std::unique_ptr< minimum_type > x)
   {
-    this->minimum_.set (x);
+    this->minimum_.set (std::move (x));
   }
 
   const scale::maximum_type& scale::
@@ -136,9 +136,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  maximum (::std::auto_ptr< maximum_type > x)
+  maximum (::std::unique_ptr< maximum_type > x)
   {
-    this->maximum_.set (x);
+    this->maximum_.set (std::move (x));
   }
 
   const scale::step_type& scale::
@@ -160,9 +160,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  step (::std::auto_ptr< step_type > x)
+  step (::std::unique_ptr< step_type > x)
   {
-    this->step_.set (x);
+    this->step_.set (std::move (x));
   }
 
   const scale::n_bits_type& scale::
@@ -208,9 +208,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  comment (::std::auto_ptr< comment_type > x)
+  comment (::std::unique_ptr< comment_type > x)
   {
-    this->comment_.set (x);
+    this->comment_.set (std::move (x));
   }
 
   const scale::bin_sequence& scale::
@@ -256,9 +256,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  scale_id (::std::auto_ptr< scale_id_type > x)
+  scale_id (::std::unique_ptr< scale_id_type > x)
   {
-    this->scale_id_.set (x);
+    this->scale_id_.set (std::move (x));
   }
 
   const scale::datetime_optional& scale::
@@ -286,9 +286,9 @@ namespace tmxsdtree
   }
 
   void scale::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 
   const scale::n_bins_optional& scale::
@@ -402,12 +402,12 @@ namespace tmxsdtree
       //
       if (n.name () == "object" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< object_type > r (
+        ::std::unique_ptr< object_type > r (
           object_traits::create (i, f, this));
 
         if (!object_.present ())
         {
-          this->object_.set (r);
+          this->object_.set (::std::move (r));
           continue;
         }
       }
@@ -416,12 +416,12 @@ namespace tmxsdtree
       //
       if (n.name () == "type" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< type_type > r (
+        ::std::unique_ptr< type_type > r (
           type_traits::create (i, f, this));
 
         if (!type_.present ())
         {
-          this->type_.set (r);
+          this->type_.set (::std::move (r));
           continue;
         }
       }
@@ -430,12 +430,12 @@ namespace tmxsdtree
       //
       if (n.name () == "minimum" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< minimum_type > r (
+        ::std::unique_ptr< minimum_type > r (
           minimum_traits::create (i, f, this));
 
         if (!minimum_.present ())
         {
-          this->minimum_.set (r);
+          this->minimum_.set (::std::move (r));
           continue;
         }
       }
@@ -444,12 +444,12 @@ namespace tmxsdtree
       //
       if (n.name () == "maximum" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< maximum_type > r (
+        ::std::unique_ptr< maximum_type > r (
           maximum_traits::create (i, f, this));
 
         if (!maximum_.present ())
         {
-          this->maximum_.set (r);
+          this->maximum_.set (::std::move (r));
           continue;
         }
       }
@@ -458,12 +458,12 @@ namespace tmxsdtree
       //
       if (n.name () == "step" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< step_type > r (
+        ::std::unique_ptr< step_type > r (
           step_traits::create (i, f, this));
 
         if (!step_.present ())
         {
-          this->step_.set (r);
+          this->step_.set (::std::move (r));
           continue;
         }
       }
@@ -483,12 +483,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comment" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comment_type > r (
+        ::std::unique_ptr< comment_type > r (
           comment_traits::create (i, f, this));
 
         if (!this->comment_)
         {
-          this->comment_.set (r);
+          this->comment_.set (::std::move (r));
           continue;
         }
       }
@@ -497,10 +497,10 @@ namespace tmxsdtree
       //
       if (n.name () == "bin" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< bin_type > r (
+        ::std::unique_ptr< bin_type > r (
           bin_traits::create (i, f, this));
 
-        this->bin_.push_back (r);
+        this->bin_.push_back (::std::move (r));
         continue;
       }
 

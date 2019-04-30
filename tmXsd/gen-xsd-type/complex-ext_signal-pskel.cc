@@ -332,8 +332,7 @@ namespace tmxsd
           {
             if (this->name_parser_)
             {
-              const std::string& tmp (this->name_parser_->post_char1k ());
-              this->name (tmp);
+              this->name (this->name_parser_->post_char1k ());
             }
 
             count = 0;
@@ -369,8 +368,7 @@ namespace tmxsd
           {
             if (this->system_parser_)
             {
-              const std::string& tmp (this->system_parser_->post_char1k ());
-              this->system (tmp);
+              this->system (this->system_parser_->post_char1k ());
             }
 
             count = 0;
@@ -406,8 +404,7 @@ namespace tmxsd
           {
             if (this->cable_parser_)
             {
-              unsigned int tmp (this->cable_parser_->post_unsigned_int ());
-              this->cable (tmp);
+              this->cable (this->cable_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -443,8 +440,7 @@ namespace tmxsd
           {
             if (this->channel_parser_)
             {
-              unsigned int tmp (this->channel_parser_->post_unsigned_int ());
-              this->channel (tmp);
+              this->channel (this->channel_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -480,8 +476,7 @@ namespace tmxsd
           {
             if (this->description_parser_)
             {
-              const std::string& tmp (this->description_parser_->post_char4k ());
-              this->description (tmp);
+              this->description (this->description_parser_->post_char4k ());
             }
 
             count = 0;
@@ -513,8 +508,7 @@ namespace tmxsd
           {
             if (this->label_parser_)
             {
-              const std::string& tmp (this->label_parser_->post_char1k ());
-              this->label (tmp);
+              this->label (this->label_parser_->post_char1k ());
             }
 
             count = 0;
@@ -554,8 +548,7 @@ namespace tmxsd
         this->ext_signal_id_parser_->_pre_impl ();
         this->ext_signal_id_parser_->_characters (s);
         this->ext_signal_id_parser_->_post_impl ();
-        unsigned int tmp (this->ext_signal_id_parser_->post_id ());
-        this->ext_signal_id (tmp);
+        this->ext_signal_id (this->ext_signal_id_parser_->post_id ());
       }
 
       return true;
@@ -569,8 +562,7 @@ namespace tmxsd
         this->datetime_parser_->_pre_impl ();
         this->datetime_parser_->_characters (s);
         this->datetime_parser_->_post_impl ();
-        const std::string& tmp (this->datetime_parser_->post_datetime ());
-        this->datetime (tmp);
+        this->datetime (this->datetime_parser_->post_datetime ());
       }
 
       return true;

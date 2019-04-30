@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void ext_signal::
-  name (::std::auto_ptr< name_type > x)
+  name (::std::unique_ptr< name_type > x)
   {
-    this->name_.set (x);
+    this->name_.set (std::move (x));
   }
 
   const ext_signal::system_type& ext_signal::
@@ -88,9 +88,9 @@ namespace tmxsdtree
   }
 
   void ext_signal::
-  system (::std::auto_ptr< system_type > x)
+  system (::std::unique_ptr< system_type > x)
   {
-    this->system_.set (x);
+    this->system_.set (std::move (x));
   }
 
   const ext_signal::cable_type& ext_signal::
@@ -154,9 +154,9 @@ namespace tmxsdtree
   }
 
   void ext_signal::
-  description (::std::auto_ptr< description_type > x)
+  description (::std::unique_ptr< description_type > x)
   {
-    this->description_.set (x);
+    this->description_.set (std::move (x));
   }
 
   const ext_signal::label_optional& ext_signal::
@@ -184,9 +184,9 @@ namespace tmxsdtree
   }
 
   void ext_signal::
-  label (::std::auto_ptr< label_type > x)
+  label (::std::unique_ptr< label_type > x)
   {
-    this->label_.set (x);
+    this->label_.set (std::move (x));
   }
 
   const ext_signal::ext_signal_id_optional& ext_signal::
@@ -214,9 +214,9 @@ namespace tmxsdtree
   }
 
   void ext_signal::
-  ext_signal_id (::std::auto_ptr< ext_signal_id_type > x)
+  ext_signal_id (::std::unique_ptr< ext_signal_id_type > x)
   {
-    this->ext_signal_id_.set (x);
+    this->ext_signal_id_.set (std::move (x));
   }
 
   const ext_signal::datetime_optional& ext_signal::
@@ -244,9 +244,9 @@ namespace tmxsdtree
   }
 
   void ext_signal::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 }
 
@@ -325,12 +325,12 @@ namespace tmxsdtree
       //
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< name_type > r (
+        ::std::unique_ptr< name_type > r (
           name_traits::create (i, f, this));
 
         if (!name_.present ())
         {
-          this->name_.set (r);
+          this->name_.set (::std::move (r));
           continue;
         }
       }
@@ -339,12 +339,12 @@ namespace tmxsdtree
       //
       if (n.name () == "system" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< system_type > r (
+        ::std::unique_ptr< system_type > r (
           system_traits::create (i, f, this));
 
         if (!system_.present ())
         {
-          this->system_.set (r);
+          this->system_.set (::std::move (r));
           continue;
         }
       }
@@ -375,12 +375,12 @@ namespace tmxsdtree
       //
       if (n.name () == "description" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< description_type > r (
+        ::std::unique_ptr< description_type > r (
           description_traits::create (i, f, this));
 
         if (!this->description_)
         {
-          this->description_.set (r);
+          this->description_.set (::std::move (r));
           continue;
         }
       }
@@ -389,12 +389,12 @@ namespace tmxsdtree
       //
       if (n.name () == "label" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< label_type > r (
+        ::std::unique_ptr< label_type > r (
           label_traits::create (i, f, this));
 
         if (!this->label_)
         {
-          this->label_.set (r);
+          this->label_.set (::std::move (r));
           continue;
         }
       }

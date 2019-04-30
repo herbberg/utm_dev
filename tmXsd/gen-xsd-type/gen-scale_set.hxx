@@ -39,6 +39,10 @@
 #ifndef CXX___SCALE_SET_HXX
 #define CXX___SCALE_SET_HXX
 
+#ifndef XSD_CXX11
+#define XSD_CXX11
+#endif
+
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
 #endif
@@ -598,7 +602,7 @@ namespace xml_schema
     /**
      * @brief Automatic pointer for DOMDocument.
      */
-    using ::xsd::cxx::xml::dom::auto_ptr;
+    using ::xsd::cxx::xml::dom::unique_ptr;
 
 #ifndef XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
 #define XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
@@ -617,9 +621,10 @@ namespace tmxsdtree
 }
 
 
-#include <memory>    // ::std::auto_ptr
+#include <memory>    // ::std::unique_ptr
 #include <limits>    // std::numeric_limits
 #include <algorithm> // std::binary_search
+#include <utility>   // std::move
 
 #include <xsd/cxx/xml/char-utf8.hxx>
 
@@ -669,7 +674,7 @@ namespace tmxsdtree
    *
    * This function uses exceptions to report parsing errors.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (const ::std::string& uri,
               ::xml_schema::flags f = 0,
               const ::xml_schema::properties& p = ::xml_schema::properties ());
@@ -685,7 +690,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (const ::std::string& uri,
               ::xml_schema::error_handler& eh,
               ::xml_schema::flags f = 0,
@@ -703,7 +708,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (const ::std::string& uri,
               ::xercesc::DOMErrorHandler& eh,
               ::xml_schema::flags f = 0,
@@ -719,7 +724,7 @@ namespace tmxsdtree
    *
    * This function uses exceptions to report parsing errors.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::std::istream& is,
               ::xml_schema::flags f = 0,
               const ::xml_schema::properties& p = ::xml_schema::properties ());
@@ -735,7 +740,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::std::istream& is,
               ::xml_schema::error_handler& eh,
               ::xml_schema::flags f = 0,
@@ -753,7 +758,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::std::istream& is,
               ::xercesc::DOMErrorHandler& eh,
               ::xml_schema::flags f = 0,
@@ -773,7 +778,7 @@ namespace tmxsdtree
    *
    * This function uses exceptions to report parsing errors.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::std::istream& is,
               const ::std::string& id,
               ::xml_schema::flags f = 0,
@@ -795,7 +800,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::std::istream& is,
               const ::std::string& id,
               ::xml_schema::error_handler& eh,
@@ -818,7 +823,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::std::istream& is,
               const ::std::string& id,
               ::xercesc::DOMErrorHandler& eh,
@@ -835,7 +840,7 @@ namespace tmxsdtree
    *
    * This function uses exceptions to report parsing errors.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::xercesc::InputSource& is,
               ::xml_schema::flags f = 0,
               const ::xml_schema::properties& p = ::xml_schema::properties ());
@@ -851,7 +856,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::xercesc::InputSource& is,
               ::xml_schema::error_handler& eh,
               ::xml_schema::flags f = 0,
@@ -869,7 +874,7 @@ namespace tmxsdtree
    *
    * This function reports parsing errors by calling the error handler.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (::xercesc::InputSource& is,
               ::xercesc::DOMErrorHandler& eh,
               ::xml_schema::flags f = 0,
@@ -883,7 +888,7 @@ namespace tmxsdtree
    * @param p Parsing properties. 
    * @return A pointer to the root of the object model.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
   scale_set_ (const ::xercesc::DOMDocument& d,
               ::xml_schema::flags f = 0,
               const ::xml_schema::properties& p = ::xml_schema::properties ());
@@ -900,8 +905,8 @@ namespace tmxsdtree
    * own_dom parsing flags to assign ownership of the DOM document
    * to the object model.
    */
-  ::std::auto_ptr< ::tmxsdtree::scale_set >
-  scale_set_ (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d,
+  ::std::unique_ptr< ::tmxsdtree::scale_set >
+  scale_set_ (::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d,
               ::xml_schema::flags f = 0,
               const ::xml_schema::properties& p = ::xml_schema::properties ());
 
@@ -1070,7 +1075,7 @@ namespace tmxsdtree
    * @param f Serialization flags.
    * @return A pointer to the new Xerces-C++ DOM document.
    */
-  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
+  ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument >
   scale_set_ (const ::tmxsdtree::scale_set& x, 
               const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
               ::xml_schema::flags f = 0);

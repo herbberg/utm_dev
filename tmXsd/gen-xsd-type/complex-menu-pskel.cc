@@ -430,8 +430,7 @@ namespace tmxsd
           {
             if (this->ancestor_id_parser_)
             {
-              unsigned int tmp (this->ancestor_id_parser_->post_id ());
-              this->ancestor_id (tmp);
+              this->ancestor_id (this->ancestor_id_parser_->post_id ());
             }
 
             count = 0;
@@ -467,8 +466,7 @@ namespace tmxsd
           {
             if (this->name_parser_)
             {
-              const std::string& tmp (this->name_parser_->post_char1k ());
-              this->name (tmp);
+              this->name (this->name_parser_->post_char1k ());
             }
 
             count = 0;
@@ -504,8 +502,7 @@ namespace tmxsd
           {
             if (this->uuid_menu_parser_)
             {
-              const std::string& tmp (this->uuid_menu_parser_->post_uuid ());
-              this->uuid_menu (tmp);
+              this->uuid_menu (this->uuid_menu_parser_->post_uuid ());
             }
 
             count = 0;
@@ -541,8 +538,7 @@ namespace tmxsd
           {
             if (this->uuid_firmware_parser_)
             {
-              const std::string& tmp (this->uuid_firmware_parser_->post_uuid ());
-              this->uuid_firmware (tmp);
+              this->uuid_firmware (this->uuid_firmware_parser_->post_uuid ());
             }
 
             count = 0;
@@ -578,8 +574,7 @@ namespace tmxsd
           {
             if (this->global_tag_parser_)
             {
-              const std::string& tmp (this->global_tag_parser_->post_char1k ());
-              this->global_tag (tmp);
+              this->global_tag (this->global_tag_parser_->post_char1k ());
             }
 
             count = 0;
@@ -615,8 +610,7 @@ namespace tmxsd
           {
             if (this->grammar_version_parser_)
             {
-              const std::string& tmp (this->grammar_version_parser_->post_char64 ());
-              this->grammar_version (tmp);
+              this->grammar_version (this->grammar_version_parser_->post_char64 ());
             }
 
             count = 0;
@@ -652,8 +646,7 @@ namespace tmxsd
           {
             if (this->n_modules_parser_)
             {
-              unsigned int tmp (this->n_modules_parser_->post_unsigned_int ());
-              this->n_modules (tmp);
+              this->n_modules (this->n_modules_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -689,8 +682,7 @@ namespace tmxsd
           {
             if (this->is_valid_parser_)
             {
-              bool tmp (this->is_valid_parser_->post_boolean ());
-              this->is_valid (tmp);
+              this->is_valid (this->is_valid_parser_->post_boolean ());
             }
 
             count = 0;
@@ -722,8 +714,7 @@ namespace tmxsd
           {
             if (this->is_obsolete_parser_)
             {
-              bool tmp (this->is_obsolete_parser_->post_boolean ());
-              this->is_obsolete (tmp);
+              this->is_obsolete (this->is_obsolete_parser_->post_boolean ());
             }
 
             count = 0;
@@ -755,8 +746,7 @@ namespace tmxsd
           {
             if (this->comment_parser_)
             {
-              const std::string& tmp (this->comment_parser_->post_char4k ());
-              this->comment (tmp);
+              this->comment (this->comment_parser_->post_char4k ());
             }
 
             count = 0;
@@ -788,8 +778,7 @@ namespace tmxsd
           {
             if (this->algorithm_parser_)
             {
-              const ::tmxsd::algorithm& tmp (this->algorithm_parser_->post_algorithm ());
-              this->algorithm (tmp);
+              this->algorithm (this->algorithm_parser_->post_algorithm ());
             }
 
             count++;
@@ -820,8 +809,7 @@ namespace tmxsd
           {
             if (this->scale_set_parser_)
             {
-              const ::tmxsd::scale_set& tmp (this->scale_set_parser_->post_scale_set ());
-              this->scale_set (tmp);
+              this->scale_set (this->scale_set_parser_->post_scale_set ());
             }
 
             count = 0;
@@ -853,8 +841,7 @@ namespace tmxsd
           {
             if (this->ext_signal_set_parser_)
             {
-              const ::tmxsd::ext_signal_set& tmp (this->ext_signal_set_parser_->post_ext_signal_set ());
-              this->ext_signal_set (tmp);
+              this->ext_signal_set (this->ext_signal_set_parser_->post_ext_signal_set ());
             }
 
             count = 0;
@@ -894,8 +881,7 @@ namespace tmxsd
         this->menu_id_parser_->_pre_impl ();
         this->menu_id_parser_->_characters (s);
         this->menu_id_parser_->_post_impl ();
-        unsigned int tmp (this->menu_id_parser_->post_id ());
-        this->menu_id (tmp);
+        this->menu_id (this->menu_id_parser_->post_id ());
       }
 
       return true;
@@ -909,8 +895,7 @@ namespace tmxsd
         this->datetime_parser_->_pre_impl ();
         this->datetime_parser_->_characters (s);
         this->datetime_parser_->_post_impl ();
-        const std::string& tmp (this->datetime_parser_->post_datetime ());
-        this->datetime (tmp);
+        this->datetime (this->datetime_parser_->post_datetime ());
       }
 
       return true;

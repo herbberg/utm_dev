@@ -39,6 +39,10 @@
 #ifndef CXX___XSD_TYPE_COMPLEX_ALGORITHM_HXX
 #define CXX___XSD_TYPE_COMPLEX_ALGORITHM_HXX
 
+#ifndef XSD_CXX11
+#define XSD_CXX11
+#endif
+
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
 #endif
@@ -598,7 +602,7 @@ namespace xml_schema
     /**
      * @brief Automatic pointer for DOMDocument.
      */
-    using ::xsd::cxx::xml::dom::auto_ptr;
+    using ::xsd::cxx::xml::dom::unique_ptr;
 
 #ifndef XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
 #define XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
@@ -618,9 +622,10 @@ namespace tmxsdtree
 }
 
 
-#include <memory>    // ::std::auto_ptr
+#include <memory>    // ::std::unique_ptr
 #include <limits>    // std::numeric_limits
 #include <algorithm> // std::binary_search
+#include <utility>   // std::move
 
 #include <xsd/cxx/xml/char-utf8.hxx>
 
@@ -710,7 +715,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    name (::std::auto_ptr< name_type > p);
+    name (::std::unique_ptr< name_type > p);
 
     //@}
 
@@ -768,7 +773,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    expression (::std::auto_ptr< expression_type > p);
+    expression (::std::unique_ptr< expression_type > p);
 
     //@}
 
@@ -985,7 +990,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    comment (::std::auto_ptr< comment_type > p);
+    comment (::std::unique_ptr< comment_type > p);
 
     //@}
 
@@ -1253,7 +1258,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    algorithm_id (::std::auto_ptr< algorithm_id_type > p);
+    algorithm_id (::std::unique_ptr< algorithm_id_type > p);
 
     //@}
 
@@ -1329,7 +1334,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    datetime (::std::auto_ptr< datetime_type > p);
+    datetime (::std::unique_ptr< datetime_type > p);
 
     //@}
 

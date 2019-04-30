@@ -35,10 +35,10 @@ https://twiki.cern.ch/twiki/bin/view/CMS/GlobalTriggerUpgradeL1T-uTme#uGT_Trigge
 
 ### Dependencies
 
-CC7:
+Redhat/CC7:
 
     $ sudo yum install make gcc-c++ python-devel boost-system boost-filesystem boost-devel \
-      xsd swig xerces-c
+      xsd swig xerces-c-devel
 
 Debian/Ubuntu:
 

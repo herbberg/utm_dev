@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void ext_signal_set::
-  name (::std::auto_ptr< name_type > x)
+  name (::std::unique_ptr< name_type > x)
   {
-    this->name_.set (x);
+    this->name_.set (std::move (x));
   }
 
   const ext_signal_set::comment_optional& ext_signal_set::
@@ -94,9 +94,9 @@ namespace tmxsdtree
   }
 
   void ext_signal_set::
-  comment (::std::auto_ptr< comment_type > x)
+  comment (::std::unique_ptr< comment_type > x)
   {
-    this->comment_.set (x);
+    this->comment_.set (std::move (x));
   }
 
   const ext_signal_set::ext_signal_sequence& ext_signal_set::
@@ -142,9 +142,9 @@ namespace tmxsdtree
   }
 
   void ext_signal_set::
-  ext_signal_set_id (::std::auto_ptr< ext_signal_set_id_type > x)
+  ext_signal_set_id (::std::unique_ptr< ext_signal_set_id_type > x)
   {
-    this->ext_signal_set_id_.set (x);
+    this->ext_signal_set_id_.set (std::move (x));
   }
 
   const ext_signal_set::datetime_optional& ext_signal_set::
@@ -172,9 +172,9 @@ namespace tmxsdtree
   }
 
   void ext_signal_set::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 
   const ext_signal_set::is_valid_optional& ext_signal_set::
@@ -268,12 +268,12 @@ namespace tmxsdtree
       //
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< name_type > r (
+        ::std::unique_ptr< name_type > r (
           name_traits::create (i, f, this));
 
         if (!name_.present ())
         {
-          this->name_.set (r);
+          this->name_.set (::std::move (r));
           continue;
         }
       }
@@ -282,12 +282,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comment" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comment_type > r (
+        ::std::unique_ptr< comment_type > r (
           comment_traits::create (i, f, this));
 
         if (!this->comment_)
         {
-          this->comment_.set (r);
+          this->comment_.set (::std::move (r));
           continue;
         }
       }
@@ -296,10 +296,10 @@ namespace tmxsdtree
       //
       if (n.name () == "ext_signal" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< ext_signal_type > r (
+        ::std::unique_ptr< ext_signal_type > r (
           ext_signal_traits::create (i, f, this));
 
-        this->ext_signal_.push_back (r);
+        this->ext_signal_.push_back (::std::move (r));
         continue;
       }
 

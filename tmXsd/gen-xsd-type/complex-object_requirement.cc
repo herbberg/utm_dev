@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  name (::std::auto_ptr< name_type > x)
+  name (::std::unique_ptr< name_type > x)
   {
-    this->name_.set (x);
+    this->name_.set (std::move (x));
   }
 
   const object_requirement::type_type& object_requirement::
@@ -88,9 +88,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  type (::std::auto_ptr< type_type > x)
+  type (::std::unique_ptr< type_type > x)
   {
-    this->type_.set (x);
+    this->type_.set (std::move (x));
   }
 
   const object_requirement::comparison_operator_type& object_requirement::
@@ -112,9 +112,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  comparison_operator (::std::auto_ptr< comparison_operator_type > x)
+  comparison_operator (::std::unique_ptr< comparison_operator_type > x)
   {
-    this->comparison_operator_.set (x);
+    this->comparison_operator_.set (std::move (x));
   }
 
   const object_requirement::threshold_type& object_requirement::
@@ -136,9 +136,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  threshold (::std::auto_ptr< threshold_type > x)
+  threshold (::std::unique_ptr< threshold_type > x)
   {
-    this->threshold_.set (x);
+    this->threshold_.set (std::move (x));
   }
 
   const object_requirement::bx_offset_type& object_requirement::
@@ -184,9 +184,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  comment (::std::auto_ptr< comment_type > x)
+  comment (::std::unique_ptr< comment_type > x)
   {
-    this->comment_.set (x);
+    this->comment_.set (std::move (x));
   }
 
   const object_requirement::requirement_id_optional& object_requirement::
@@ -214,9 +214,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  requirement_id (::std::auto_ptr< requirement_id_type > x)
+  requirement_id (::std::unique_ptr< requirement_id_type > x)
   {
-    this->requirement_id_.set (x);
+    this->requirement_id_.set (std::move (x));
   }
 
   const object_requirement::datetime_optional& object_requirement::
@@ -244,9 +244,9 @@ namespace tmxsdtree
   }
 
   void object_requirement::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 }
 
@@ -326,12 +326,12 @@ namespace tmxsdtree
       //
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< name_type > r (
+        ::std::unique_ptr< name_type > r (
           name_traits::create (i, f, this));
 
         if (!name_.present ())
         {
-          this->name_.set (r);
+          this->name_.set (::std::move (r));
           continue;
         }
       }
@@ -340,12 +340,12 @@ namespace tmxsdtree
       //
       if (n.name () == "type" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< type_type > r (
+        ::std::unique_ptr< type_type > r (
           type_traits::create (i, f, this));
 
         if (!type_.present ())
         {
-          this->type_.set (r);
+          this->type_.set (::std::move (r));
           continue;
         }
       }
@@ -354,12 +354,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comparison_operator" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comparison_operator_type > r (
+        ::std::unique_ptr< comparison_operator_type > r (
           comparison_operator_traits::create (i, f, this));
 
         if (!comparison_operator_.present ())
         {
-          this->comparison_operator_.set (r);
+          this->comparison_operator_.set (::std::move (r));
           continue;
         }
       }
@@ -368,12 +368,12 @@ namespace tmxsdtree
       //
       if (n.name () == "threshold" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< threshold_type > r (
+        ::std::unique_ptr< threshold_type > r (
           threshold_traits::create (i, f, this));
 
         if (!threshold_.present ())
         {
-          this->threshold_.set (r);
+          this->threshold_.set (::std::move (r));
           continue;
         }
       }
@@ -393,12 +393,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comment" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comment_type > r (
+        ::std::unique_ptr< comment_type > r (
           comment_traits::create (i, f, this));
 
         if (!this->comment_)
         {
-          this->comment_.set (r);
+          this->comment_.set (::std::move (r));
           continue;
         }
       }
