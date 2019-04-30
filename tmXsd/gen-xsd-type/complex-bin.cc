@@ -82,9 +82,9 @@ namespace tmxsdtree
   }
 
   void bin::
-  minimum (::std::auto_ptr< minimum_type > x)
+  minimum (::std::unique_ptr< minimum_type > x)
   {
-    this->minimum_.set (x);
+    this->minimum_.set (std::move (x));
   }
 
   const bin::maximum_type& bin::
@@ -106,9 +106,9 @@ namespace tmxsdtree
   }
 
   void bin::
-  maximum (::std::auto_ptr< maximum_type > x)
+  maximum (::std::unique_ptr< maximum_type > x)
   {
-    this->maximum_.set (x);
+    this->maximum_.set (std::move (x));
   }
 
   const bin::bin_id_optional& bin::
@@ -136,9 +136,9 @@ namespace tmxsdtree
   }
 
   void bin::
-  bin_id (::std::auto_ptr< bin_id_type > x)
+  bin_id (::std::unique_ptr< bin_id_type > x)
   {
-    this->bin_id_.set (x);
+    this->bin_id_.set (std::move (x));
   }
 
   const bin::scale_id_optional& bin::
@@ -166,9 +166,9 @@ namespace tmxsdtree
   }
 
   void bin::
-  scale_id (::std::auto_ptr< scale_id_type > x)
+  scale_id (::std::unique_ptr< scale_id_type > x)
   {
-    this->scale_id_.set (x);
+    this->scale_id_.set (std::move (x));
   }
 }
 
@@ -248,12 +248,12 @@ namespace tmxsdtree
       //
       if (n.name () == "minimum" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< minimum_type > r (
+        ::std::unique_ptr< minimum_type > r (
           minimum_traits::create (i, f, this));
 
         if (!minimum_.present ())
         {
-          this->minimum_.set (r);
+          this->minimum_.set (::std::move (r));
           continue;
         }
       }
@@ -262,12 +262,12 @@ namespace tmxsdtree
       //
       if (n.name () == "maximum" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< maximum_type > r (
+        ::std::unique_ptr< maximum_type > r (
           maximum_traits::create (i, f, this));
 
         if (!maximum_.present ())
         {
-          this->maximum_.set (r);
+          this->maximum_.set (::std::move (r));
           continue;
         }
       }

@@ -34,6 +34,10 @@
 #ifndef CXX___XSD_TYPE_COMPLEX_EXT_SIGNAL_SET_PSKEL_HH
 #define CXX___XSD_TYPE_COMPLEX_EXT_SIGNAL_SET_PSKEL_HH
 
+#ifndef XSD_CXX11
+#define XSD_CXX11
+#endif
+
 // Begin prologue.
 //
 //

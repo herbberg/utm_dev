@@ -64,9 +64,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  name (::std::auto_ptr< name_type > x)
+  name (::std::unique_ptr< name_type > x)
   {
-    this->name_.set (x);
+    this->name_.set (std::move (x));
   }
 
   const cut::object_type& cut::
@@ -88,9 +88,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  object (::std::auto_ptr< object_type > x)
+  object (::std::unique_ptr< object_type > x)
   {
-    this->object_.set (x);
+    this->object_.set (std::move (x));
   }
 
   const cut::type_type& cut::
@@ -112,9 +112,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  type (::std::auto_ptr< type_type > x)
+  type (::std::unique_ptr< type_type > x)
   {
-    this->type_.set (x);
+    this->type_.set (std::move (x));
   }
 
   const cut::minimum_type& cut::
@@ -136,9 +136,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  minimum (::std::auto_ptr< minimum_type > x)
+  minimum (::std::unique_ptr< minimum_type > x)
   {
-    this->minimum_.set (x);
+    this->minimum_.set (std::move (x));
   }
 
   const cut::maximum_type& cut::
@@ -160,9 +160,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  maximum (::std::auto_ptr< maximum_type > x)
+  maximum (::std::unique_ptr< maximum_type > x)
   {
-    this->maximum_.set (x);
+    this->maximum_.set (std::move (x));
   }
 
   const cut::data_type& cut::
@@ -184,9 +184,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  data (::std::auto_ptr< data_type > x)
+  data (::std::unique_ptr< data_type > x)
   {
-    this->data_.set (x);
+    this->data_.set (std::move (x));
   }
 
   const cut::comment_optional& cut::
@@ -214,9 +214,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  comment (::std::auto_ptr< comment_type > x)
+  comment (::std::unique_ptr< comment_type > x)
   {
-    this->comment_.set (x);
+    this->comment_.set (std::move (x));
   }
 
   const cut::cut_id_optional& cut::
@@ -244,9 +244,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  cut_id (::std::auto_ptr< cut_id_type > x)
+  cut_id (::std::unique_ptr< cut_id_type > x)
   {
-    this->cut_id_.set (x);
+    this->cut_id_.set (std::move (x));
   }
 
   const cut::datetime_optional& cut::
@@ -274,9 +274,9 @@ namespace tmxsdtree
   }
 
   void cut::
-  datetime (::std::auto_ptr< datetime_type > x)
+  datetime (::std::unique_ptr< datetime_type > x)
   {
-    this->datetime_.set (x);
+    this->datetime_.set (std::move (x));
   }
 }
 
@@ -360,12 +360,12 @@ namespace tmxsdtree
       //
       if (n.name () == "name" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< name_type > r (
+        ::std::unique_ptr< name_type > r (
           name_traits::create (i, f, this));
 
         if (!name_.present ())
         {
-          this->name_.set (r);
+          this->name_.set (::std::move (r));
           continue;
         }
       }
@@ -374,12 +374,12 @@ namespace tmxsdtree
       //
       if (n.name () == "object" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< object_type > r (
+        ::std::unique_ptr< object_type > r (
           object_traits::create (i, f, this));
 
         if (!object_.present ())
         {
-          this->object_.set (r);
+          this->object_.set (::std::move (r));
           continue;
         }
       }
@@ -388,12 +388,12 @@ namespace tmxsdtree
       //
       if (n.name () == "type" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< type_type > r (
+        ::std::unique_ptr< type_type > r (
           type_traits::create (i, f, this));
 
         if (!type_.present ())
         {
-          this->type_.set (r);
+          this->type_.set (::std::move (r));
           continue;
         }
       }
@@ -402,12 +402,12 @@ namespace tmxsdtree
       //
       if (n.name () == "minimum" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< minimum_type > r (
+        ::std::unique_ptr< minimum_type > r (
           minimum_traits::create (i, f, this));
 
         if (!minimum_.present ())
         {
-          this->minimum_.set (r);
+          this->minimum_.set (::std::move (r));
           continue;
         }
       }
@@ -416,12 +416,12 @@ namespace tmxsdtree
       //
       if (n.name () == "maximum" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< maximum_type > r (
+        ::std::unique_ptr< maximum_type > r (
           maximum_traits::create (i, f, this));
 
         if (!maximum_.present ())
         {
-          this->maximum_.set (r);
+          this->maximum_.set (::std::move (r));
           continue;
         }
       }
@@ -430,12 +430,12 @@ namespace tmxsdtree
       //
       if (n.name () == "data" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< data_type > r (
+        ::std::unique_ptr< data_type > r (
           data_traits::create (i, f, this));
 
         if (!data_.present ())
         {
-          this->data_.set (r);
+          this->data_.set (::std::move (r));
           continue;
         }
       }
@@ -444,12 +444,12 @@ namespace tmxsdtree
       //
       if (n.name () == "comment" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< comment_type > r (
+        ::std::unique_ptr< comment_type > r (
           comment_traits::create (i, f, this));
 
         if (!this->comment_)
         {
-          this->comment_.set (r);
+          this->comment_.set (::std::move (r));
           continue;
         }
       }

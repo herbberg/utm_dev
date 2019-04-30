@@ -22,26 +22,37 @@ Check the README.md in the subdirectories for further information.
 Build
 =====
 
-## Prerequisits
+## Prerequisites
 
 * CodeSynthesis XSD (http://www.codesynthesis.com/products/xsd/)
+* BOOST (https://www.boost.org/)
 * SWIG if python binding is needed (http://www.swig.org/)
-* xerces library if not available (http://xerces.apache.org/xerces-c/)
+* Xerces library (http://xerces.apache.org/xerces-c/)
 
 Check the corresponding Web pages for the installation of the packages
 as well as the following twiki page;
 https://twiki.cern.ch/twiki/bin/view/CMS/GlobalTriggerUpgradeL1T-uTme#uGT_Trigger_Menu_library_utm
 
-CC7:
+### Dependencies
 
-    $ sudo yum install python-devel boost-system boost-filesystem boost-devel \
-      xsd swig xerces-c
+Redhat/CC7:
+
+    $ sudo yum install make gcc-c++ python-devel boost-system boost-filesystem boost-devel \
+      xsd swig xerces-c-devel
 
 Debian/Ubuntu:
 
-    $ sudo apt-get install python-devel libboost-dev libboost-system-dev \
+    $ sudo apt-get install build-essential python-dev libboost-dev libboost-system-dev \
       libboost-filesystem-dev xsdcxx swig libxerces-c-dev
 
+### Generate XML bindings
+
+Pre-generated XML bindings and XSDC++ headers (`xsd/cxx/`) are bundled with the projects source code.
+
+The bindings can be manually generated use the following commands (eg. for c++11 compatibility or when using XSDC++ >= 4.0.0)
+
+    $ make dist-clean
+    $ make genxsd
 
 ## Compilation
 
@@ -53,6 +64,11 @@ Building python bindings (if required)
 
     $ make all python
 
+## Install
+
+Install libraries, headers and XSD files, use `PREFIX` to assign a custom location.
+
+    $ make install PREFIX=/home/user/local
 
 Build for XDAQ
 ==============

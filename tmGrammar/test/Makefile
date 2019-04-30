@@ -32,7 +32,7 @@ TOUCH = touch
 #
 # command flags
 #
-CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CXXFLAGS = -std=c++11 -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG #-DBOOST_SPIRIT_DEBUG
 INCDIR = -I. -I.. -I$(CACTUS_ROOT)/include -I$(BOOST_ROOT)/include -I../..
 LIBDIR = -L. -L.. -L$(CACTUS_ROOT)/lib -L$(BOOST_ROOT)/lib -L../../tmUtil

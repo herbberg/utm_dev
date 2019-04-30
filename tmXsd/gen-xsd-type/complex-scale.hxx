@@ -39,6 +39,10 @@
 #ifndef CXX___XSD_TYPE_COMPLEX_SCALE_HXX
 #define CXX___XSD_TYPE_COMPLEX_SCALE_HXX
 
+#ifndef XSD_CXX11
+#define XSD_CXX11
+#endif
+
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
 #endif
@@ -598,7 +602,7 @@ namespace xml_schema
     /**
      * @brief Automatic pointer for DOMDocument.
      */
-    using ::xsd::cxx::xml::dom::auto_ptr;
+    using ::xsd::cxx::xml::dom::unique_ptr;
 
 #ifndef XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
 #define XSD_CXX_TREE_TREE_NODE_KEY__XML_SCHEMA
@@ -618,9 +622,10 @@ namespace tmxsdtree
 }
 
 
-#include <memory>    // ::std::auto_ptr
+#include <memory>    // ::std::unique_ptr
 #include <limits>    // std::numeric_limits
 #include <algorithm> // std::binary_search
+#include <utility>   // std::move
 
 #include <xsd/cxx/xml/char-utf8.hxx>
 
@@ -706,7 +711,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    object (::std::auto_ptr< object_type > p);
+    object (::std::unique_ptr< object_type > p);
 
     //@}
 
@@ -764,7 +769,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    type (::std::auto_ptr< type_type > p);
+    type (::std::unique_ptr< type_type > p);
 
     //@}
 
@@ -822,7 +827,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    minimum (::std::auto_ptr< minimum_type > p);
+    minimum (::std::unique_ptr< minimum_type > p);
 
     //@}
 
@@ -880,7 +885,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    maximum (::std::auto_ptr< maximum_type > p);
+    maximum (::std::unique_ptr< maximum_type > p);
 
     //@}
 
@@ -938,7 +943,7 @@ namespace tmxsdtree
      * instead of making a copy.
      */
     void
-    step (::std::auto_ptr< step_type > p);
+    step (::std::unique_ptr< step_type > p);
 
     //@}
 
@@ -1061,7 +1066,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    comment (::std::auto_ptr< comment_type > p);
+    comment (::std::unique_ptr< comment_type > p);
 
     //@}
 
@@ -1201,7 +1206,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    scale_id (::std::auto_ptr< scale_id_type > p);
+    scale_id (::std::unique_ptr< scale_id_type > p);
 
     //@}
 
@@ -1277,7 +1282,7 @@ namespace tmxsdtree
      * of making a copy.
      */
     void
-    datetime (::std::auto_ptr< datetime_type > p);
+    datetime (::std::unique_ptr< datetime_type > p);
 
     //@}
 

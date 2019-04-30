@@ -8,7 +8,7 @@
 -include $(XDAQ_ROOT)/config/mfDefs.$(XDAQ_OS)
 # XDAQ stuff
 
-VERSION = 0.7.2
+VERSION = 0.7.3
 LIBRARY = libtmutil.so
 PROGRAMS =
 
@@ -40,7 +40,7 @@ TOUCH = touch
 #
 # command flags
 #
-CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CXXFLAGS = -std=c++11 -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I.. -I $(BOOST_ROOT)/include
 LIBDIR = -L.

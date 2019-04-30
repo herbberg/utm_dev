@@ -304,8 +304,7 @@ namespace tmxsd
           {
             if (this->name_parser_)
             {
-              const std::string& tmp (this->name_parser_->post_char1k ());
-              this->name (tmp);
+              this->name (this->name_parser_->post_char1k ());
             }
 
             count = 0;
@@ -341,8 +340,7 @@ namespace tmxsd
           {
             if (this->bx_offset_parser_)
             {
-              int tmp (this->bx_offset_parser_->post_int ());
-              this->bx_offset (tmp);
+              this->bx_offset (this->bx_offset_parser_->post_int ());
             }
 
             count = 0;
@@ -378,8 +376,7 @@ namespace tmxsd
           {
             if (this->comment_parser_)
             {
-              const std::string& tmp (this->comment_parser_->post_char4k ());
-              this->comment (tmp);
+              this->comment (this->comment_parser_->post_char4k ());
             }
 
             count = 0;
@@ -419,8 +416,7 @@ namespace tmxsd
         this->requirement_id_parser_->_pre_impl ();
         this->requirement_id_parser_->_characters (s);
         this->requirement_id_parser_->_post_impl ();
-        unsigned int tmp (this->requirement_id_parser_->post_id ());
-        this->requirement_id (tmp);
+        this->requirement_id (this->requirement_id_parser_->post_id ());
       }
 
       return true;
@@ -434,8 +430,7 @@ namespace tmxsd
         this->ext_signal_id_parser_->_pre_impl ();
         this->ext_signal_id_parser_->_characters (s);
         this->ext_signal_id_parser_->_post_impl ();
-        unsigned int tmp (this->ext_signal_id_parser_->post_id ());
-        this->ext_signal_id (tmp);
+        this->ext_signal_id (this->ext_signal_id_parser_->post_id ());
       }
 
       return true;
@@ -449,8 +444,7 @@ namespace tmxsd
         this->datetime_parser_->_pre_impl ();
         this->datetime_parser_->_characters (s);
         this->datetime_parser_->_post_impl ();
-        const std::string& tmp (this->datetime_parser_->post_datetime ());
-        this->datetime (tmp);
+        this->datetime (this->datetime_parser_->post_datetime ());
       }
 
       return true;

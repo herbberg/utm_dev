@@ -56,7 +56,7 @@ namespace tmxsdtree
 
 namespace tmxsdtree
 {
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (const ::std::string& u,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
@@ -67,18 +67,18 @@ namespace tmxsdtree
 
     ::xsd::cxx::tree::error_handler< char > h;
 
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::parse< char > (
         u, h, p, f));
 
     h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
 
-    return ::std::auto_ptr< ::tmxsdtree::scale > (
+    return ::std::unique_ptr< ::tmxsdtree::scale > (
       ::tmxsdtree::scale_ (
-        d, f | ::xml_schema::flags::own_dom, p));
+        std::move (d), f | ::xml_schema::flags::own_dom, p));
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (const ::std::string& u,
           ::xml_schema::error_handler& h,
           ::xml_schema::flags f,
@@ -88,37 +88,37 @@ namespace tmxsdtree
       (f & ::xml_schema::flags::dont_initialize) == 0,
       (f & ::xml_schema::flags::keep_dom) == 0);
 
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::parse< char > (
         u, h, p, f));
 
     if (!d.get ())
       throw ::xsd::cxx::tree::parsing< char > ();
 
-    return ::std::auto_ptr< ::tmxsdtree::scale > (
+    return ::std::unique_ptr< ::tmxsdtree::scale > (
       ::tmxsdtree::scale_ (
-        d, f | ::xml_schema::flags::own_dom, p));
+        std::move (d), f | ::xml_schema::flags::own_dom, p));
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (const ::std::string& u,
           ::xercesc::DOMErrorHandler& h,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::parse< char > (
         u, h, p, f));
 
     if (!d.get ())
       throw ::xsd::cxx::tree::parsing< char > ();
 
-    return ::std::auto_ptr< ::tmxsdtree::scale > (
+    return ::std::unique_ptr< ::tmxsdtree::scale > (
       ::tmxsdtree::scale_ (
-        d, f | ::xml_schema::flags::own_dom, p));
+        std::move (d), f | ::xml_schema::flags::own_dom, p));
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::std::istream& is,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
@@ -131,7 +131,7 @@ namespace tmxsdtree
     return ::tmxsdtree::scale_ (isrc, f, p);
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::std::istream& is,
           ::xml_schema::error_handler& h,
           ::xml_schema::flags f,
@@ -145,7 +145,7 @@ namespace tmxsdtree
     return ::tmxsdtree::scale_ (isrc, h, f, p);
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::std::istream& is,
           ::xercesc::DOMErrorHandler& h,
           ::xml_schema::flags f,
@@ -155,7 +155,7 @@ namespace tmxsdtree
     return ::tmxsdtree::scale_ (isrc, h, f, p);
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::std::istream& is,
           const ::std::string& sid,
           ::xml_schema::flags f,
@@ -169,7 +169,7 @@ namespace tmxsdtree
     return ::tmxsdtree::scale_ (isrc, f, p);
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::std::istream& is,
           const ::std::string& sid,
           ::xml_schema::error_handler& h,
@@ -184,7 +184,7 @@ namespace tmxsdtree
     return ::tmxsdtree::scale_ (isrc, h, f, p);
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::std::istream& is,
           const ::std::string& sid,
           ::xercesc::DOMErrorHandler& h,
@@ -195,73 +195,73 @@ namespace tmxsdtree
     return ::tmxsdtree::scale_ (isrc, h, f, p);
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::xercesc::InputSource& i,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
   {
     ::xsd::cxx::tree::error_handler< char > h;
 
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::parse< char > (
         i, h, p, f));
 
     h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
 
-    return ::std::auto_ptr< ::tmxsdtree::scale > (
+    return ::std::unique_ptr< ::tmxsdtree::scale > (
       ::tmxsdtree::scale_ (
-        d, f | ::xml_schema::flags::own_dom, p));
+        std::move (d), f | ::xml_schema::flags::own_dom, p));
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::xercesc::InputSource& i,
           ::xml_schema::error_handler& h,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::parse< char > (
         i, h, p, f));
 
     if (!d.get ())
       throw ::xsd::cxx::tree::parsing< char > ();
 
-    return ::std::auto_ptr< ::tmxsdtree::scale > (
+    return ::std::unique_ptr< ::tmxsdtree::scale > (
       ::tmxsdtree::scale_ (
-        d, f | ::xml_schema::flags::own_dom, p));
+        std::move (d), f | ::xml_schema::flags::own_dom, p));
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (::xercesc::InputSource& i,
           ::xercesc::DOMErrorHandler& h,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::parse< char > (
         i, h, p, f));
 
     if (!d.get ())
       throw ::xsd::cxx::tree::parsing< char > ();
 
-    return ::std::auto_ptr< ::tmxsdtree::scale > (
+    return ::std::unique_ptr< ::tmxsdtree::scale > (
       ::tmxsdtree::scale_ (
-        d, f | ::xml_schema::flags::own_dom, p));
+        std::move (d), f | ::xml_schema::flags::own_dom, p));
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
+  ::std::unique_ptr< ::tmxsdtree::scale >
   scale_ (const ::xercesc::DOMDocument& doc,
           ::xml_schema::flags f,
           const ::xml_schema::properties& p)
   {
     if (f & ::xml_schema::flags::keep_dom)
     {
-      ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+      ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
         static_cast< ::xercesc::DOMDocument* > (doc.cloneNode (true)));
 
-      return ::std::auto_ptr< ::tmxsdtree::scale > (
+      return ::std::unique_ptr< ::tmxsdtree::scale > (
         ::tmxsdtree::scale_ (
-          d, f | ::xml_schema::flags::own_dom, p));
+          std::move (d), f | ::xml_schema::flags::own_dom, p));
     }
 
     const ::xercesc::DOMElement& e (*doc.getDocumentElement ());
@@ -271,7 +271,7 @@ namespace tmxsdtree
     if (n.name () == "scale" &&
         n.namespace_ () == "http://www.cern.ch/tmxsd/1.0.0")
     {
-      ::std::auto_ptr< ::tmxsdtree::scale > r (
+      ::std::unique_ptr< ::tmxsdtree::scale > r (
         ::xsd::cxx::tree::traits< ::tmxsdtree::scale, char >::create (
           e, f, 0));
       return r;
@@ -284,12 +284,12 @@ namespace tmxsdtree
       "http://www.cern.ch/tmxsd/1.0.0");
   }
 
-  ::std::auto_ptr< ::tmxsdtree::scale >
-  scale_ (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d,
+  ::std::unique_ptr< ::tmxsdtree::scale >
+  scale_ (::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d,
           ::xml_schema::flags f,
           const ::xml_schema::properties&)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > c (
       ((f & ::xml_schema::flags::keep_dom) &&
        !(f & ::xml_schema::flags::own_dom))
       ? static_cast< ::xercesc::DOMDocument* > (d->cloneNode (true))
@@ -309,7 +309,7 @@ namespace tmxsdtree
     if (n.name () == "scale" &&
         n.namespace_ () == "http://www.cern.ch/tmxsd/1.0.0")
     {
-      ::std::auto_ptr< ::tmxsdtree::scale > r (
+      ::std::unique_ptr< ::tmxsdtree::scale > r (
         ::xsd::cxx::tree::traits< ::tmxsdtree::scale, char >::create (
           e, f, 0));
       return r;
@@ -339,7 +339,7 @@ namespace tmxsdtree
     ::xsd::cxx::xml::auto_initializer i (
       (f & ::xml_schema::flags::dont_initialize) == 0);
 
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::tmxsdtree::scale_ (s, m, f));
 
     ::xsd::cxx::tree::error_handler< char > h;
@@ -362,7 +362,7 @@ namespace tmxsdtree
     ::xsd::cxx::xml::auto_initializer i (
       (f & ::xml_schema::flags::dont_initialize) == 0);
 
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::tmxsdtree::scale_ (s, m, f));
     ::xsd::cxx::xml::dom::ostream_format_target t (o);
     if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
@@ -379,7 +379,7 @@ namespace tmxsdtree
           const ::std::string& e,
           ::xml_schema::flags f)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::tmxsdtree::scale_ (s, m, f));
     ::xsd::cxx::xml::dom::ostream_format_target t (o);
     if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
@@ -395,7 +395,7 @@ namespace tmxsdtree
           const ::std::string& e,
           ::xml_schema::flags f)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::tmxsdtree::scale_ (s, m, f));
 
     ::xsd::cxx::tree::error_handler< char > h;
@@ -414,7 +414,7 @@ namespace tmxsdtree
           const ::std::string& e,
           ::xml_schema::flags f)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::tmxsdtree::scale_ (s, m, f));
     if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
     {
@@ -430,7 +430,7 @@ namespace tmxsdtree
           const ::std::string& e,
           ::xml_schema::flags f)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::tmxsdtree::scale_ (s, m, f));
     if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
     {
@@ -462,12 +462,12 @@ namespace tmxsdtree
     }
   }
 
-  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
+  ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument >
   scale_ (const ::tmxsdtree::scale& s,
           const ::xml_schema::namespace_infomap& m,
           ::xml_schema::flags f)
   {
-    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d (
       ::xsd::cxx::xml::dom::serialize< char > (
         "scale",
         "http://www.cern.ch/tmxsd/1.0.0",

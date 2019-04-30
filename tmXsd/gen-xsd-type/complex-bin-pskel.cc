@@ -290,8 +290,7 @@ namespace tmxsd
           {
             if (this->number_parser_)
             {
-              unsigned int tmp (this->number_parser_->post_unsigned_int ());
-              this->number (tmp);
+              this->number (this->number_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -327,8 +326,7 @@ namespace tmxsd
           {
             if (this->minimum_parser_)
             {
-              const std::string& tmp (this->minimum_parser_->post_real ());
-              this->minimum (tmp);
+              this->minimum (this->minimum_parser_->post_real ());
             }
 
             count = 0;
@@ -364,8 +362,7 @@ namespace tmxsd
           {
             if (this->maximum_parser_)
             {
-              const std::string& tmp (this->maximum_parser_->post_real ());
-              this->maximum (tmp);
+              this->maximum (this->maximum_parser_->post_real ());
             }
 
             count = 0;
@@ -409,8 +406,7 @@ namespace tmxsd
         this->bin_id_parser_->_pre_impl ();
         this->bin_id_parser_->_characters (s);
         this->bin_id_parser_->_post_impl ();
-        unsigned int tmp (this->bin_id_parser_->post_id ());
-        this->bin_id (tmp);
+        this->bin_id (this->bin_id_parser_->post_id ());
       }
 
       return true;
@@ -424,8 +420,7 @@ namespace tmxsd
         this->scale_id_parser_->_pre_impl ();
         this->scale_id_parser_->_characters (s);
         this->scale_id_parser_->_post_impl ();
-        unsigned int tmp (this->scale_id_parser_->post_id ());
-        this->scale_id (tmp);
+        this->scale_id (this->scale_id_parser_->post_id ());
       }
 
       return true;

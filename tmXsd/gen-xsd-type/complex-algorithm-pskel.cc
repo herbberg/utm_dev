@@ -374,8 +374,7 @@ namespace tmxsd
           {
             if (this->name_parser_)
             {
-              const std::string& tmp (this->name_parser_->post_char1k ());
-              this->name (tmp);
+              this->name (this->name_parser_->post_char1k ());
             }
 
             count = 0;
@@ -411,8 +410,7 @@ namespace tmxsd
           {
             if (this->expression_parser_)
             {
-              const std::string& tmp (this->expression_parser_->post_char4k ());
-              this->expression (tmp);
+              this->expression (this->expression_parser_->post_char4k ());
             }
 
             count = 0;
@@ -448,8 +446,7 @@ namespace tmxsd
           {
             if (this->index_parser_)
             {
-              unsigned int tmp (this->index_parser_->post_unsigned_int ());
-              this->index (tmp);
+              this->index (this->index_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -485,8 +482,7 @@ namespace tmxsd
           {
             if (this->module_id_parser_)
             {
-              unsigned int tmp (this->module_id_parser_->post_unsigned_int ());
-              this->module_id (tmp);
+              this->module_id (this->module_id_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -522,8 +518,7 @@ namespace tmxsd
           {
             if (this->module_index_parser_)
             {
-              unsigned int tmp (this->module_index_parser_->post_unsigned_int ());
-              this->module_index (tmp);
+              this->module_index (this->module_index_parser_->post_unsigned_int ());
             }
 
             count = 0;
@@ -559,8 +554,7 @@ namespace tmxsd
           {
             if (this->comment_parser_)
             {
-              const std::string& tmp (this->comment_parser_->post_char4k ());
-              this->comment (tmp);
+              this->comment (this->comment_parser_->post_char4k ());
             }
 
             count = 0;
@@ -592,8 +586,7 @@ namespace tmxsd
           {
             if (this->cut_parser_)
             {
-              const ::tmxsd::cut& tmp (this->cut_parser_->post_cut ());
-              this->cut (tmp);
+              this->cut (this->cut_parser_->post_cut ());
             }
 
             count++;
@@ -624,8 +617,7 @@ namespace tmxsd
           {
             if (this->object_requirement_parser_)
             {
-              const ::tmxsd::object_requirement& tmp (this->object_requirement_parser_->post_object_requirement ());
-              this->object_requirement (tmp);
+              this->object_requirement (this->object_requirement_parser_->post_object_requirement ());
             }
 
             count++;
@@ -656,8 +648,7 @@ namespace tmxsd
           {
             if (this->external_requirement_parser_)
             {
-              const ::tmxsd::external_requirement& tmp (this->external_requirement_parser_->post_external_requirement ());
-              this->external_requirement (tmp);
+              this->external_requirement (this->external_requirement_parser_->post_external_requirement ());
             }
 
             count++;
@@ -696,8 +687,7 @@ namespace tmxsd
         this->algorithm_id_parser_->_pre_impl ();
         this->algorithm_id_parser_->_characters (s);
         this->algorithm_id_parser_->_post_impl ();
-        unsigned int tmp (this->algorithm_id_parser_->post_id ());
-        this->algorithm_id (tmp);
+        this->algorithm_id (this->algorithm_id_parser_->post_id ());
       }
 
       return true;
@@ -711,8 +701,7 @@ namespace tmxsd
         this->datetime_parser_->_pre_impl ();
         this->datetime_parser_->_characters (s);
         this->datetime_parser_->_post_impl ();
-        const std::string& tmp (this->datetime_parser_->post_datetime ());
-        this->datetime (tmp);
+        this->datetime (this->datetime_parser_->post_datetime ());
       }
 
       return true;

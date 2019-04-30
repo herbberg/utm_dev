@@ -59,7 +59,7 @@ TOUCH = touch
 #
 # command flags
 #
-CXXFLAGS = -ansi -fPIC -O2 # -g -pg -Wall -pedantic
+CXXFLAGS = -std=c++11 -fPIC -O2 # -g -pg -Wall -pedantic
 CPPFLAGS = -DNDEBUG
 INCDIR = -I. -I.. -I../.. -I./gen-xsd-type -I$(XERCES_ROOT)/include
 LIBDIR = -L. -L../tmUtil -L$(XERCES_ROOT)/lib #-L/usr/lib64
