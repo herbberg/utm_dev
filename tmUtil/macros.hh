@@ -1,5 +1,5 @@
 #ifndef tmutil_macros_hh
-#define tmutil_tmUtil_hh
+#define tmutil_macros_hh
 
 #include <iostream>
 #include <sstream>
