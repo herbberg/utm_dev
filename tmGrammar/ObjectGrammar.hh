@@ -91,12 +91,12 @@ struct object_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
         >> -bx_offset
         >> -cuts
       | signal_id
-        >> !comparison
-        >> !threshold
+        >> string("") // skip comparison
+        >> string("") // skip threshold
         >> -bx_offset
       | ext_signal_id
-        >> !comparison
-        >> !threshold
+        >> string("") // skip comparison
+        >> string("") // skip threshold
         >> -bx_offset
     ;
 

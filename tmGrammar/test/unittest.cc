@@ -107,6 +107,79 @@ BOOST_AUTO_TEST_CASE(Algorithm_Logic)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE(Object)
+
+BOOST_AUTO_TEST_CASE(Object_parser)
+{
+  Object::Item item;
+
+  BOOST_CHECK_EQUAL(Object::parser("MU0", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "MU");
+  BOOST_CHECK_EQUAL(item.threshold, "0");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+0");
+
+  BOOST_CHECK_EQUAL(Object::parser("MU2p5+1", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "MU");
+  BOOST_CHECK_EQUAL(item.threshold, "2p5");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+1");
+}
+
+BOOST_AUTO_TEST_CASE(Object_ext_parser)
+{
+  Object::Item item;
+
+  BOOST_CHECK_EQUAL(Object::parser("EXT_FOO", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "EXT_FOO");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+0");
+
+  BOOST_CHECK_EQUAL(Object::parser("EXT_FOO+0", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "EXT_FOO");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+0");
+
+  BOOST_CHECK_EQUAL(Object::parser("EXT_FOO-2", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "EXT_FOO");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "-2");
+
+  BOOST_CHECK_EQUAL(Object::parser("EXT_FOO+2", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "EXT_FOO");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+2");
+}
+
+BOOST_AUTO_TEST_CASE(Object_cent_parser)
+{
+  Object::Item item;
+
+  BOOST_CHECK_EQUAL(Object::parser("CENT0", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "CENT0");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+0");
+
+  BOOST_CHECK_EQUAL(Object::parser("CENT1+0", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "CENT1");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+0");
+
+  BOOST_CHECK_EQUAL(Object::parser("CENT2+2", item), true);
+  BOOST_CHECK_EQUAL(item.message, "");
+  BOOST_CHECK_EQUAL(item.name, "CENT2");
+  BOOST_CHECK_EQUAL(item.threshold, "");
+  BOOST_CHECK_EQUAL(item.bx_offset, "+2");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
 BOOST_AUTO_TEST_SUITE(Cut)
 
 BOOST_AUTO_TEST_CASE(Cut_parser)
