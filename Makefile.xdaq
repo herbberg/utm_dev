@@ -11,7 +11,7 @@ include $(XDAQ_ROOT)/config/mfDefs.$(XDAQ_OS)
 
 export PACKAGE_VER_MAJOR=0
 export PACKAGE_VER_MINOR=7
-export PACKAGE_VER_PATCH=2
+export PACKAGE_VER_PATCH=5
 
 export PACKAGE_RELEASE=1
 

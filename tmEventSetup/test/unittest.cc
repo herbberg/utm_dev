@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_SUITE(tmEventSetup)
 
 BOOST_AUTO_TEST_CASE(tmEventSetup_getMmHashN)
 {
-  unsigned int seed = 0xdeadbabe; // fixed inside getMmHashN
+  unsigned int seed = 3735927486; // fixed inside getMmHashN
 
   std::string phrase = "NO-body expects the Spanish Inquisition!";
 
