@@ -12,6 +12,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   v0_7_5
    v0_7_4
    v0_7_3
    v0_7_2

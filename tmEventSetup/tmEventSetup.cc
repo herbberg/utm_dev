@@ -172,7 +172,7 @@ getMmHashN(const std::string& s)
 {
   const void* key = s.c_str();
   int len = s.size();
-  unsigned int seed = 0xdeadbabe;
+  unsigned int seed = 3735927486;
 
   return tmutil::MurmurHashNeutral2(key, len, seed);
 }
