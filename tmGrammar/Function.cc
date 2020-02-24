@@ -779,7 +779,7 @@ bool
 validateInvariantMassFunction(Function::Item& item)
 {
   // Check number of objects
-  if (not validateObjectCount(item, 2, 2))
+  if (not validateObjectCount(item, 2, 3))
     return false;
 
   if (not validateMassCuts(item))
