@@ -196,7 +196,8 @@ enum esConditionType
   Centrality5 = 59, /**< centrality 5 signal */
   Centrality6 = 60, /**< centrality 6 signal */
   Centrality7 = 61, /**< centrality 7 signal */
-  nConditionType = 62
+  InvariantMassThreeObj = 62, /**< Invariant mass condition with 3 objects */
+  nConditionType = 63
 };
 
 /** type of scales */
