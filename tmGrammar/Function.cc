@@ -88,7 +88,8 @@ const reserved::value_type functionNames[] = {
   reserved::value_type(mass_inv, 1),
   reserved::value_type(mass_inv_orm, 1),
   reserved::value_type(mass_trv, 1),
-  reserved::value_type(mass_trv_orm, 1)
+  reserved::value_type(mass_trv_orm, 1),
+  reserved::value_type(mass_inv_3_obj, 1)
 };
 const int nFunctionNames = sizeof(functionNames) / sizeof(functionNames[0]);
 const reserved functionName(functionNames, functionNames + nFunctionNames);
@@ -157,6 +158,21 @@ const char* cutInvMass_[] = {
   Cut::TBPT
 };
 const std::vector<std::string> cutInvMass(cutInvMass_, cutInvMass_ + sizeof(cutInvMass_)/sizeof(cutInvMass_[0]));
+
+// objects for invariant mass function with 3 objects
+const char* objMassInvThreeObj_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
+const std::vector<std::string> objMassInvThreeObj(objMassInvThreeObj_, objMassInvThreeObj_ + sizeof(objMassInvThreeObj_)/sizeof(objMassInvThreeObj_[0]));
+
+// cuts for invariant mass function with 3 objects
+const char* cutInvMassThreeObj_[] = {
+  Cut::MASS
+};
+const std::vector<std::string> cutInvMassThreeObj(cutInvMassThreeObj_, cutInvMassThreeObj_ + sizeof(cutInvMassThreeObj_)/sizeof(cutInvMassThreeObj_[0]));
 
 // objects for transverse mass function
 const char* objMassTrv_[] = {
@@ -364,6 +380,10 @@ Item::isValidObject(const std::string& object,
       objects = &objMassInv;
       break;
 
+    case InvariantMassThreeObj:
+      objects = &objMassInvThreeObj;
+      break;
+
     case InvariantMassOvRm:
       objects = &objMassInvOvRm;
       break;
@@ -422,6 +442,10 @@ Item::isValidCut(const std::string& cut,
       cuts = &cutInvMass;
       break;
 
+    case InvariantMassThreeObj:
+      cuts = &cutInvMassThreeObj;
+      break;
+
     case InvariantMassOvRm:
       cuts = &cutInvMassOvRm;
       break;
@@ -457,6 +481,7 @@ Item::isValidCut(const std::string& cut,
       {
         case Distance:
         case InvariantMass:
+        case InvariantMassThreeObj:
         case TransverseMass:
         case DistanceOvRm:
         case InvariantMassOvRm:
@@ -518,6 +543,10 @@ Item::getType() const
   else if (mass_inv == name)
   {
     return InvariantMass;
+  }
+  else if (mass_inv_3_obj == name)
+  {
+    return InvariantMassThreeObj;
   }
   else if (mass_inv_orm == name)
   {
@@ -779,7 +808,21 @@ bool
 validateInvariantMassFunction(Function::Item& item)
 {
   // Check number of objects
-  if (not validateObjectCount(item, 2, 4))
+  if (not validateObjectCount(item, 2, 2))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  return true;
+}
+
+/** Validate invariant mass 3 objects function objects and cuts. */
+bool
+validateInvariantMassThreeObjFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 3, 3))
     return false;
 
   if (not validateMassCuts(item))
@@ -1004,6 +1047,9 @@ parser(const std::string& function,
 
     case InvariantMass:
       return validateInvariantMassFunction(item);
+
+    case InvariantMassThreeObj:
+      return validateInvariantMassThreeObjFunction(item);
 
     case InvariantMassOvRm:
       return validateInvariantMassOvRmFunction(item);

@@ -150,6 +150,7 @@ esTriggerMenuHandle::getConditionName(const int type)
     case TransverseMass:          return "TransverseMass";
     case InvariantMassOvRm:       return "InvariantMassOvRm";
     case TransverseMassOvRm:      return "TransverseMassOvRm";
+    case InvariantMassThreeObj:   return "InvariantMassThreeObj";
     default:
       TM_FATAL_ERROR("unknown condition type: " << TM_QUOTE(type));
       break;
@@ -265,6 +266,10 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
   else if (item.type == Function::TransverseMassOvRm)
   {
     condition = getMassOverlapRemovalCondition(item, cuts_in_algo);
+  }
+  else if (item.type == Function::InvariantMassThreeObj)
+  {
+    condition = getMassThreeObjCondition(item, cuts_in_algo);
   }
   else
   {
@@ -730,6 +735,63 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
     conditionHandle.setType(InvariantMass);
   else if (item.type == Function::TransverseMass)
     conditionHandle.setType(TransverseMass);
+
+  // Set condition name
+  std::string name = getConditionName(conditionHandle.getType());
+  conditionHandle.setName(name);
+
+  esCondition& condition = conditionHandle;
+
+  return condition;
+}
+
+esCondition
+esTriggerMenuHandle::getMassThreeObjCondition(const Function::Item& item,
+                                      const tmtable::Table& cuts_in_algo)
+{
+  TM_LOG_DBG("-");
+
+  // invariant-mass condition
+  if (item.objects.size() != 3)
+  {
+    TM_FATAL_ERROR("# of objects != 3: " << item.objects.size());
+  }
+
+  esConditionHandle conditionHandle;
+  for (size_t ii = 0; ii < item.objects.size(); ii++)
+  {
+    esObjectHandle objectHandle(item.objects.at(ii), cuts_in_algo);
+    esObject& object = objectHandle;
+    conditionHandle.addObject(object);
+  }
+
+  size_t nCut = item.cuts.size();
+  if (nCut != 1)  // mass/chgcor/dR|(dEta/dPhi)/tbpt
+  {
+    TM_FATAL_ERROR("# of cuts not = 1 (only mass cut allowed and required): " << nCut);
+  }
+
+  bool hasMassCut = false;
+  for (size_t ii = 0; ii < cuts_in_algo.size(); ii++)
+  {
+    tmtable::Row& cut = const_cast<tmtable::Row&>(cuts_in_algo.at(ii));
+    for (size_t jj = 0; jj < nCut; jj++)
+    {
+      if (item.cuts.at(jj) != cut[kName]) continue;
+      esCutHandle cutHandle(cut);
+      esCut& ref = cutHandle;
+      if (ref.getCutType() == Mass) hasMassCut = true;
+      conditionHandle.addCut(ref);
+    }
+  }
+
+  if (not hasMassCut)
+  {
+    TM_FATAL_ERROR("no mass cut specified");
+  }
+
+  if (item.type == Function::InvariantMassThreeObj)
+    conditionHandle.setType(InvariantMassThreeObj);
 
   // Set condition name
   std::string name = getConditionName(conditionHandle.getType());

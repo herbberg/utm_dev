@@ -137,6 +137,14 @@ class esTriggerMenuHandle : public esTriggerMenu
     esCondition getMassCondition(const Function::Item& item,
                                  const tmtable::Table& cuts_in_algo);
 
+    /** get invariant mass condition with 3 objects
+     *
+     * @param token [in] token of algorithm expression in grammar
+     * @param cuts_in_algo [in] list of cuts used in algorithm
+     */
+    esCondition getMassThreeObjCondition(const Function::Item& item,
+                                 const tmtable::Table& cuts_in_algo);
+
     /** get invariant/transverse mass condition
      *
      * @param token [in] token of algorithm expression in grammar
