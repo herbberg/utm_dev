@@ -170,7 +170,8 @@ const std::vector<std::string> objMassInvThreeObj(objMassInvThreeObj_, objMassIn
 
 // cuts for invariant mass function with 3 objects
 const char* cutInvMassThreeObj_[] = {
-  Cut::MASS
+  Cut::MASS,
+  Cut::CHGCOR
 };
 const std::vector<std::string> cutInvMassThreeObj(cutInvMassThreeObj_, cutInvMassThreeObj_ + sizeof(cutInvMassThreeObj_)/sizeof(cutInvMassThreeObj_[0]));
 

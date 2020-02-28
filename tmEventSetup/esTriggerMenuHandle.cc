@@ -766,9 +766,9 @@ esTriggerMenuHandle::getMassThreeObjCondition(const Function::Item& item,
   }
 
   size_t nCut = item.cuts.size();
-  if (nCut != 1)  // mass/chgcor/dR|(dEta/dPhi)/tbpt
+  if (nCut > 2)  // mass/chgcor
   {
-    TM_FATAL_ERROR("# of cuts not = 1 (only mass cut allowed and required): " << nCut);
+    TM_FATAL_ERROR("# of cuts > 2 (only mass and charge correlation cuts allowed): " << nCut);
   }
 
   bool hasMassCut = false;
