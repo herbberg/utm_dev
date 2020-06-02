@@ -37,6 +37,7 @@ const std::string mass = "mass"; /**< invariant mass (alias) */
 const std::string mass_inv = "mass_inv"; /**< invariant mass */
 const std::string mass_trv = "mass_trv"; /**< transverse mass */
 const std::string mass_inv_3_obj = "mass_inv_3_obj"; /**< invariant mass with 3 objects*/
+const std::string mass_inv_div_dr = "mass_inv_div_dr"; /**< invariant mass divided by deltaR*/
 
 // overlap removal functions
 const std::string comb_orm = "comb_orm"; /**< overlap removal for object combinations */
@@ -57,6 +58,7 @@ enum {
   InvariantMassOvRm,
   TransverseMassOvRm,
   InvariantMassThreeObj,
+  InvariantMassDivDeltaR,
 };
 
 /** type of metric for Distance */

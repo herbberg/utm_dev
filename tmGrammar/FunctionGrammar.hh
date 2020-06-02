@@ -104,6 +104,7 @@ struct function_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(mass_inv_orm)
       | string(mass_trv_orm)
       | string(mass_inv_3_obj)
+      | string(mass_inv_div_dr)
     ;
 
     objects

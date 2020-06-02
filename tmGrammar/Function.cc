@@ -89,7 +89,8 @@ const reserved::value_type functionNames[] = {
   reserved::value_type(mass_inv_orm, 1),
   reserved::value_type(mass_trv, 1),
   reserved::value_type(mass_trv_orm, 1),
-  reserved::value_type(mass_inv_3_obj, 1)
+  reserved::value_type(mass_inv_3_obj, 1),
+  reserved::value_type(mass_inv_div_dr, 1)
 };
 const int nFunctionNames = sizeof(functionNames) / sizeof(functionNames[0]);
 const reserved functionName(functionNames, functionNames + nFunctionNames);
@@ -174,6 +175,22 @@ const char* cutInvMassThreeObj_[] = {
   Cut::CHGCOR
 };
 const std::vector<std::string> cutInvMassThreeObj(cutInvMassThreeObj_, cutInvMassThreeObj_ + sizeof(cutInvMassThreeObj_)/sizeof(cutInvMassThreeObj_[0]));
+
+// objects for invariant mass divided by deltaR function
+const char* objMassInvDivDeltaR_[] = {
+  Object::MU,
+  Object::EG,
+  Object::TAU,
+  Object::JET
+};
+const std::vector<std::string> objMassInvDivDeltaR(objMassInvDivDeltaR_, objMassInvDivDeltaR_ + sizeof(objMassInvDivDeltaR_)/sizeof(objMassInvDivDeltaR_[0]));
+
+// cuts for invariant mass divided by deltaR function
+const char* cutMassInvDivDeltaR_[] = {
+  Cut::MASS,
+  Cut::CHGCOR
+};
+const std::vector<std::string> cutMassInvDivDeltaR(cutMassInvDivDeltaR_, cutMassInvDivDeltaR_ + sizeof(cutMassInvDivDeltaR_)/sizeof(cutMassInvDivDeltaR_[0]));
 
 // objects for transverse mass function
 const char* objMassTrv_[] = {
@@ -385,6 +402,10 @@ Item::isValidObject(const std::string& object,
       objects = &objMassInvThreeObj;
       break;
 
+    case InvariantMassDivDeltaR:
+      objects = &objMassInvDivDeltaR;
+      break;
+
     case InvariantMassOvRm:
       objects = &objMassInvOvRm;
       break;
@@ -447,6 +468,10 @@ Item::isValidCut(const std::string& cut,
       cuts = &cutInvMassThreeObj;
       break;
 
+    case InvariantMassDivDeltaR:
+      cuts = &cutInvMassDivDeltaR;
+      break;
+
     case InvariantMassOvRm:
       cuts = &cutInvMassOvRm;
       break;
@@ -483,6 +508,7 @@ Item::isValidCut(const std::string& cut,
         case Distance:
         case InvariantMass:
         case InvariantMassThreeObj:
+        case InvariantMassDivDeltaR:
         case TransverseMass:
         case DistanceOvRm:
         case InvariantMassOvRm:
@@ -544,6 +570,10 @@ Item::getType() const
   else if (mass_inv == name)
   {
     return InvariantMass;
+  }
+  else if (mass_inv_div_dr == name)
+  {
+    return InvariantMassDivDeltaR;
   }
   else if (mass_inv_3_obj == name)
   {
