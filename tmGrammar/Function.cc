@@ -186,11 +186,11 @@ const char* objMassInvDivDeltaR_[] = {
 const std::vector<std::string> objMassInvDivDeltaR(objMassInvDivDeltaR_, objMassInvDivDeltaR_ + sizeof(objMassInvDivDeltaR_)/sizeof(objMassInvDivDeltaR_[0]));
 
 // cuts for invariant mass divided by deltaR function
-const char* cutMassInvDivDeltaR_[] = {
+const char* cutInvMassDivDeltaR_[] = {
   Cut::MASS,
   Cut::CHGCOR
 };
-const std::vector<std::string> cutMassInvDivDeltaR(cutMassInvDivDeltaR_, cutMassInvDivDeltaR_ + sizeof(cutMassInvDivDeltaR_)/sizeof(cutMassInvDivDeltaR_[0]));
+const std::vector<std::string> cutInvMassDivDeltaR(cutInvMassDivDeltaR_, cutInvMassDivDeltaR_ + sizeof(cutInvMassDivDeltaR_)/sizeof(cutInvMassDivDeltaR_[0]));
 
 // objects for transverse mass function
 const char* objMassTrv_[] = {
