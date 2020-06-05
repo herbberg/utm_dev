@@ -848,6 +848,20 @@ validateInvariantMassFunction(Function::Item& item)
   return true;
 }
 
+/** Validate invariant mass divided deltaR function objects and cuts. */
+bool
+validateInvariantMassDivDeltaRFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 2))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  return true;
+}
+
 /** Validate invariant mass 3 objects function objects and cuts. */
 bool
 validateInvariantMassThreeObjFunction(Function::Item& item)
@@ -1078,6 +1092,9 @@ parser(const std::string& function,
 
     case InvariantMass:
       return validateInvariantMassFunction(item);
+    
+    case InvariantMassDivDeltaR:
+      return validateInvariantMassDivDeltaRFunction(item);
 
     case InvariantMassThreeObj:
       return validateInvariantMassThreeObjFunction(item);
