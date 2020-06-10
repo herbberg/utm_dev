@@ -28,7 +28,7 @@ tmEventSetup_module = Extension('_tmEventSetup',
                          )
 
 setup (name = 'tmEventSetup',
-       version = '0.8.1',
+       version = '0.10.0',
        author = "Takashi MATSUSHITA",
        description = """algorithm expression to tmEventSetup converter""",
        ext_modules = [tmEventSetup_module],
