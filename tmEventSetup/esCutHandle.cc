@@ -64,6 +64,8 @@ esCutHandle::esCutHandle(const tmtable::Row& cut)
       else if (token == Cut::QLTY) cut_type_ = Quality;
       else if (token == Cut::CHG) cut_type_ = Charge;
       else if (token == Cut::PHI) cut_type_ = Phi;
+      else if (token == Cut::UPT) cut_type_ = UnconstraintPt;
+      else if (token == Cut::IP) cut_type_ = ImpactParameter;
       else if (token == Cut::SLICE) cut_type_ = Slice;
       else if (token == COUNT) cut_type_ = Count;
       else if (token == Cut::DETA)
@@ -248,6 +250,8 @@ esCutHandle::setKey()
     case Charge: key_ += Cut::CHG; break;
     case Quality: key_ += Cut::QLTY; break;
     case Isolation: key_ += Cut::ISO; break;
+    case UnconstraintPt: key_ += Cut::UPT; break;
+    case ImpactParameter: key_ += Cut::IP; break;
     case DeltaEta: key_ += Cut::DETA; break;
     case DeltaPhi: key_ += Cut::DPHI; break;
     case DeltaR: key_ += Cut::DR; break;

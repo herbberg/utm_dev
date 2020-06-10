@@ -41,6 +41,8 @@ const char MU_CHG[] = "MU-CHG";     /**< muon charge */
 const char MU_QLTY[] = "MU-QLTY";   /**< muon quality */
 const char MU_ISO[] = "MU-ISO";     /**< muon isolation */
 const char MU_SLICE[] = "MU-SLICE"; /**< muon collection slice */
+const char MU_UPT[] = "MU-UPT";     /**< muon unconstraint pt */
+const char MU_IP[] = "MU-IP";       /**< muon impact parameter */
 
 const char EG_ETA[] = "EG-ETA";     /**< egamma eta */
 const char EG_PHI[] = "EG-PHI";     /**< egamma phi */

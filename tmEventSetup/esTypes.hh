@@ -213,7 +213,8 @@ enum esScaleType
   TwoBodyPtPrecision = 8, /**< precision for two body pt */
   TwoBodyPtMathPrecision = 9, /**< precision for two body math */
   OvRmDeltaPrecision = 10, /**< precision for overlap removal delta */
-  nScaleType = 11
+  UnconstraintPtScale = 11, /**< unconstraint pt scale */
+  nScaleType = 12
 };
 
 } // namespace tmeventsetup
