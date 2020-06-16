@@ -35,6 +35,7 @@ const std::string comb = "comb"; /**< combination */
 const std::string dist = "dist"; /**< distance */
 const std::string mass = "mass"; /**< invariant mass (alias) */
 const std::string mass_inv = "mass_inv"; /**< invariant mass */
+const std::string upt_mass_inv = "upt_mass_inv"; /**< invariant mass with unconstraint pt*/
 const std::string mass_trv = "mass_trv"; /**< transverse mass */
 
 // overlap removal functions
@@ -50,6 +51,7 @@ enum {
   Combination,
   Distance,
   InvariantMass,
+  UptInvariantMass,
   TransverseMass,
   CombinationOvRm,
   DistanceOvRm,

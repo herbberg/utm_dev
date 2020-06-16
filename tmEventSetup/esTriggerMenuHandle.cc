@@ -150,6 +150,7 @@ esTriggerMenuHandle::getConditionName(const int type)
     case TransverseMass:          return "TransverseMass";
     case InvariantMassOvRm:       return "InvariantMassOvRm";
     case TransverseMassOvRm:      return "TransverseMassOvRm";
+    case UptInvariantMass:        return "UptInvariantMass";
     default:
       TM_FATAL_ERROR("unknown condition type: " << TM_QUOTE(type));
       break;
@@ -265,6 +266,10 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
   else if (item.type == Function::TransverseMassOvRm)
   {
     condition = getMassOverlapRemovalCondition(item, cuts_in_algo);
+  }
+  else if (item.type == Function::UptInvariantMass)
+  {
+    condition = getMassCondition(item, cuts_in_algo);
   }
   else
   {
@@ -730,6 +735,8 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
     conditionHandle.setType(InvariantMass);
   else if (item.type == Function::TransverseMass)
     conditionHandle.setType(TransverseMass);
+  else if (item.type == Function::UptInvariantMass)
+    conditionHandle.setType(UptInvariantMass);
 
   // Set condition name
   std::string name = getConditionName(conditionHandle.getType());

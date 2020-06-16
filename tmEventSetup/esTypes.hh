@@ -59,7 +59,9 @@ enum esCutType
   OvRmDeltaEta = 14, /**< overlap removal with delta eta */
   OvRmDeltaPhi = 15, /**< overlap removal with delta phi */
   OvRmDeltaR   = 16,   /**< overlap removal with delta R */
-  nCutType     = 17
+  UnconstraintPt = 18, /**< unconstraint pt cut */
+  ImpactParameter = 19, /**< impact parameter cut */
+  nCutType     = 120
 };
 
 /** type of objects */
