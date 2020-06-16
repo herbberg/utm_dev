@@ -111,7 +111,8 @@ enum esFunctionType
   DistOvRmFunction = 23, /**< distance with overlap removal */
   InvariantMassOvRmFunction = 24, /**< invariant mass with overlap removal */
   TransverseMassOvRmFunction = 25, /**< transverse mass with overlap removal */
-  nFunctionType = 9
+  UptInvariantMassFunction = 38, /**< invariant mass with unconstraint pt*/
+  nFunctionType = 10
 };
 
 /** list of comparison operator */
@@ -198,7 +199,8 @@ enum esConditionType
   Centrality5 = 59, /**< centrality 5 signal */
   Centrality6 = 60, /**< centrality 6 signal */
   Centrality7 = 61, /**< centrality 7 signal */
-  nConditionType = 62
+  UptInvariantMass  = 62, /**< Invariant mass condition with unconstarint pt */
+  nConditionType = 63
 };
 
 /** type of scales */
