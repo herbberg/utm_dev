@@ -7,6 +7,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${UTM_ROOT}/tmTable
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${UTM_ROOT}/tmXsd
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${UTM_ROOT}/tmEventSetup
 
+# # used for developments
 # # Python package/module paths
 # export PYTHONPATH=${PYTHONPATH}:${UTM_ROOT}/tmTable
 # export PYTHONPATH=${PYTHONPATH}:${UTM_ROOT}/tmGrammar
