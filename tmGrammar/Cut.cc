@@ -22,6 +22,8 @@ const reserved::value_type cut_names[] = {
   reserved::value_type(MU_QLTY, 1),
   reserved::value_type(MU_ISO, 1),
   reserved::value_type(MU_SLICE, 1),
+  reserved::value_type(MU_UPT, 1),
+  reserved::value_type(MU_IP, 1),
 
   reserved::value_type(EG_ETA, 1),
   reserved::value_type(EG_PHI, 1),

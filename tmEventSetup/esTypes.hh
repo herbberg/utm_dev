@@ -59,7 +59,9 @@ enum esCutType
   OvRmDeltaEta = 14, /**< overlap removal with delta eta */
   OvRmDeltaPhi = 15, /**< overlap removal with delta phi */
   OvRmDeltaR   = 16,   /**< overlap removal with delta R */
-  nCutType     = 17
+  UnconstraintPt = 18, /**< unconstraint pt cut */
+  ImpactParameter = 19, /**< impact parameter cut */
+  nCutType     = 120
 };
 
 /** type of objects */
@@ -109,9 +111,14 @@ enum esFunctionType
   DistOvRmFunction = 23, /**< distance with overlap removal */
   InvariantMassOvRmFunction = 24, /**< invariant mass with overlap removal */
   TransverseMassOvRmFunction = 25, /**< transverse mass with overlap removal */
+<<<<<<< HEAD
   InvariantMassThreeObjFunction = 38, /**< invariant mass with 3 objects */
   InvariantMassDivDeltaRFunction = 39, /**< invariant mass divided by deltaR */
   nFunctionType = 11
+=======
+  InvariantMassUptFunction = 38, /**< invariant mass with unconstraint pt*/
+  nFunctionType = 10
+>>>>>>> new_muon_structure
 };
 
 /** list of comparison operator */
@@ -198,9 +205,14 @@ enum esConditionType
   Centrality5 = 59, /**< centrality 5 signal */
   Centrality6 = 60, /**< centrality 6 signal */
   Centrality7 = 61, /**< centrality 7 signal */
+<<<<<<< HEAD
   InvariantMassThreeObj = 62, /**< Invariant mass condition with 3 objects */
   InvariantMassDivDeltaR = 63, /**< Invariant mass divided by deltaR */
   nConditionType = 64
+=======
+  InvariantMassUpt  = 62, /**< Invariant mass condition with unconstarint pt */
+  nConditionType = 63
+>>>>>>> new_muon_structure
 };
 
 /** type of scales */
@@ -217,7 +229,8 @@ enum esScaleType
   TwoBodyPtPrecision = 8, /**< precision for two body pt */
   TwoBodyPtMathPrecision = 9, /**< precision for two body math */
   OvRmDeltaPrecision = 10, /**< precision for overlap removal delta */
-  nScaleType = 11
+  UnconstraintPtScale = 11, /**< unconstraint pt scale */
+  nScaleType = 12
 };
 
 } // namespace tmeventsetup

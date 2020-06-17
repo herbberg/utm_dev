@@ -28,7 +28,11 @@ tmEventSetup_module = Extension('_tmEventSetup',
                          )
 
 setup (name = 'tmEventSetup',
+<<<<<<< HEAD
        version = '0.10.0',
+=======
+       version = '0.8.0',
+>>>>>>> new_muon_structure
        author = "Takashi MATSUSHITA",
        description = """algorithm expression to tmEventSetup converter""",
        ext_modules = [tmEventSetup_module],
