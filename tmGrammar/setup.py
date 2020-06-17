@@ -31,11 +31,7 @@ tmGrammar_module = Extension('_tmGrammar',
                             )
 
 setup (name = 'tmGrammar',
-<<<<<<< HEAD
        version = '0.10.0',
-=======
-       version = '0.8.0',
->>>>>>> new_muon_structure
        author = "Takashi MATSUSHITA",
        description = """parser for level-1 trigger menu grammar""",
        ext_modules = [tmGrammar_module],

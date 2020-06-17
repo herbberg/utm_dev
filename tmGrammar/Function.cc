@@ -89,12 +89,9 @@ const reserved::value_type functionNames[] = {
   reserved::value_type(mass_inv_orm, 1),
   reserved::value_type(mass_trv, 1),
   reserved::value_type(mass_trv_orm, 1),
-<<<<<<< HEAD
   reserved::value_type(mass_inv_3_obj, 1),
-  reserved::value_type(mass_inv_div_dr, 1)
-=======
+  reserved::value_type(mass_inv_div_dr, 1),
   reserved::value_type(mass_inv_upt, 1)
->>>>>>> new_muon_structure
 };
 const int nFunctionNames = sizeof(functionNames) / sizeof(functionNames[0]);
 const reserved functionName(functionNames, functionNames + nFunctionNames);
@@ -164,7 +161,6 @@ const char* cutInvMass_[] = {
 };
 const std::vector<std::string> cutInvMass(cutInvMass_, cutInvMass_ + sizeof(cutInvMass_)/sizeof(cutInvMass_[0]));
 
-<<<<<<< HEAD
 // objects for invariant mass function with 3 objects
 const char* objMassInvThreeObj_[] = {
   Object::MU,
@@ -196,8 +192,7 @@ const char* cutInvMassDivDeltaR_[] = {
   Cut::CHGCOR
 };
 const std::vector<std::string> cutInvMassDivDeltaR(cutInvMassDivDeltaR_, cutInvMassDivDeltaR_ + sizeof(cutInvMassDivDeltaR_)/sizeof(cutInvMassDivDeltaR_[0]));
-=======
-// **************************************************************************************************************
+
 // objects for invariant mass function for unconstraint pt
 const char* objMassInvUpt_[] = {
   Object::MU
@@ -214,8 +209,6 @@ const char* cutInvMassUpt_[] = {
 //   Cut::TBPT
 };
 const std::vector<std::string> cutInvMassUpt(cutInvMassUpt_, cutInvMassUpt_ + sizeof(cutInvMassUpt_)/sizeof(cutInvMassUpt_[0]));
-// **************************************************************************************************************
->>>>>>> new_muon_structure
 
 // objects for transverse mass function
 const char* objMassTrv_[] = {
@@ -423,17 +416,16 @@ Item::isValidObject(const std::string& object,
       objects = &objMassInv;
       break;
 
-<<<<<<< HEAD
     case InvariantMassThreeObj:
       objects = &objMassInvThreeObj;
       break;
 
     case InvariantMassDivDeltaR:
       objects = &objMassInvDivDeltaR;
-=======
+      break;
+
     case InvariantMassUpt:
       objects = &objMassInvUpt;
->>>>>>> new_muon_structure
       break;
 
     case InvariantMassOvRm:
@@ -494,17 +486,16 @@ Item::isValidCut(const std::string& cut,
       cuts = &cutInvMass;
       break;
 
-<<<<<<< HEAD
     case InvariantMassThreeObj:
       cuts = &cutInvMassThreeObj;
       break;
 
     case InvariantMassDivDeltaR:
       cuts = &cutInvMassDivDeltaR;
-=======
+      break;
+
     case InvariantMassUpt:
       cuts = &cutInvMassUpt;
->>>>>>> new_muon_structure
       break;
 
     case InvariantMassOvRm:
@@ -542,12 +533,9 @@ Item::isValidCut(const std::string& cut,
       {
         case Distance:
         case InvariantMass:
-<<<<<<< HEAD
         case InvariantMassThreeObj:
         case InvariantMassDivDeltaR:
-=======
         case InvariantMassUpt:
->>>>>>> new_muon_structure
         case TransverseMass:
         case DistanceOvRm:
         case InvariantMassOvRm:
@@ -610,7 +598,6 @@ Item::getType() const
   {
     return InvariantMass;
   }
-<<<<<<< HEAD
   else if (mass_inv_div_dr == name)
   {
     return InvariantMassDivDeltaR;
@@ -618,11 +605,10 @@ Item::getType() const
   else if (mass_inv_3_obj == name)
   {
     return InvariantMassThreeObj;
-=======
+  }
   else if (mass_inv_upt == name)
   {
     return InvariantMassUpt;
->>>>>>> new_muon_structure
   }
   else if (mass_inv_orm == name)
   {
@@ -893,15 +879,9 @@ validateInvariantMassFunction(Function::Item& item)
   return true;
 }
 
-<<<<<<< HEAD
 /** Validate invariant mass divided deltaR function objects and cuts. */
 bool
 validateInvariantMassDivDeltaRFunction(Function::Item& item)
-=======
-/** Validate invariant mass function with unconstarint pt objects and cuts. */
-bool
-validateInvariantMassUptFunction(Function::Item& item)
->>>>>>> new_muon_structure
 {
   // Check number of objects
   if (not validateObjectCount(item, 2, 2))
@@ -913,7 +893,20 @@ validateInvariantMassUptFunction(Function::Item& item)
   return true;
 }
 
-<<<<<<< HEAD
+/** Validate invariant mass function with unconstarint pt objects and cuts. */
+bool
+validateInvariantMassUptFunction(Function::Item& item)
+{
+  // Check number of objects
+  if (not validateObjectCount(item, 2, 2))
+    return false;
+
+  if (not validateMassCuts(item))
+    return false;
+
+  return true;
+}
+
 /** Validate invariant mass 3 objects function objects and cuts. */
 bool
 validateInvariantMassThreeObjFunction(Function::Item& item)
@@ -928,8 +921,6 @@ validateInvariantMassThreeObjFunction(Function::Item& item)
   return true;
 }
 
-=======
->>>>>>> new_muon_structure
 /** Validate invariant mass with overlap removal function objects and cuts. */
 bool
 validateInvariantMassOvRmFunction(Function::Item& item)
