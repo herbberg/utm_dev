@@ -147,6 +147,7 @@ esTriggerMenuHandle::getConditionName(const int type)
     case CaloCaloCorrelationOvRm: return "CaloCaloCorrelationOvRm";
     case CaloEsumCorrelation:     return "CaloEsumCorrelation";
     case InvariantMass:           return "InvariantMass";
+    case InvariantMassUpt:        return "InvariantMassUpt";
     case TransverseMass:          return "TransverseMass";
     case InvariantMassOvRm:       return "InvariantMassOvRm";
     case TransverseMassOvRm:      return "TransverseMassOvRm";
@@ -252,6 +253,10 @@ esTriggerMenuHandle::getFunctionCondition(const std::string& token,
     condition = getDistOverlapRemovalCondition(item, cuts_in_algo);
   }
   else if (item.type == Function::InvariantMass)
+  {
+    condition = getMassCondition(item, cuts_in_algo);
+  }
+  else if (item.type == Function::InvariantMassUpt)
   {
     condition = getMassCondition(item, cuts_in_algo);
   }
@@ -733,6 +738,8 @@ esTriggerMenuHandle::getMassCondition(const Function::Item& item,
 
   if (item.type == Function::InvariantMass)
     conditionHandle.setType(InvariantMass);
+  else if (item.type == Function::InvariantMassUpt)
+    conditionHandle.setType(InvariantMassUpt);
   else if (item.type == Function::TransverseMass)
     conditionHandle.setType(TransverseMass);
 

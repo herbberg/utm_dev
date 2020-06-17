@@ -59,7 +59,9 @@ enum esCutType
   OvRmDeltaEta = 14, /**< overlap removal with delta eta */
   OvRmDeltaPhi = 15, /**< overlap removal with delta phi */
   OvRmDeltaR   = 16,   /**< overlap removal with delta R */
-  nCutType     = 17
+  UnconstraintPt = 18, /**< unconstraint pt cut */
+  ImpactParameter = 19, /**< impact parameter cut */
+  nCutType     = 120
 };
 
 /** type of objects */
@@ -110,7 +112,8 @@ enum esFunctionType
   InvariantMassOvRmFunction = 24, /**< invariant mass with overlap removal */
   TransverseMassOvRmFunction = 25, /**< transverse mass with overlap removal */
   InvariantMassThreeObjFunction = 38, /**< invariant mass with 3 objects */
-  nFunctionType = 10
+  InvariantMassUptFunction = 39, /**< invariant mass with unconstraint pt*/
+  nFunctionType = 11
 };
 
 /** list of comparison operator */
@@ -198,6 +201,7 @@ enum esConditionType
   Centrality6 = 60, /**< centrality 6 signal */
   Centrality7 = 61, /**< centrality 7 signal */
   InvariantMassThreeObj = 62, /**< Invariant mass condition with 3 objects */
+  InvariantMassUpt  = 63, /**< Invariant mass condition with unconstarint pt */
   nConditionType = 64
 };
 
@@ -215,7 +219,8 @@ enum esScaleType
   TwoBodyPtPrecision = 8, /**< precision for two body pt */
   TwoBodyPtMathPrecision = 9, /**< precision for two body math */
   OvRmDeltaPrecision = 10, /**< precision for overlap removal delta */
-  nScaleType = 11
+  UnconstraintPtScale = 11, /**< unconstraint pt scale */
+  nScaleType = 12
 };
 
 } // namespace tmeventsetup

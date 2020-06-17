@@ -33,6 +33,8 @@ const char PHI[] = "PHI";
 const char CHG[] = "CHG";
 const char QLTY[] = "QLTY";
 const char ISO[] = "ISO";
+const char UPT[] = "UPT";
+const char IP[] = "IP";
 const char SLICE[] = "SLICE";
 
 const char MU_ETA[] = "MU-ETA";     /**< muon eta */
@@ -40,6 +42,8 @@ const char MU_PHI[] = "MU-PHI";     /**< muon phi */
 const char MU_CHG[] = "MU-CHG";     /**< muon charge */
 const char MU_QLTY[] = "MU-QLTY";   /**< muon quality */
 const char MU_ISO[] = "MU-ISO";     /**< muon isolation */
+const char MU_UPT[] = "MU-UPT";     /**< muon unconstraint pt */
+const char MU_IP[] = "MU-IP";       /**< muon impact parameter */
 const char MU_SLICE[] = "MU-SLICE"; /**< muon collection slice */
 
 const char EG_ETA[] = "EG-ETA";     /**< egamma eta */

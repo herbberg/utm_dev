@@ -67,6 +67,8 @@ struct cut_grammar : qi::grammar<Iterator, Item(), ascii::space_type>
       | raw[string(MU_CHG) >> '_' >> +char_(charset)]
       | raw[string(MU_QLTY) >> '_' >> +char_(charset)]
       | raw[string(MU_ISO) >> '_' >> +char_(charset)]
+      | raw[string(MU_UPT) >> '_' >> +char_(charset)]
+      | raw[string(MU_IP) >> '_' >> +char_(charset)]
       | raw[string(MU_SLICE) >> '_' >> +char_(charset)]
 
       // for egamma

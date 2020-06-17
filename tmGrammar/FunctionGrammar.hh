@@ -98,6 +98,7 @@ struct function_grammar : qi::grammar<Iterator, Item_(), ascii::space_type>
       | string(dist)
       | string(mass) // alias for mass_inv
       | string(mass_inv)
+      | string(mass_inv_upt)
       | string(mass_trv)
       | string(comb_orm)
       | string(dist_orm)
