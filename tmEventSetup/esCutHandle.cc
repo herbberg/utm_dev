@@ -234,7 +234,7 @@ esCutHandle::setKey()
     case DistFunction: break;
     case MassFunction: break; // alias for invariant mass
     case InvariantMassFunction: break;
-    case UptInvariantMassFunction: break;
+    case InvariantMassUptFunction: break;
     case TransverseMassFunction: break;
     default:
       TM_FATAL_ERROR("invalid object type: " << object_type_);

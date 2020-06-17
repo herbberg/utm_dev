@@ -89,7 +89,7 @@ const reserved::value_type functionNames[] = {
   reserved::value_type(mass_inv_orm, 1),
   reserved::value_type(mass_trv, 1),
   reserved::value_type(mass_trv_orm, 1),
-  reserved::value_type(upt_mass_inv, 1)
+  reserved::value_type(mass_inv_upt, 1)
 };
 const int nFunctionNames = sizeof(functionNames) / sizeof(functionNames[0]);
 const reserved functionName(functionNames, functionNames + nFunctionNames);
@@ -161,21 +161,21 @@ const std::vector<std::string> cutInvMass(cutInvMass_, cutInvMass_ + sizeof(cutI
 
 // **************************************************************************************************************
 // objects for invariant mass function for unconstraint pt
-const char* objUptMassInv_[] = {
+const char* objMassInvUpt_[] = {
   Object::MU
 };
-const std::vector<std::string> objUptMassInv(objUptMassInv_, objUptMassInv_ + sizeof(objUptMassInv_)/sizeof(objUptMassInv_[0]));
+const std::vector<std::string> objMassInvUpt(objMassInvUpt_, objMassInvUpt_ + sizeof(objMassInvUpt_)/sizeof(objMassInvUpt_[0]));
 
 // cuts for invariant mass function for unconstraint pt
-const char* cutUptInvMass_[] = {
+const char* cutInvMassUpt_[] = {
   Cut::MASS,
   Cut::DETA,
   Cut::DPHI,
   Cut::DR,
   Cut::CHGCOR,
-  Cut::TBPT
+//   Cut::TBPT
 };
-const std::vector<std::string> cutUptInvMass(cutUptInvMass_, cutUptInvMass_ + sizeof(cutUptInvMass_)/sizeof(cutUptInvMass_[0]));
+const std::vector<std::string> cutInvMassUpt(cutInvMassUpt_, cutInvMassUpt_ + sizeof(cutInvMassUpt_)/sizeof(cutInvMassUpt_[0]));
 // **************************************************************************************************************
 
 // objects for transverse mass function
@@ -384,8 +384,8 @@ Item::isValidObject(const std::string& object,
       objects = &objMassInv;
       break;
 
-    case UptInvariantMass:
-      objects = &objUptMassInv;
+    case InvariantMassUpt:
+      objects = &objMassInvUpt;
       break;
 
     case InvariantMassOvRm:
@@ -446,8 +446,8 @@ Item::isValidCut(const std::string& cut,
       cuts = &cutInvMass;
       break;
 
-    case UptInvariantMass:
-      cuts = &cutUptInvMass;
+    case InvariantMassUpt:
+      cuts = &cutInvMassUpt;
       break;
 
     case InvariantMassOvRm:
@@ -485,7 +485,7 @@ Item::isValidCut(const std::string& cut,
       {
         case Distance:
         case InvariantMass:
-        case UptInvariantMass:
+        case InvariantMassUpt:
         case TransverseMass:
         case DistanceOvRm:
         case InvariantMassOvRm:
@@ -548,9 +548,9 @@ Item::getType() const
   {
     return InvariantMass;
   }
-  else if (upt_mass_inv == name)
+  else if (mass_inv_upt == name)
   {
-    return UptInvariantMass;
+    return InvariantMassUpt;
   }
   else if (mass_inv_orm == name)
   {
@@ -823,7 +823,7 @@ validateInvariantMassFunction(Function::Item& item)
 
 /** Validate invariant mass function with unconstarint pt objects and cuts. */
 bool
-validateUptInvariantMassFunction(Function::Item& item)
+validateInvariantMassUptFunction(Function::Item& item)
 {
   // Check number of objects
   if (not validateObjectCount(item, 2, 2))
@@ -1052,8 +1052,8 @@ parser(const std::string& function,
     case InvariantMass:
       return validateInvariantMassFunction(item);
 
-    case UptInvariantMass:
-      return validateUptInvariantMassFunction(item);
+    case InvariantMassUpt:
+      return validateInvariantMassUptFunction(item);
 
     case InvariantMassOvRm:
       return validateInvariantMassOvRmFunction(item);

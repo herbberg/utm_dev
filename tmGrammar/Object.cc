@@ -55,7 +55,7 @@ const reserved objectName(object_names, object_names + n_object_names);
 
 
 // particles
-const char* cutsMU_[] = {Cut::MU_ETA, Cut::MU_PHI, Cut::MU_CHG, Cut::MU_QLTY, Cut::MU_ISO, Cut::MU_SLICE};
+const char* cutsMU_[] = {Cut::MU_UPT, Cut::MU_IP, Cut::MU_ETA, Cut::MU_PHI, Cut::MU_CHG, Cut::MU_QLTY, Cut::MU_ISO, Cut::MU_SLICE};
 const std::vector<std::string> cutsMU(cutsMU_, cutsMU_ + sizeof(cutsMU_)/sizeof(cutsMU_[0]));
 
 const char* cutsEG_[] = {Cut::EG_ETA, Cut::EG_PHI, Cut::EG_QLTY, Cut::EG_ISO, Cut::EG_SLICE};
