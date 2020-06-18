@@ -15,7 +15,7 @@ namespace tmeventsetup
 {
 
 // TODO: better to define with tmGrammar?
-const std::string GRAMMAR_VERSION = "0.7";
+const std::string GRAMMAR_VERSION = "0.8";
 
 // keys for menu tables
 const std::string kGrammarVersion("grammar_version");
