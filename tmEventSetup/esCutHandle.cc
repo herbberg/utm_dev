@@ -174,6 +174,7 @@ esCutHandle::setData(const std::string& data)
   {
     case Quality:
     case Isolation:
+    case ImpactParameter:
     {
       // LUT data stored as comma separated values, take or of all the bit patterns
       // TODO: common function for LUT validation and conversion.
